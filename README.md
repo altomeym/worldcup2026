@@ -11,6 +11,10 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![i18n](https://img.shields.io/badge/i18n-AR%20%2F%20EN-orange)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-wcup2026.org-2ea44f)](https://wcup2026.org/index.php?lang=en)
+[![GitHub stars](https://img.shields.io/github/stars/salah23222/worldcup2026?style=social)](https://github.com/salah23222/worldcup2026/stargazers)
+
+> ⭐ **If you find this useful, please give it a star — it really helps the project grow!**
+> إن أعجبك المشروع، ضع له نجمة ⭐ — يدعمنا كثيراً 🙏
 
 ---
 
@@ -23,6 +27,11 @@
 ## 📸 Screenshots
 
 > Live demo: **[wcup2026.org](https://wcup2026.org/index.php?lang=en)**
+
+<!-- 🎞️ TIP: record a short screen-capture GIF of the site, save it as docs/demo.gif,
+     then uncomment the next line to show an animated demo right here:
+![World Cup 2026 — demo](docs/demo.gif)
+-->
 
 ### Home
 ![World Cup 2026 — homepage with live countdown to kick-off](docs/screenshots/home.png)
@@ -186,6 +195,12 @@ cache/         runtime cache (page cache, fetched data) — auto‑generated
 
 Architecture in one line:
 `page.php → includes/bootstrap.php → DataService (cache + fetch) → openfootball JSON`.
+
+---
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=salah23222/worldcup2026&type=Date)](https://star-history.com/#salah23222/worldcup2026&Date)
 
 ---
 

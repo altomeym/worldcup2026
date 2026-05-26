@@ -46,3 +46,6 @@ Thumbs.db
 .idea/
 *.swp
 .claude/
+
+# ===== سكربت الرفع الشخصي (لا يُرفع) / personal push helper =====
+/رفع-التعديلات.bat

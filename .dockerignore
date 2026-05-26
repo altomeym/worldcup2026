@@ -1,0 +1,19 @@
+# Keep the image small and clean
+.git
+.github
+docs
+*.bat
+رفع-التعديلات.bat
+includes/config.local.php
+logs/*.log
+cache/page/*
+cache/ratelimit/*
+cache/stadiums/*
+data/users/*
+data/preds/*
+data/leagues/*
+data/polls/*
+data/messages/*
+data/qahr/*
+data/triviapts/*
+.editorconfig

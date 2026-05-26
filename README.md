@@ -58,9 +58,19 @@
 
 ## 🚀 Quick start / تشغيل سريع
 
+### Option A — Docker (no PHP needed) 🐳
+
+```bash
+git clone https://github.com/salah23222/worldcup2026.git
+cd worldcup2026
+docker compose up        # → open http://localhost:8080
+```
+
+### Option B — PHP / XAMPP
+
 ```bash
 # 1) Get the code
-git clone https://github.com/<your-user>/worldcup2026.git
+git clone https://github.com/salah23222/worldcup2026.git
 cd worldcup2026
 
 # 2) Create your local config from the template
@@ -79,6 +89,29 @@ CSS/JS load with correct paths.
 > The site works **immediately with zero keys** using the bundled fallback data
 > (`data/worldcup_fallback.json`) and the public openfootball feed. Everything
 > below is **optional**.
+
+---
+
+## 🧑‍💻 For developers — use the data in any language
+
+This project is built in PHP, but its data is **plain JSON over HTTP**, so you can build
+on it in **any language** (Python, JavaScript, Java, Go, Rust, C#, …). A public,
+**CORS-enabled, key-free** API is included:
+
+```bash
+curl "https://wcup2026.org/api/data.php?action=today"
+```
+```python
+import requests
+matches = requests.get("https://wcup2026.org/api/data.php?action=today").json()["matches"]
+```
+```javascript
+const { standings } = await (await fetch(
+  "https://wcup2026.org/api/data.php?action=standings")).json();
+```
+
+👉 Full endpoint reference & response shapes: **[docs/API.md](docs/API.md)**.
+Raw datasets live in [`/data`](data) — `worldcup_fallback.json`, `rankings.json`, `referees.json`.
 
 ---
 

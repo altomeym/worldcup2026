@@ -1,0 +1,35 @@
+# Run the whole site with one command:
+#
+#   docker compose up
+#
+# Then open  http://localhost:8080
+# Works with zero configuration. PHP/MySQL are NOT required on your machine.
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # --- Optional: live-edit code without rebuilding the image ---
+    # volumes:
+    #   - .:/var/www/html
+
+  # --- Optional: enable MySQL for user accounts & saved predictions ---
+  # 1) uncomment this service
+  # 2) create includes/config.local.php with DB_ENABLED => true and the DB_* below
+  # 3) open /install.php?token=YOUR_INSTALL_TOKEN once, then delete install.php
+  # db:
+  #   image: mariadb:11
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_DATABASE: worldcup2026
+  #     MYSQL_USER: wc
+  #     MYSQL_PASSWORD: wc
+  #     MYSQL_ROOT_PASSWORD: root
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+
+# volumes:
+#   db_data:

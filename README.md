@@ -10,19 +10,28 @@
 ![No build](https://img.shields.io/badge/build-none-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![i18n](https://img.shields.io/badge/i18n-AR%20%2F%20EN-orange)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-wcup2026.org-2ea44f)](https://wcup2026.org/index.php?lang=en)
 
 ---
 
-## 📸 Screenshots / لقطات الشاشة
+## 🌐 Live Demo
 
-> Drop your images into `docs/screenshots/` and uncomment the lines below.
-> ضع صورك في `docs/screenshots/` ثم أزِل التعليق عن الأسطر التالية.
+**Try the site live:** **[https://wcup2026.org/index.php?lang=en](https://wcup2026.org/index.php?lang=en)**
 
-<!--
-![Home](docs/screenshots/home.png)
-![Matches](docs/screenshots/matches.png)
-![Predictions](docs/screenshots/predict.png)
--->
+---
+
+## 📸 Screenshots
+
+> Live demo: **[wcup2026.org](https://wcup2026.org/index.php?lang=en)**
+
+### Home
+![World Cup 2026 — homepage with live countdown to kick-off](docs/screenshots/home.png)
+
+### Get in the Game
+![Predictions, bracket, stickers, daily quiz, leaderboard, stats and top scorers](docs/screenshots/features.png)
+
+### Prediction Game
+![Predict match scores, earn points, and climb the global leaderboard](docs/screenshots/predict.png)
 
 ---
 

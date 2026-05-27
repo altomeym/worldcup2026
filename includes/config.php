@@ -109,7 +109,7 @@ define('SMTP_PASS',   (string)cfg_secret('SMTP_PASS', '', $__local));         //
 define('SMTP_SECURE', (string)cfg_secret('SMTP_SECURE', 'ssl', $__local));    // 'ssl' أو 'tls'
 // سرّ توقيع روابط إلغاء الاشتراك (لا يُكشف للمستخدم). الأفضل ضبطه صراحةً في config.local.php.
 // إن لم يُضبط: نشتقّه من INSTALL_TOKEN ثم DB_PASS (قيمة خاصّة بكل تثبيت) — لا سرّ عام مكتوب
-// في المستودع (كان سابقاً 'wc26-mail-secret' وهو متوقَّع علناً ويسمح بتزوير روابط إلغاء الاشتراك).
+// في الكود (كان سابقاً 'wc26-mail-secret' وهو متوقَّع علناً ويسمح بتزوير روابط إلغاء الاشتراك).
 define('MAIL_SECRET', (string)cfg_secret('MAIL_SECRET',
     (INSTALL_TOKEN !== '' ? INSTALL_TOKEN
         : (DB_PASS !== '' ? hash('sha256', 'wc26-mail|' . DB_PASS) : '')),

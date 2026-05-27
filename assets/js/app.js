@@ -153,6 +153,33 @@
     els.forEach(function (el) { el.classList.add('reveal'); io.observe(el); });
   })();
 
+  /* -------- الملعب التكتيكي: الضغط على لاعب يُظهر اسمه ورقمه -------- */
+  (function () {
+    var board = document.querySelector('.pitch-full');
+    if (!board) return;
+    var info = document.getElementById('pitchInfo');
+    var defaultText = info ? info.textContent : '';
+    board.addEventListener('click', function (e) {
+      var pp = e.target.closest ? e.target.closest('.pp') : null;
+      if (!pp) return;
+      board.querySelectorAll('.pp.active').forEach(function (x) {
+        if (x !== pp) x.classList.remove('active');
+      });
+      pp.classList.toggle('active');
+      if (!info) return;
+      if (pp.classList.contains('active')) {
+        var num  = pp.getAttribute('data-num');
+        var name = pp.getAttribute('data-name') || '';
+        var team = pp.getAttribute('data-team') || '';
+        info.textContent = (num ? '#' + num + ' · ' : '') + name + (team ? ' — ' + team : '');
+        info.classList.add('has-pick');
+      } else {
+        info.textContent = defaultText;
+        info.classList.remove('has-pick');
+      }
+    });
+  })();
+
   /* -------- 3) التحديث التلقائي -------- */
   // يعمل فقط إذا كانت الصفحة فيها قسم data-autorefresh
   var hasLiveSection = document.querySelector('[data-autorefresh]');

@@ -125,59 +125,46 @@ seo_sportsevent($m);
     <a class="btn btn-sm" href="<?= e(url('calendar.php', ['id' => $id])) ?>">📅 <?= e(t('add_match_calendar')) ?></a>
   </p>
 
-  <!-- ============ 👕 التشكيلة على الملعب (أساسيون/احتياط) — وقت المباراة ============ -->
+  <!-- ============ 👕 الملعب التكتيكي (الفريقان متقابلان — نمط All-22) ============ -->
   <?php
-  $lineup = LiveService::lineupForMatch($m);
-  $lastName = function (string $n): string { $a = preg_split('/\s+/', trim($n)); return end($a) ?: $n; };
+  require_once __DIR__ . '/templates/pitch.php';
+  $lineup       = LiveService::lineupForMatch($m);
+  $lineupSample = false;
+  if (!$lineup) {                      // لا تشكيلة رسمية بعد → اعرض نموذجاً توضيحياً
+      $lineup       = pitch_sample_lineup();
+      $lineupSample = true;
+  }
   ?>
   <section class="lineup-box">
     <h2 class="section-head">👕 <?= e(t('lineup')) ?></h2>
-    <?php if (!$lineup): ?>
-      <p class="muted">⏳ <?= e(t('lineup_soon')) ?></p>
-    <?php else: ?>
+    <?php
+    $drewPitch = render_tactical_pitch($lineup, $t1, $t2, ['sample' => $lineupSample]);
+
+    if (!$drewPitch):   // بيانات بلا مواقع شبكية → قائمة نصّية لكل فريق (احتياط)
+    ?>
       <div class="lineup-cols">
         <?php foreach (['team1' => $t1, 'team2' => $t2] as $side => $tn):
-          $LU = $lineup[$side] ?? null; if (!$LU) continue;
-          // هل لكل اللاعبين موضع شبكي (row:col)؟ → ارسم ملعباً، وإلا قائمة نصّية
-          $start   = $LU['start'] ?? [];
-          $hasGrid = $start && !array_filter($start, fn($p) => ($p['grid'] ?? '') === '');
-          $rows = [];
-          if ($hasGrid) {
-              foreach ($start as $p) {
-                  $g = array_map('intval', explode(':', $p['grid']));
-                  $rows[$g[0] ?? 0][] = ['p' => $p, 'c' => $g[1] ?? 0];
-              }
-              ksort($rows);
-              foreach ($rows as &$ln) { usort($ln, fn($a, $b) => $a['c'] <=> $b['c']); }
-              unset($ln);
-              $maxRow = max(array_keys($rows));
-          }
-        ?>
+          $LU = $lineup[$side] ?? null; if (!$LU) continue; ?>
           <div class="lineup-col">
             <h3><?= flag_img($tn, 'w40') ?> <?= e(team_name($tn)) ?>
               <?php if (!empty($LU['formation'])): ?><span class="lineup-formation"><?= e($LU['formation']) ?></span><?php endif; ?>
             </h3>
-
-            <?php if ($hasGrid): ?>
-              <div class="pitch" role="img" aria-label="<?= e(team_name($tn)) ?>">
-                <?php foreach ($rows as $r => $ln):
-                    $cnt = count($ln);
-                    $y   = ($maxRow > 1) ? (92 - ($r - 1) / ($maxRow - 1) * 84) : 50;
-                    foreach ($ln as $i => $cell):
-                        $x = ($i + 1) / ($cnt + 1) * 100;
-                        $p = $cell['p'];
-                ?>
-                  <span class="pitch-player" style="left:<?= round($x, 1) ?>%;top:<?= round($y, 1) ?>%">
-                    <span class="pp-dot"><?= $p['number'] !== null ? (int)$p['number'] : '' ?></span>
-                    <span class="pp-name"><?= e($lastName($p['name'])) ?></span>
-                  </span>
-                <?php endforeach; endforeach; ?>
-              </div>
-            <?php else: ?>
-              <p class="lineup-label"><?= e(t('starters')) ?></p>
-              <ol class="lineup-list"><?php foreach ($start as $p): ?><li><?= e($p['name']) ?></li><?php endforeach; ?></ol>
+            <p class="lineup-label"><?= e(t('starters')) ?></p>
+            <ol class="lineup-list"><?php foreach (($LU['start'] ?? []) as $p): ?><li><?= e($p['name']) ?></li><?php endforeach; ?></ol>
+            <?php if (!empty($LU['coach'])): ?><p class="lineup-coach"><?= e(t('coach')) ?>: <?= e($LU['coach']) ?></p><?php endif; ?>
+            <?php if (!empty($LU['subs'])): ?>
+              <p class="lineup-label"><?= e(t('subs')) ?></p>
+              <ul class="lineup-list lineup-subs"><?php foreach ($LU['subs'] as $p): ?><li><?= e($p['name']) ?></li><?php endforeach; ?></ul>
             <?php endif; ?>
-
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php elseif (!$lineupSample):   // الملعب رُسم ببيانات حقيقية → أضِف المدرّب والاحتياط ?>
+      <div class="lineup-extra">
+        <?php foreach (['team1' => $t1, 'team2' => $t2] as $side => $tn):
+          $LU = $lineup[$side] ?? null; if (!$LU) continue; ?>
+          <div class="lineup-extra-col">
+            <h4><?= flag_img($tn, 'w40') ?> <?= e(team_name($tn)) ?></h4>
             <?php if (!empty($LU['coach'])): ?><p class="lineup-coach"><?= e(t('coach')) ?>: <?= e($LU['coach']) ?></p><?php endif; ?>
             <?php if (!empty($LU['subs'])): ?>
               <p class="lineup-label"><?= e(t('subs')) ?></p>

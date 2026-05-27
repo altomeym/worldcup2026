@@ -838,35 +838,99 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .lineup-list li { font-size: .88rem; line-height: 1.85; }
 .lineup-subs { color: var(--text-dim); }
 
-/* ملعب التشكيلة (مخطّط الفرقة على أرضية خضراء) */
-.pitch {
-  position: relative; width: 100%; aspect-ratio: 68 / 100;
+@media (max-width: 560px) { .lineup-cols { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   الملعب التكتيكي (All-22) — الفريقان متقابلان على ملعب واحد
+   ============================================================ */
+.tboard { position: relative; margin: 10px 0 14px; }
+.tboard-sample .pitch-full { opacity: .96; }
+.tboard-sample { }
+.tboard-tag {
+  display: inline-block; font-size: .72rem; font-weight: 700;
+  background: rgba(255,255,255,.08); border: 1px dashed var(--border);
+  color: var(--text-dim); border-radius: 999px; padding: 3px 12px; margin-bottom: 8px;
+}
+.tboard-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-bottom: 8px; font-size: .9rem;
+}
+.tboard-team { display: flex; align-items: center; gap: 8px; font-weight: 800; min-width: 0; }
+.tboard-team .tt-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tboard-team .flag { width: 26px; height: auto; border-radius: 3px; }
+.tt-form { font-size: .76rem; color: var(--accent-2); font-weight: 900; letter-spacing: .5px; }
+.tboard-vs { font-size: .78rem; color: var(--text-dim); flex: 0 0 auto; }
+
+.pitch-full {
+  position: relative; width: 100%; max-width: 440px; margin: 0 auto;
+  aspect-ratio: 68 / 100; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.22); border-radius: 12px;
   background:
-    radial-gradient(circle at 50% 50%, transparent 34px, rgba(255,255,255,.16) 35px, transparent 38px),
-    repeating-linear-gradient(180deg, #0e5630 0 8%, #0c4d2b 8% 16%);
-  border: 1px solid rgba(255,255,255,.22); border-radius: 10px; overflow: hidden;
-  margin: 8px 0 12px;
+    repeating-linear-gradient(180deg, #0e5e34 0 10%, #0c5230 10% 20%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.28);
 }
-.pitch::before { /* خط المنتصف */
-  content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px;
-  background: rgba(255,255,255,.18);
+/* علامات الملعب البيضاء */
+.pm { position: absolute; pointer-events: none; border-color: rgba(255,255,255,.30); }
+.pm-mid { left: 0; right: 0; top: 50%; height: 0; border-top: 2px solid rgba(255,255,255,.28); }
+.pm-circle {
+  left: 50%; top: 50%; width: 30%; aspect-ratio: 1; transform: translate(-50%,-50%);
+  border: 2px solid rgba(255,255,255,.26); border-radius: 50%;
 }
-.pitch-player {
+.pm-spot {
+  left: 50%; top: 50%; width: 6px; height: 6px; transform: translate(-50%,-50%);
+  background: rgba(255,255,255,.5); border-radius: 50%;
+}
+.pm-box { left: 50%; transform: translateX(-50%); width: 56%; height: 15%;
+  border: 2px solid rgba(255,255,255,.24); }
+.pm-box-top { top: 0; border-top: 0; border-radius: 0 0 6px 6px; }
+.pm-box-bot { bottom: 0; border-bottom: 0; border-radius: 6px 6px 0 0; }
+.pm-six { left: 50%; transform: translateX(-50%); width: 30%; height: 6.5%;
+  border: 2px solid rgba(255,255,255,.22); }
+.pm-six-top { top: 0; border-top: 0; border-radius: 0 0 5px 5px; }
+.pm-six-bot { bottom: 0; border-bottom: 0; border-radius: 5px 5px 0 0; }
+
+/* لاعب على الملعب (زر تفاعلي) */
+.pp {
   position: absolute; transform: translate(-50%, -50%);
   display: flex; flex-direction: column; align-items: center; width: 58px;
+  background: none; border: 0; padding: 0; cursor: pointer; z-index: 2;
+  transition: transform .12s ease;
 }
+.pp:hover, .pp:focus-visible { z-index: 5; outline: none; }
+.pp:hover .pp-dot, .pp:focus-visible .pp-dot { transform: scale(1.18); }
+.pp.active .pp-dot { box-shadow: 0 0 0 3px var(--accent), 0 2px 8px rgba(0,0,0,.5); }
 .pp-dot {
   width: 30px; height: 30px; border-radius: 50%;
-  background: var(--surface); border: 2px solid var(--accent-2);
-  color: var(--text); display: grid; place-items: center;
-  font-weight: 800; font-size: .8rem;
+  display: grid; place-items: center; font-weight: 800; font-size: .8rem;
+  transition: transform .12s ease; box-shadow: 0 2px 6px rgba(0,0,0,.45);
 }
+.pp-home .pp-dot { background: #fff; color: #0a1626; border: 2px solid #fff; }
+.pp-away .pp-dot { background: #16263d; color: #fff; border: 2px solid rgba(255,255,255,.85); }
 .pp-name {
   margin-top: 3px; font-size: .64rem; color: #fff; line-height: 1.1; text-align: center;
-  text-shadow: 0 1px 2px rgba(0,0,0,.75);
-  max-width: 66px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0,0,0,.85);
+  max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-@media (max-width: 560px) { .lineup-cols { grid-template-columns: 1fr; } }
+.pitch-info {
+  text-align: center; font-size: .85rem; color: var(--text-dim);
+  margin: 10px auto 0; max-width: 440px; min-height: 1.3em;
+}
+.pitch-info.has-pick { color: var(--text); font-weight: 700; }
+
+/* المدرّب/الاحتياط أسفل الملعب (بيانات حقيقية) */
+.lineup-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+.lineup-extra-col {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+}
+.lineup-extra-col h4 { display: flex; align-items: center; gap: 8px; font-size: .95rem; margin: 0 0 6px; }
+
+@media (max-width: 560px) {
+  .pp { width: 50px; }
+  .pp-dot { width: 26px; height: 26px; font-size: .72rem; }
+  .pp-name { font-size: .58rem; max-width: 54px; }
+  .lineup-extra { grid-template-columns: 1fr; }
+}
 
 /* ============================================================
    حركات ثنائية الأبعاد — دخول أول زيارة + كشف بالتمرير + تفاعل

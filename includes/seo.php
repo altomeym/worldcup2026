@@ -157,6 +157,15 @@ function seo_sportsevent(array $m): void {
         'name'  => 'FIFA',
         'url'   => 'https://www.fifa.com/',
     ];
+    // offers — حقل يوصي به Google لأحداث Event. الموقع لا يبيع تذاكر، فلا نختلق
+    // سعراً؛ نوجّه للمصدر الرسمي (FIFA) مع حالة التوفّر حسب كون المباراة قادمة.
+    $ld['offers'] = [
+        '@type'        => 'Offer',
+        'url'          => 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets',
+        'availability' => ($ts !== null && $ts > time())
+                          ? 'https://schema.org/InStock'
+                          : 'https://schema.org/SoldOut',
+    ];
 
     // JSON_HEX_TAG/AMP يهرّبان < > & (إلى \u00XX) فيستحيل الخروج من وسم <script> مهما كانت البيانات.
     echo '<script type="application/ld+json">'

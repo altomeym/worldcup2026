@@ -88,6 +88,7 @@ seo_head([
       <a href="<?= e(url('index.php')) ?>"<?= nav_active('index.php') ?>><?= e(t('home')) ?></a>
       <a href="<?= e(url('today.php')) ?>"<?= nav_active('today.php') ?>><?= e($lang === 'ar' ? 'اليوم' : 'Today') ?></a>
       <a href="<?= e(url('matches.php')) ?>"<?= nav_active('matches.php') ?>><?= e(t('matches')) ?></a>
+      <a href="<?= e(url('predict.php')) ?>"<?= nav_active('predict.php') ?>><?= e(t('predict')) ?></a>
       <a href="<?= e(url('news.php')) ?>"<?= nav_active('news.php') ?>><?= e(t('news')) ?></a>
 
       <div class="nav-group">
@@ -119,11 +120,10 @@ seo_head([
       </div>
 
       <div class="nav-group">
-        <button type="button" class="nav-group-btn<?= nav_group_active(['predict.php','bracket.php','leaderboard.php','leagues.php','league.php','stickers.php','trivia.php']) ?>">
+        <button type="button" class="nav-group-btn<?= nav_group_active(['bracket.php','leaderboard.php','leagues.php','league.php','stickers.php','trivia.php']) ?>">
           <?= e(t('nav_play')) ?><i class="nav-caret">▾</i>
         </button>
         <div class="nav-drop">
-          <a href="<?= e(url('predict.php')) ?>"<?= nav_active('predict.php') ?>><?= e(t('predict')) ?></a>
           <a href="<?= e(url('bracket.php')) ?>"<?= nav_active('bracket.php') ?>><?= e(t('bracket')) ?></a>
           <a href="<?= e(url('leaderboard.php')) ?>"<?= nav_active('leaderboard.php') ?>><?= e(t('leaderboard')) ?></a>
           <a href="<?= e(url('leagues.php')) ?>"<?= nav_active('leagues.php') ?>><?= e($lang === 'ar' ? 'المجلس' : 'My Leagues') ?></a>

@@ -1904,3 +1904,161 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 .nav-user-sep { color: var(--text-faint); }
 .nav-user-action { color: var(--text-dim); }
 .nav-user:hover .nav-user-action { color: var(--accent); }
+
+/* ============================================================
+   match-detail v2 — Hero + sticky tabs + unified timeline
+   (UAE-Pro-League-inspired; same navy/gold identity as the site)
+   ============================================================ */
+.match-detail.md2 .md-hero {
+  background: linear-gradient(180deg, #0a1626 0%, #1b3760 100%);
+  border: 1px solid #243a5c; border-radius: 14px;
+  padding: 28px 18px; margin-bottom: 0;
+}
+.match-detail.md2 .md-meta {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  color: #9fb3d1; font-size: 14px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.match-detail.md2 .md-dot { color: #3a567f; }
+.match-detail.md2 .md-scoreline {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center;
+}
+.match-detail.md2 .md-team { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.match-detail.md2 .md-team img.flag { width: 96px; height: auto; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+.match-detail.md2 .md-team h2 { font-size: 22px; margin: 4px 0 0; color: #eef4ff; text-align: center; }
+.match-detail.md2 .md-rank { font-size: 12px; color: #ffc233; background: rgba(255,194,51,0.10); padding: 3px 10px; border-radius: 99px; }
+.match-detail.md2 .md-center { text-align: center; min-width: 140px; }
+.match-detail.md2 .md-score { font-size: 56px; font-weight: 900; color: #eef4ff; line-height: 1; display: flex; gap: 8px; justify-content: center; align-items: baseline; }
+.match-detail.md2 .md-score-sep { color: #ffc233; font-size: 42px; }
+.match-detail.md2 .md-ht { color: #9fb3d1; font-size: 14px; margin: 8px 0 0; }
+.match-detail.md2 .md-pens { color: #ffc233; font-size: 13px; margin: 6px 0 0; }
+.match-detail.md2 .md-time { font-size: 32px; font-weight: 800; color: #eef4ff; }
+.match-detail.md2 .md-time-date { color: #9fb3d1; font-size: 14px; margin: 6px 0 0; }
+.match-detail.md2 .md-aipick { color: #00d563; font-size: 13px; margin-top: 10px; }
+.match-detail.md2 .md-hero-foot {
+  display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid #243a5c;
+  color: #9fb3d1; font-size: 14px;
+}
+.match-detail.md2 .md-hf { display: inline-flex; align-items: center; gap: 6px; }
+
+/* --- sticky tabs --- */
+.match-detail.md2 .md-tabs {
+  display: flex; gap: 6px; overflow-x: auto; padding: 10px 4px;
+  background: rgba(10,22,38,0.96); position: sticky; top: 0; z-index: 20;
+  margin: 12px -4px 0; border-bottom: 1px solid #243a5c;
+  -webkit-overflow-scrolling: touch;
+}
+.match-detail.md2 .md-tab {
+  flex: 0 0 auto; padding: 10px 18px; border-radius: 99px;
+  text-decoration: none; color: #9fb3d1; font-weight: 700; font-size: 14px;
+  background: transparent; border: 1px solid transparent; white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.match-detail.md2 .md-tab:hover { color: #eef4ff; background: #1b2d4b; }
+.match-detail.md2 .md-tab.is-active { color: #0a1626; background: #ffc233; border-color: #ffc233; }
+
+/* --- panels --- */
+.match-detail.md2 .md-panels { padding-top: 18px; }
+.match-detail.md2 .md-panel { display: none; }
+.match-detail.md2 .md-panel.is-active { display: block; }
+
+/* --- info grids --- */
+.match-detail.md2 .md-info { list-style: none; padding: 0; margin: 0; }
+.match-detail.md2 .md-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.match-detail.md2 .md-info-stacked { display: flex; flex-direction: column; gap: 8px; }
+.match-detail.md2 .md-info-grid li,
+.match-detail.md2 .md-info-stacked li {
+  background: #16243d; border: 1px solid #243a5c; padding: 10px 12px; border-radius: 8px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.match-detail.md2 .md-info-k { font-size: 12px; color: #9fb3d1; }
+.match-detail.md2 .md-info-v { color: #eef4ff; font-weight: 600; }
+.match-detail.md2 .md-cta-row { margin: 14px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* --- empty state --- */
+.match-detail.md2 .md-empty {
+  color: #9fb3d1; text-align: center; padding: 30px 16px;
+  background: #16243d; border-radius: 10px; border: 1px dashed #243a5c;
+}
+
+/* --- unified timeline --- */
+.match-detail.md2 .md-timeline { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.match-detail.md2 .md-tl-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  background: #16243d; border: 1px solid #243a5c; border-radius: 8px;
+}
+.match-detail.md2 .md-tl-row.md-tl-away { flex-direction: row-reverse; text-align: end; }
+.match-detail.md2 .md-tl-min { font-weight: 800; color: #ffc233; min-width: 42px; text-align: center; }
+.match-detail.md2 .md-tl-icon { font-size: 18px; }
+.match-detail.md2 .md-tl-flag img { width: 28px; }
+.match-detail.md2 .md-tl-name { color: #eef4ff; font-weight: 600; flex: 1; }
+.match-detail.md2 .md-tl-tag { color: #9fb3d1; font-size: 12px; }
+.match-detail.md2 .md-tl-goal   { border-inline-start: 3px solid #00d563; }
+.match-detail.md2 .md-tl-yellow { border-inline-start: 3px solid #ffc233; }
+.match-detail.md2 .md-tl-red    { border-inline-start: 3px solid #ff5a5a; }
+.match-detail.md2 .md-tl-row.md-tl-away.md-tl-goal   { border-inline-start: 0; border-inline-end: 3px solid #00d563; }
+.match-detail.md2 .md-tl-row.md-tl-away.md-tl-yellow { border-inline-start: 0; border-inline-end: 3px solid #ffc233; }
+.match-detail.md2 .md-tl-row.md-tl-away.md-tl-red    { border-inline-start: 0; border-inline-end: 3px solid #ff5a5a; }
+
+/* --- stats --- */
+.match-detail.md2 .md-stat-row {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  background: #16243d; border: 1px solid #243a5c; border-radius: 10px;
+  padding: 14px; margin-bottom: 14px; gap: 12px;
+}
+.match-detail.md2 .md-stat-side { display: flex; gap: 6px; align-items: center; justify-content: center; }
+.match-detail.md2 .md-stat-num { font-size: 22px; font-weight: 800; color: #eef4ff; }
+.match-detail.md2 .md-stat-red { color: #ff5a5a; }
+.match-detail.md2 .md-stat-label { font-size: 13px; color: #9fb3d1; text-align: center; }
+.match-detail.md2 .md-stat-note {
+  color: #9fb3d1; text-align: center; padding: 16px;
+  background: #16243d; border-radius: 10px; border: 1px dashed #243a5c;
+}
+
+/* --- mobile tweaks --- */
+@media (max-width: 600px) {
+  .match-detail.md2 .md-team h2 { font-size: 18px; }
+  .match-detail.md2 .md-team img.flag { width: 72px; }
+  .match-detail.md2 .md-score { font-size: 42px; }
+  .match-detail.md2 .md-score-sep { font-size: 32px; }
+  .match-detail.md2 .md-tab { padding: 8px 14px; font-size: 13px; }
+  .match-detail.md2 .md-hero { padding: 20px 12px; }
+}
+
+/* --- match-detail v2: linear narrative additions --- */
+.match-detail.md2 .md-section { margin-top: 22px; }
+.match-detail.md2 .md-section .section-head { font-size: 18px; margin: 0 0 12px; color: #eef4ff; }
+
+.match-detail.md2 .md-demo-banner {
+  margin: 14px 0 0; padding: 10px 14px;
+  background: rgba(255,194,51,0.08); color: #ffc233;
+  border: 1px dashed rgba(255,194,51,0.4); border-radius: 8px;
+  font-size: 13px; text-align: center;
+}
+
+/* stats with comparative bars */
+.match-detail.md2 .md-stats-head {
+  display: flex; justify-content: space-between; color: #9fb3d1;
+  font-size: 13px; font-weight: 600; padding: 0 4px 6px;
+}
+.match-detail.md2 .md-stats-grid {
+  background: #16243d; border: 1px solid #243a5c; border-radius: 10px;
+  padding: 12px 14px; display: flex; flex-direction: column; gap: 14px;
+}
+.match-detail.md2 .md-stat-vals {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;
+}
+.match-detail.md2 .md-stat-v1, .match-detail.md2 .md-stat-v2 {
+  font-size: 18px; font-weight: 800; color: #eef4ff;
+}
+.match-detail.md2 .md-stat-v1 { text-align: start; }
+.match-detail.md2 .md-stat-v2 { text-align: end; }
+.match-detail.md2 .md-stat-k {
+  font-size: 13px; color: #9fb3d1; text-align: center; white-space: nowrap;
+}
+.match-detail.md2 .md-stat-bar {
+  display: flex; height: 6px; border-radius: 99px; overflow: hidden;
+  background: #243a5c; margin-top: 6px;
+}
+.match-detail.md2 .md-stat-bar-1 { background: #00d563; min-width: 2px; transition: flex .3s; }
+.match-detail.md2 .md-stat-bar-2 { background: #ffc233; min-width: 2px; transition: flex .3s; }

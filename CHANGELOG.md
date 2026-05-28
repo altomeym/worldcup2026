@@ -4,6 +4,18 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.4] — 2026-05-29
+### Security
+- **Rate-limit IP spoofing fixed.** `RateLimiter::ip()` previously trusted the
+  client-supplied `X-Forwarded-For` / `CF-Connecting-IP` headers, so an attacker
+  could rotate a fake IP per request and bypass every IP-based limit (register,
+  contact, poll vote, qahr bump, league join/create). It now uses the
+  server-set `REMOTE_ADDR` by default and only consults forwarding headers when
+  the request comes through an internal proxy (private `REMOTE_ADDR`) or when
+  `RATE_LIMIT_TRUST_FORWARDED` is explicitly enabled for a trusted edge that
+  strips inbound headers. Secure by default; no behavior change for deployments
+  where `REMOTE_ADDR` already carries the real visitor IP.
+
 ## [1.1.3] — 2026-05-28
 ### Added
 - **Local match-start reminders** (`assets/js/reminders.js`) — a "Remind me"

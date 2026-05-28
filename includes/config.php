@@ -117,6 +117,12 @@ define('MAIL_SECRET', (string)cfg_secret('MAIL_SECRET',
 // كل كم يوم تُرسَل النشرة (افتراضي 2 = كل يومين). تتوقّف تلقائياً بعد النهائي.
 define('DIGEST_EVERY_DAYS', (int)cfg_secret('DIGEST_EVERY_DAYS', 2, $__local));
 
+// حدّ المعدّل: مصدر IP الزائر. افتراضياً false = نعتمد REMOTE_ADDR فقط (لا يُزوّره العميل)،
+// وهو الصحيح حين يحمل REMOTE_ADDR عنوان الزائر الحقيقي (Hostinger/LiteSpeed). فعّله (true)
+// فقط إن كانت حافتُك تفرض X-Forwarded-For/CF-Connecting-IP موثوقاً وتمسح أي ترويسة من العميل،
+// وإلّا فتفعيله يفتح ثغرة تجاوز الحدّ عبر تزوير الترويسة.
+define('RATE_LIMIT_TRUST_FORWARDED', (bool)cfg_secret('RATE_LIMIT_TRUST_FORWARDED', false, $__local));
+
 // ---------- لوحة التحكم (admin.php) ----------
 // كلمة سر الدخول للوحة التحكم. فارغة = اللوحة معطّلة تماماً.
 // ضعها في config.local.php / البيئة، واستخدم كلمة سر قوية ومميّزة.

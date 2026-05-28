@@ -22,31 +22,44 @@ class RateLimiter
     }
 
     /**
-     * عنوان IP الزائر. خلف CDN/وكيل (Hostinger hcdn/Cloudflare) قد يكون REMOTE_ADDR
-     * هو عنوان الحافة لا الزائر — فيُجمَّع كل المستخدمين في عدّاد واحد. لذا نأخذ أوّل
-     * عنوان «عام» صالح من ترويسات التوجيه إن وُجد (الزائر الأصلي)، وإلا REMOTE_ADDR.
-     * ملاحظة: ترويسات التوجيه قابلة للتزوير نظرياً؛ لكن حدّ اسم المستخدم في Auth يبقى
-     * خط الدفاع الأساسي ضد التخمين الموجّه، وهذا تحسين لدقّة حدّ الـIP لا بديل عنه.
+     * عنوان IP الزائر — يُستخدم مفتاحاً لحدّ المعدّل، فيجب ألّا يستطيع المهاجم تزويره.
+     *
+     * أمان (مهم): ترويسات `X-Forwarded-For` و`CF-Connecting-IP` يضبطها العميل بحرّية،
+     * فلو وثقنا بها دائماً لاستطاع المهاجم تدوير عنوان وهمي كل طلب → تجاوز كل حدود الـIP
+     * (تسجيل/تواصل/تصويت...). لذا نعتمد افتراضياً `REMOTE_ADDR` (يضبطه الخادم، غير قابل
+     * للتزوير من العميل). نقرأ ترويسات التوجيه فقط في حالتين موثوقتين:
+     *   1) REMOTE_ADDR عنوان خاص/محجوز  → نحن خلف وكيل داخلي، فالترويسة هي مصدر الزائر.
+     *   2) RATE_LIMIT_TRUST_FORWARDED=true في الإعداد → تفعيل صريح لمن حافتُه تَفرض ترويسة
+     *      موثوقة وتمسح أي ترويسة واردة من العميل.
      */
     public static function ip(): string
     {
-        $candidates = [];
-        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-            $candidates[] = trim((string)$_SERVER['HTTP_CF_CONNECTING_IP']);
-        }
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            foreach (explode(',', (string)$_SERVER['HTTP_X_FORWARDED_FOR']) as $p) {
-                $candidates[] = trim($p);
+        $remote = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+
+        $trustForwarded = defined('RATE_LIMIT_TRUST_FORWARDED') && RATE_LIMIT_TRUST_FORWARDED;
+        // صحيح إذا كان REMOTE_ADDR خاصاً/محجوزاً/غير صالح (filter_var يرجّع false عندها).
+        $remoteIsPrivate = ($remote !== '') &&
+            !filter_var($remote, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+
+        if ($trustForwarded || $remoteIsPrivate) {
+            $candidates = [];
+            if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+                $candidates[] = trim((string)$_SERVER['HTTP_CF_CONNECTING_IP']);
+            }
+            if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                foreach (explode(',', (string)$_SERVER['HTTP_X_FORWARDED_FOR']) as $p) {
+                    $candidates[] = trim($p);
+                }
+            }
+            foreach ($candidates as $ip) {
+                // أوّل عنوان عام صالح = الزائر الأصلي (نتجاوز عناوين الحافة الخاصة/المحجوزة)
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return $ip;
+                }
             }
         }
-        foreach ($candidates as $ip) {
-            // أوّل عنوان عام صالح = الزائر الأصلي (نتجاوز عناوين الحافة الخاصة/المحجوزة)
-            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                return $ip;
-            }
-        }
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-        return is_string($ip) && $ip !== '' ? $ip : '0.0.0.0';
+
+        return $remote !== '' ? $remote : '0.0.0.0';
     }
 
     /** هل تجاوز المفتاح الحدّ المسموح ضمن النافذة؟ */

@@ -18,6 +18,28 @@
 
 ---
 
+## 🆕 What's New / أحدث التعديلات
+
+The latest releases focus on **2026-format accuracy**, **engagement**, and **hardening**:
+
+- 🥉 **Best third-placed teams table** — the 2026 format qualifies the **8 best
+  third-placed teams** (across the 12 groups) to the Round of 32. The groups page
+  now computes and highlights exactly who advances.
+- ⚖️ **FIFA-compliant tie-breakers** — group ties now resolve by points → goal
+  difference → goals → **head-to-head** among level teams, matching the official rules.
+- 🔔 **Match-start reminders** — a one-tap "Remind me" on upcoming matches fires a
+  local notification ~10 min before kickoff and at kickoff. No server, no push keys,
+  nothing leaves your device.
+- 🛡️ **Security hardening** — fixed a rate-limit bypass via spoofed forwarding headers
+  (now keys on `REMOTE_ADDR`), and made the Telegram webhook require its secret.
+
+> 🥉 **جدول أصحاب المركز الثالث** (يتأهل أفضل 8) · ⚖️ **كسر تعادل وفق قوانين FIFA**
+> (المواجهة المباشرة) · 🔔 **تذكيرات بدء المباراة** محليًا بلا خادم · 🛡️ **تحصينات أمنية**.
+
+📜 Full history in **[CHANGELOG.md](CHANGELOG.md)**.
+
+---
+
 ## 🌐 Live Demo
 
 **Try the site live:** **[https://wcup2026.org/index.php?lang=en](https://wcup2026.org/index.php?lang=en)**
@@ -47,9 +69,12 @@
 ## ✨ Features / الميزات
 
 - **Matches, groups & knockout** — schedule, live‑style status, results, standings, bracket.
+- **2026-accurate standings** — 12 groups, **best third-placed teams** table for the
+  Round of 32, and **FIFA-compliant tie-breakers** (head-to-head among level teams).
 - **Predictions game** — predict scores, earn points, climb a global leaderboard. No login required (cookie identity) or full accounts via MySQL.
 - **Private Leagues (المجلس)** — create a league, share a code, compete with friends/family.
 - **Quick 1X2 vote** on every match card (community polls).
+- **Match-start reminders** — opt-in local notifications before kickoff (no server/push keys).
 - **Stickers album, daily trivia, heartbreak (القهر) roast** — gamified engagement.
 - **AI match previews/summaries** (Arabic, dialect‑aware) via Claude — *optional*.
 - **News** aggregated from public RSS, **stadiums & host‑city map**, **fan guide**.

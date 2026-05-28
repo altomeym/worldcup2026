@@ -360,6 +360,23 @@ img { display: block; max-width: 100%; }
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 9px 10px;
 }
+/* زر «ذكّرني» المحلي أسفل بطاقة المباراة القادمة. */
+.mc-remind {
+  margin-top: 8px; width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 8px 10px; cursor: pointer;
+  font: inherit; font-size: .82rem; font-weight: 700;
+  color: var(--text-faint);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.mc-remind:hover { color: var(--text); border-color: var(--accent); }
+.mc-remind.is-on {
+  color: var(--accent); border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.mc-remind .mc-remind-ico { font-size: .95rem; }
 .mc-poll-q { font-size: .78rem; color: var(--text-faint); text-align: center; margin-bottom: 7px; }
 /* عنصر واحد لكل خيار: الاسم نفسه زر، وعند التصويت يمتلئ بشريط النسبة داخله. */
 .mc-poll-list { display: flex; flex-direction: column; gap: 5px; }

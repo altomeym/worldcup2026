@@ -10,8 +10,8 @@
    ============================================================ */
 'use strict';
 
-/* رفعنا رقم النسخة (v7 → v8) ليُفعَّل التحديث ويُنظَّف الكاش القديم تلقائياً. */
-var CACHE = 'wc2026-v8';
+/* رفعنا رقم النسخة (v8 → v9) ليُفعَّل التحديث ويُنظَّف الكاش القديم تلقائياً. */
+var CACHE = 'wc2026-v9';
 
 /* قشرة التطبيق المُسبقة التخزين (نفس النطاق فقط — الخطوط/الأعلام عبر نطاقات أخرى نتجاهلها). */
 var SHELL = [
@@ -85,6 +85,20 @@ self.addEventListener('activate', function (e) {
 /* السماح للصفحة بطلب تفعيل التحديث فوراً (يستدعيه pwa.js عند ضغط «تحديث»). */
 self.addEventListener('message', function (e) {
   if (e && e.data === 'SKIP_WAITING') { self.skipWaiting(); }
+});
+
+/* نقر إشعار تذكير المباراة (reminders.js) → افتح/ركّز صفحة المباراة. */
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || '/';
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].url === url && 'focus' in list[i]) return list[i].focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(url);
+    })
+  );
 });
 
 /* هل المسار أصل ثابت (css/js/صورة/خط)؟ */

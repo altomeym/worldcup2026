@@ -13,6 +13,9 @@ function render_match_card(array $m): void {
     $ts     = DataService::matchTimestamp($m);
     $hasScore = isset($m['score']['ft']) && is_array($m['score']['ft']);
     $detailUrl = url('match.php', ['id' => $m['_index'] ?? 0]);
+    $ar     = (current_lang() === 'ar');
+    // زر «ذكّرني» — للمباريات القادمة بين منتخبين حقيقيين فقط (تذكير محلي).
+    $canRemind = ($status === 'upcoming') && $ts && is_real_team($t1) && is_real_team($t2);
     // استطلاع 1X2 سريع (فوز/تعادل/فوز) — للمباريات القادمة فقط (يُخفى للمقفلة/المنتهية).
     $poll = class_exists('Polls') ? Polls::card($m) : null;
     if ($poll !== null && !empty($poll['closed'])) { $poll = null; }
@@ -61,6 +64,17 @@ function render_match_card(array $m): void {
         <?php endif; ?>
       </div>
     </a>
+    <?php if ($canRemind): ?>
+      <button type="button" class="mc-remind" data-remind
+              data-id="<?= (int)($m['_index'] ?? 0) ?>"
+              data-ts="<?= (int)$ts ?>"
+              data-teams="<?= e(team_name($t1) . ' ' . ($ar ? '×' : 'vs') . ' ' . team_name($t2)) ?>"
+              data-url="<?= e($detailUrl) ?>"
+              aria-pressed="false">
+        <span class="mc-remind-ico" aria-hidden="true">🔔</span>
+        <span class="mc-remind-txt"><?= e($ar ? 'ذكّرني' : 'Remind me') ?></span>
+      </button>
+    <?php endif; ?>
     <?php if ($poll !== null) render_match_poll($poll); ?>
     </div><!-- /.mc-wrap -->
     <?php

@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.3] — 2026-05-28
+### Added
+- **Local match-start reminders** (`assets/js/reminders.js`) — a "Remind me"
+  bell on every upcoming match card. The user grants notification permission
+  once, and the browser fires a local notification ~10 minutes before kickoff
+  and again at kickoff. Choices persist in `localStorage`, reschedule on each
+  visit, and de-duplicate so a reminder never fires twice. Notifications open
+  the match page on click via a new service-worker `notificationclick` handler.
+  No server, no push keys, no personal data leaves the device.
+  - Limitation: local timers are reliable while the site/PWA has run recently;
+    this is not closed-app server push (a future enhancement).
+### Changed
+- Bumped the service-worker cache to `wc2026-v9`.
+
 ## [1.1.2] — 2026-05-28
 ### Added
 - **Best third-placed teams table** (`Standings::thirdPlaceRanking()`) — the

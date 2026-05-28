@@ -182,10 +182,21 @@ $lang       = current_lang();
   <button type="button" class="pwa-close" id="pwaClose" aria-label="✕">✕</button>
 </div>
 
-<?php $jsBase = e(rtrim(SITE_URL,'/')); $appV = @filemtime(__DIR__ . '/../assets/js/app.js') ?: 1; $pwaV = @filemtime(__DIR__ . '/../assets/js/pwa.js') ?: 1; $cvV = @filemtime(__DIR__ . '/../assets/js/cardvote.js') ?: 1; ?>
+<?php $jsBase = e(rtrim(SITE_URL,'/')); $appV = @filemtime(__DIR__ . '/../assets/js/app.js') ?: 1; $pwaV = @filemtime(__DIR__ . '/../assets/js/pwa.js') ?: 1; $cvV = @filemtime(__DIR__ . '/../assets/js/cardvote.js') ?: 1; $rmV = @filemtime(__DIR__ . '/../assets/js/reminders.js') ?: 1; ?>
 <script src="<?= $jsBase ?>/assets/js/app.js?v=<?= $appV ?>" defer></script>
 <script src="<?= $jsBase ?>/assets/js/pwa.js?v=<?= $pwaV ?>" defer></script>
 <script>window.WC_POLL_API=<?= json_encode(rtrim(SITE_URL,'/') . '/api/poll.php', JSON_UNESCAPED_SLASHES) ?>;</script>
 <script src="<?= $jsBase ?>/assets/js/cardvote.js?v=<?= $cvV ?>" defer></script>
+<script>window.WC_REMIND=<?= json_encode([
+  'beforeMin' => 10,
+  'icon'      => rtrim(SITE_URL,'/') . '/assets/img/icon-192.png',
+  'soon'      => t('remind_soon'),
+  'start'     => t('remind_start'),
+  'on'        => t('remind_on'),
+  'blocked'   => t('remind_blocked'),
+  'soonBody'  => t('remind_soon_body'),
+  'startBody' => t('remind_start_body'),
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
+<script src="<?= $jsBase ?>/assets/js/reminders.js?v=<?= $rmV ?>" defer></script>
 </body>
 </html>

@@ -1,10 +1,8 @@
-# ⚽ World Cup 2026 Companion — كأس العالم 2026
+# ⚽ World Cup 2026 Companion
 
 > An Arabic‑first, open‑source companion site for the FIFA World Cup 2026 — live‑style
 > results, group standings, a free predictions game, private leagues, stickers, daily
 > trivia, leaderboards, AI match previews, and a fast installable PWA.
-> موقع تفاعلي عربي مفتوح المصدر لكأس العالم 2026: النتائج والترتيب ولعبة التوقعات
-> والدوريات الخاصة والملصقات وتحدّي المعرفة والصدارة ومعاينات الذكاء الاصطناعي.
 
 ![PHP](https://img.shields.io/badge/PHP-8.0%2B-777bb4)
 ![No build](https://img.shields.io/badge/build-none-brightgreen)
@@ -14,11 +12,10 @@
 [![GitHub stars](https://img.shields.io/github/stars/salah23222/worldcup2026?style=social)](https://github.com/salah23222/worldcup2026/stargazers)
 
 > ⭐ **If you find this useful, please give it a star — it really helps the project grow!**
-> إن أعجبك المشروع، ضع له نجمة ⭐ — يدعمنا كثيراً 🙏
 
 ---
 
-## 🆕 What's New / أحدث التعديلات
+## 🆕 What's New
 
 The latest releases focus on **2026-format accuracy**, **engagement**, and **hardening**:
 
@@ -32,9 +29,6 @@ The latest releases focus on **2026-format accuracy**, **engagement**, and **har
   nothing leaves your device.
 - 🛡️ **Security hardening** — fixed a rate-limit bypass via spoofed forwarding headers
   (now keys on `REMOTE_ADDR`), and made the Telegram webhook require its secret.
-
-> 🥉 **جدول أصحاب المركز الثالث** (يتأهل أفضل 8) · ⚖️ **كسر تعادل وفق قوانين FIFA**
-> (المواجهة المباشرة) · 🔔 **تذكيرات بدء المباراة** محليًا بلا خادم · 🛡️ **تحصينات أمنية**.
 
 📜 Full history in **[CHANGELOG.md](CHANGELOG.md)**.
 
@@ -66,23 +60,23 @@ The latest releases focus on **2026-format accuracy**, **engagement**, and **har
 
 ---
 
-## ✨ Features / الميزات
+## ✨ Features
 
 - **Matches, groups & knockout** — schedule, live‑style status, results, standings, bracket.
 - **2026-accurate standings** — 12 groups, **best third-placed teams** table for the
   Round of 32, and **FIFA-compliant tie-breakers** (head-to-head among level teams).
 - **Predictions game** — predict scores, earn points, climb a global leaderboard. No login required (cookie identity) or full accounts via MySQL.
-- **Private Leagues (المجلس)** — create a league, share a code, compete with friends/family.
+- **Private Leagues** — create a league, share a code, compete with friends/family.
 - **Quick 1X2 vote** on every match card (community polls).
 - **Match-start reminders** — opt-in local notifications before kickoff (no server/push keys).
-- **Stickers album, daily trivia, heartbreak (القهر) roast** — gamified engagement.
+- **Stickers album, daily trivia, and a heartbreak roast** — gamified engagement.
 - **AI match previews/summaries** (Arabic, dialect‑aware) via Claude — *optional*.
 - **News** aggregated from public RSS, **stadiums & host‑city map**, **fan guide**.
 - **PWA** — installable, full offline mode, works on slow networks.
 - **Bilingual AR/EN** with full RTL/LTR, SEO (canonical, hreflang, Open Graph, JSON‑LD), sitemap.
 - **Full‑page micro‑cache** + single‑fetcher data layer → handles big traffic on cheap shared hosting.
 
-## 🧱 Tech stack / التقنيات
+## 🧱 Tech stack
 
 - **Plain PHP 8.0+** — no framework, **no build step**, no Composer required.
 - **No database needed** to run: data comes from the free public **openfootball** dataset and is cached on disk. MySQL is *optional* (only for user accounts).
@@ -90,7 +84,7 @@ The latest releases focus on **2026-format accuracy**, **engagement**, and **har
 
 ---
 
-## 🚀 Quick start / تشغيل سريع
+## 🚀 Quick start
 
 ### Option A — Docker (no PHP needed) 🐳
 
@@ -149,13 +143,13 @@ Raw datasets live in [`/data`](data) — `worldcup_fallback.json`, `rankings.jso
 
 ---
 
-## 🔑 Third‑party services & keys / المفاتيح من الجهات الخارجية
+## 🔑 Third‑party services & keys
 
 All secrets live **only** in `includes/config.local.php` (git‑ignored — never committed),
 or as environment variables of the same name. **You must obtain your own keys** from
 these providers; none are bundled.
 
-| Feature / الميزة | Provider / الجهة | Where to get the key / من أين | Config key |
+| Feature | Provider | Where to get the key | Config key |
 |---|---|---|---|
 | Match data (required, free) | **openfootball** | No key — public domain · https://github.com/openfootball | — |
 | Live scores & cards | **API‑Football** | Free 100/day · https://dashboard.api-football.com | `APIFOOTBALL_KEY` |
@@ -170,7 +164,7 @@ these providers; none are bundled.
 > If a key ever leaks, **rotate it** at the provider. Make sure your server returns
 > **403** for `/includes/config.local.php` and the `/data/` & `/cache/` folders.
 
-### Enabling optional features / تفعيل الميزات
+### Enabling optional features
 
 - **AI content** — set `CLAUDE_API_KEY`. It also has a date gate `AI_ACTIVATE_FROM`
   (default `2026-06-08`); AI stays OFF before that date to avoid cost.
@@ -181,7 +175,7 @@ these providers; none are bundled.
 
 ---
 
-## 🌍 Deployment / النشر
+## 🌍 Deployment
 
 1. Upload all files **except** `config.local.php` (create it on the server) and the
    runtime folders' contents (`data/*`, `cache/*` — they regenerate).
@@ -205,7 +199,7 @@ so the whole site works with zero extra setup.
 
 ---
 
-## 📁 Project structure / البنية
+## 📁 Project structure
 
 ```
 includes/      core: bootstrap, config, DataService, Auth, Predictions, ... (service classes)
@@ -229,18 +223,16 @@ Architecture in one line:
 
 ---
 
-## 🤝 Contributing / المساهمة
+## 🤝 Contributing
 
 PRs welcome. Please keep the project dependency‑free (plain PHP/JS), escape all output
 with `e()`, protect state‑changing endpoints with CSRF, and never commit secrets.
 
-## 🙏 Acknowledgments / شكر وتقدير
+## 🙏 Acknowledgments
 
 - **[openfootball](https://github.com/openfootball/worldcup.json)** — all match fixtures,
   results and schedules come from this excellent **public‑domain (CC0)** open‑data project.
   Sincere thanks to its maintainers and contributors — this site is built on their work.
-  بيانات المباريات والنتائج والجداول مصدرها مشروع **openfootball** المفتوح (ملكية عامة CC0) —
-  شكر وتقدير كبير للقائمين عليه والمساهمين فيه؛ هذا الموقع قائم على عملهم. 🙌
 - **API‑Football**, **Anthropic Claude**, and public **RSS** sources — optional integrations
   powering live scores, AI previews, and the news feed.
 
@@ -250,7 +242,7 @@ with `e()`, protect state‑changing endpoints with CSRF, and never commit secre
 
 ---
 
-## 📄 License / الرخصة
+## 📄 License
 
 MIT — see [LICENSE](LICENSE).
 

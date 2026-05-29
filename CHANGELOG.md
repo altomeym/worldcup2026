@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.7] — 2026-05-29
+### Added
+- **Site rating widget** (3 faces) in the footer (`api/rate.php` + `rating.js`).
+  Records **real** votes (CSRF-protected, one per visitor) and shows a weighted
+  satisfaction percentage. Seeded with a positive baseline so it starts high, but
+  the displayed number genuinely reflects visitor votes — it is **not** locked to
+  a fixed value.
+
 ## [1.1.6] — 2026-05-29
 ### Added
 - **Visitor counter** in the footer (`api/visit.php` + a small fetch in the

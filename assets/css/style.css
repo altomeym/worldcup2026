@@ -1842,6 +1842,21 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 .footer-meta a { color: var(--accent); }
 .auto-refresh-note { color: var(--accent); }
 
+/* تقييم الموقع (3 أوجه) في الفوتر */
+.footer-rate { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.footer-rate .rate-q { font-size: .82rem; color: var(--text-dim); }
+.rate-faces { display: inline-flex; gap: 6px; }
+.rate-faces button {
+  font-size: 1.25rem; line-height: 1; cursor: pointer;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 10px; padding: 4px 8px;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.rate-faces button:hover { transform: translateY(-1px); border-color: var(--accent); }
+.footer-rate.is-voted .rate-faces { opacity: .5; }
+.rate-faces button:disabled { cursor: default; }
+.rate-result { font-size: .82rem; font-weight: 700; color: var(--accent); margin: 0; }
+
 /* ============================================================
    استجابة الجوال
    ============================================================ */

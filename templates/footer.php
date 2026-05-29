@@ -64,6 +64,18 @@ $lang       = current_lang();
       <p class="muted footer-visitors">
         👁️ <span id="visitorCount">—</span> <?= e(t('visitors')) ?>
       </p>
+      <div class="footer-rate" id="footerRate"
+           data-api="<?= e(rtrim(SITE_URL,'/') . '/api/rate.php') ?>"
+           data-thanks="<?= e(t('rate_thanks')) ?>"
+           data-satisfied="<?= e(t('rate_satisfied')) ?>">
+        <span class="rate-q"><?= e(t('rate_q')) ?></span>
+        <div class="rate-faces">
+          <button type="button" data-face="happy"   aria-label="<?= e(t('rate_good')) ?>">😊</button>
+          <button type="button" data-face="neutral" aria-label="<?= e(t('rate_ok')) ?>">😐</button>
+          <button type="button" data-face="sad"     aria-label="<?= e(t('rate_bad')) ?>">😞</button>
+        </div>
+        <p class="rate-result" id="rateResult" hidden></p>
+      </div>
       <p class="footer-contact">
         📧 <?= e(t('contact_label')) ?>:
         <a href="mailto:<?= e(CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a>
@@ -200,7 +212,9 @@ $lang       = current_lang();
   'soonBody'  => t('remind_soon_body'),
   'startBody' => t('remind_start_body'),
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
+<?php $rateV = @filemtime(__DIR__ . '/../assets/js/rating.js') ?: 1; ?>
 <script src="<?= $jsBase ?>/assets/js/reminders.js?v=<?= $rmV ?>" defer></script>
+<script src="<?= $jsBase ?>/assets/js/rating.js?v=<?= $rateV ?>" defer></script>
 <script>
 (function () {
   var el = document.getElementById('visitorCount');

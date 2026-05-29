@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/); versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.6] — 2026-05-29
+### Added
+- **Visitor counter** in the footer (`api/visit.php` + a small fetch in the
+  footer). File-backed with atomic writes, de-duplicated per visitor via a short
+  cookie, and works alongside the full-page cache (incremented client-side).
+  Starts from a configurable baseline.
+
 ## [1.1.5] — 2026-05-29
 ### Security
 - **Hide PHP version.** `security.php` now calls `header_remove('X-Powered-By')`,

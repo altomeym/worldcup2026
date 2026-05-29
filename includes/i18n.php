@@ -157,6 +157,7 @@ function translations(): array {
             'final_winner'     => 'بطل العالم',
             'tbd'              => 'يُحدّد لاحقاً',
             'local_tz_note'    => 'كل المواعيد معروضة بتوقيتك المحلي',
+            'visitors'         => 'زائر',
             // ===== العدّاد التنازلي =====
             'kickoff_in'       => 'ينطلق المونديال خلال',
             'cd_days'          => 'يوم',
@@ -467,6 +468,7 @@ function translations(): array {
             'final_winner'     => 'World Champion',
             'tbd'              => 'TBD',
             'local_tz_note'    => 'All times shown in your local time',
+            'visitors'         => 'visitors',
             // ===== Countdown =====
             'kickoff_in'       => 'Tournament kicks off in',
             'cd_days'          => 'days',

@@ -61,6 +61,9 @@ $lang       = current_lang();
       <p class="muted tz-note" id="tzNote" data-tz-note="<?= e(t('local_tz_note')) ?>">
         🕒 <?= e(t('local_tz_note')) ?>
       </p>
+      <p class="muted footer-visitors">
+        👁️ <span id="visitorCount">—</span> <?= e(t('visitors')) ?>
+      </p>
       <p class="footer-contact">
         📧 <?= e(t('contact_label')) ?>:
         <a href="mailto:<?= e(CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a>
@@ -198,5 +201,20 @@ $lang       = current_lang();
   'startBody' => t('remind_start_body'),
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;</script>
 <script src="<?= $jsBase ?>/assets/js/reminders.js?v=<?= $rmV ?>" defer></script>
+<script>
+(function () {
+  var el = document.getElementById('visitorCount');
+  if (!el) return;
+  fetch(<?= json_encode(rtrim(SITE_URL,'/') . '/api/visit.php', JSON_UNESCAPED_SLASHES) ?>, { credentials: 'same-origin' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && typeof d.count === 'number') {
+        try { el.textContent = d.count.toLocaleString(); }
+        catch (e) { el.textContent = String(d.count); }
+      }
+    })
+    .catch(function () {});
+})();
+</script>
 </body>
 </html>

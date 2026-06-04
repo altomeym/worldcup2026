@@ -171,7 +171,8 @@ tpl('header');
     ? (rtrim((string)SITE_URL, '/') . '/bracket.php?ref=' . rawurlencode($kitUsername))
     : (rtrim((string)SITE_URL, '/') . '/bracket.php');
   $tStart       = DataService::tournamentStart();
-  $daysLeft     = $tStart ? max(0, (int)ceil(($tStart - time()) / 86400)) : 0;
+  // floor (وليس ceil) لتطابق عدّاد الرئيسية بالضبط — لو فيه 7 أيام و1 ساعة باقية، نقول 7.
+  $daysLeft     = $tStart ? max(0, (int)floor(($tStart - time()) / 86400)) : 0;
   $isAr         = (current_lang() === 'ar');
 
   $templates = $isAr ? [

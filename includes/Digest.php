@@ -121,7 +121,8 @@ class Digest
     {
         $start   = DataService::tournamentStart();
         $started = DataService::tournamentStarted();
-        $daysLeft = ($start !== null && !$started) ? (int)ceil(($start - time()) / 86400) : 0;
+        // floor (لا ceil) ليطابق عدّاد الرئيسية: 7d + ساعات = "7 يوم"، لا 8.
+        $daysLeft = ($start !== null && !$started) ? (int)floor(($start - time()) / 86400) : 0;
         return [
             'started'   => $started,
             'days_left' => $daysLeft,

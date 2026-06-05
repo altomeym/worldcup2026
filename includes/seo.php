@@ -55,11 +55,13 @@ function seo_head(array $opts = []): void {
     echo '<link rel="canonical" href="' . e($canon) . '">' . "\n";
     echo '<link rel="alternate" hreflang="ar" href="' . e(page_url_lang('ar')) . '">' . "\n";
     echo '<link rel="alternate" hreflang="en" href="' . e(page_url_lang('en')) . '">' . "\n";
+    echo '<link rel="alternate" hreflang="fr" href="' . e(page_url_lang('fr')) . '">' . "\n";
     echo '<link rel="alternate" hreflang="x-default" href="' . e(page_url_lang('ar')) . '">' . "\n";
 
     // Open Graph
     echo '<meta property="og:site_name" content="' . e($siteName) . '">' . "\n";
-    echo '<meta property="og:locale" content="' . ($lang === 'ar' ? 'ar_AR' : 'en_US') . '">' . "\n";
+    $ogLocale = ($lang === 'ar') ? 'ar_AR' : (($lang === 'fr') ? 'fr_FR' : 'en_US');
+    echo '<meta property="og:locale" content="' . e($ogLocale) . '">' . "\n";
     echo '<meta property="og:type" content="' . e($type) . '">' . "\n";
     echo '<meta property="og:title" content="' . e($title) . '">' . "\n";
     echo '<meta property="og:description" content="' . e($desc) . '">' . "\n";

@@ -8,7 +8,7 @@ if (!defined('WC2026')) { exit('Access denied'); }
  * يحدد اللغة الحالية من رابط الصفحة (?lang=) أو الكوكي أو الافتراضي.
  */
 function current_lang(): string {
-    if (isset($_GET['lang']) && in_array($_GET['lang'], ['ar', 'en'], true)) {
+    if (isset($_GET['lang']) && in_array($_GET['lang'], ['ar', 'en', 'fr'], true)) {
         $lang = $_GET['lang'];
         // اضبط الكوكي فقط إذا تغيّرت اللغة فعلاً. إرسال Set-Cookie في كل طلب
         // يجعل روابط ?lang= غير قابلة للتخزين في كاش الحافة (LiteSpeed/hcdn) فتضرب
@@ -23,7 +23,7 @@ function current_lang(): string {
         }
         return $lang;
     }
-    if (isset($_COOKIE['wc_lang']) && in_array($_COOKIE['wc_lang'], ['ar', 'en'], true)) {
+    if (isset($_COOKIE['wc_lang']) && in_array($_COOKIE['wc_lang'], ['ar', 'en', 'fr'], true)) {
         return $_COOKIE['wc_lang'];
     }
     return DEFAULT_LANG;
@@ -750,6 +750,90 @@ function translations(): array {
             'db_unavailable'     => 'Accounts are not enabled yet. Coming soon.',
             'banned'             => 'This account has been suspended. Please contact us.',
         ],
+        // ============================================================
+        // 🇫🇷 FRANÇAIS — Contribution communautaire (started by @sibylassana95)
+        // ----------------------------------------------------------------
+        // Comment ajouter : copiez n'importe quelle clé de 'en' ci-dessus,
+        // traduisez la valeur, et collez-la ici. Les clés non traduites
+        // afficheront automatiquement l'anglais (cascade dans t()).
+        // ============================================================
+        'fr' => [
+            'dir'              => 'ltr',
+            // Navigation
+            'home'             => 'Accueil',
+            'matches'          => 'Matchs',
+            'news'             => 'Actualités',
+            'predict'          => 'Pronostics',
+            'nav_tournament'   => 'Tournoi',
+            'nav_numbers'      => 'Statistiques',
+            'nav_play'         => 'Jeu',
+            'groups'           => 'Groupes',
+            'knockout'         => 'Élimination directe',
+            'teams'            => 'Équipes',
+            'squads'           => 'Effectifs',
+            'stadiums'         => 'Stades',
+            'host_map'         => 'Carte des villes hôtes',
+            'fan_guide'        => 'Guide du supporter',
+            'archive'          => 'Archives',
+            'stats'            => 'Statistiques',
+            'top_scorers'      => 'Meilleurs buteurs',
+            'bookings'         => 'Cartons',
+            'referees'         => 'Arbitres',
+            'bracket'          => 'Tableau final',
+            'leaderboard'      => 'Classement',
+            'stickers'         => 'Stickers',
+            'trivia'           => 'Quiz du jour',
+            // Statuts & actions
+            'live'             => 'EN DIRECT',
+            'finished'         => 'Terminé',
+            'upcoming_short'   => 'À venir',
+            'all'              => 'Tout',
+            'vs'               => 'vs',
+            'date'             => 'Date',
+            'time'             => 'Heure',
+            'stadium'          => 'Stade',
+            'referee'          => 'Arbitre',
+            'goals'            => 'Buts',
+            'cards'            => 'Cartons',
+            'lineup'           => 'Composition',
+            'minute'           => '\'',
+            'fifa_rank'        => 'Classement FIFA',
+            'matchday'         => 'Journée',
+            // Compte & auth
+            'sign_in'          => 'Connexion',
+            'sign_up'          => "S'inscrire",
+            'login'            => 'Connexion',
+            'logout'           => 'Déconnexion',
+            'create_account'   => 'Créer un compte',
+            'username'         => "Nom d'utilisateur",
+            'password'         => 'Mot de passe',
+            'email'            => 'E-mail',
+            'no_account'       => "Vous n'avez pas de compte ? Créez-en un",
+            'have_account'     => 'Vous avez déjà un compte ? Connectez-vous',
+            'forgot_link'      => 'Mot de passe oublié ?',
+            'welcome'          => 'Bienvenue',
+            // Page d'accueil
+            'site_desc'        => 'Coupe du Monde FIFA 2026 — Scores en direct, calendrier complet, matchs, brackets et stades au Canada, Mexique et États-Unis. WM 2026 live.',
+            'hero_tagline'     => 'Coupe du Monde FIFA 2026 — la plus grande de l\'histoire : 48 équipes, 3 nations, un rêve',
+            'play_predict'     => '🎯 Jouer aux pronostics',
+            'explore_matches'  => 'Explorer les matchs',
+            'engage_title'     => 'Vivez le Mondial',
+            'engage_sub'       => 'Pronostiquez, collectionnez, défiez le monde',
+            // Communs
+            'share'            => 'Partager',
+            'copy_link'        => 'Copier le lien',
+            'link_copied'      => 'Lien copié',
+            'no_data'          => 'Aucune donnée disponible',
+            'back'             => 'Retour',
+            'last_update'      => 'Dernière mise à jour',
+            'auto_refresh'     => 'Mise à jour automatique',
+            'accounts_disabled'=> 'Comptes désactivés',
+            'matches_count'    => '104 matchs',
+            'teams_count'      => '48 équipes',
+            'cities_count'     => '16 villes',
+            // TODO Lassana: ajoutez les autres clés progressivement.
+            // Les clés non présentes ici affichent automatiquement l'anglais.
+        ],
     ];
 }
 
@@ -757,12 +841,20 @@ function translations(): array {
  * t() — يرجّع نصاً مترجماً حسب اللغة الحالية.
  */
 function t(string $key): string {
-    static $dict = null;
-    if ($dict === null) {
+    // Cascade: لغة الزائر → الإنجليزية (احتياط للمترجمين) → العربية (الأصل) → المفتاح نفسه.
+    // الفائدة: لو لم يُترجم 'fr' مفتاحاً معيّناً بعد، يظهر بالإنجليزية لا بنصّ نظام مبهم.
+    static $all  = null;
+    static $cur  = null;
+    static $lang = null;
+    if ($all === null) {
         $all  = translations();
-        $dict = $all[current_lang()] ?? $all['ar'];
+        $lang = current_lang();
+        $cur  = $all[$lang] ?? $all['ar'];
     }
-    return $dict[$key] ?? $key;
+    if (isset($cur[$key])) return $cur[$key];
+    if ($lang !== 'en' && isset($all['en'][$key])) return $all['en'][$key];
+    if ($lang !== 'ar' && isset($all['ar'][$key])) return $all['ar'][$key];
+    return $key;
 }
 
 /** اتجاه الصفحة rtl/ltr */

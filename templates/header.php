@@ -149,9 +149,15 @@ seo_head([
       <a href="<?= e(url('login.php')) ?>"<?= nav_active('login.php') ?>><?= e(t('login')) ?></a>
 <?php     endif;
       endif; ?>
-      <a class="lang-switch" href="<?= e(url($current, ['lang' => $lang === 'ar' ? 'en' : 'ar'])) ?>">
-        <?= $lang === 'ar' ? 'English' : 'العربية' ?>
-      </a>
+      <?php
+        // مبدّل اللغة الثلاثي: AR · EN · FR (FR contributed by @sibylassana95)
+        $langs = ['ar' => 'العربية', 'en' => 'English', 'fr' => 'Français'];
+        foreach ($langs as $code => $label):
+          if ($code === $lang) continue; // لا تعرض اللغة الحالية كرابط
+      ?>
+        <a class="lang-switch" href="<?= e(url($current, ['lang' => $code])) ?>"
+           hreflang="<?= e($code) ?>" lang="<?= e($code) ?>"><?= e($label) ?></a>
+      <?php endforeach; ?>
     </nav>
   </div>
 </header>

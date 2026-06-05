@@ -402,17 +402,43 @@ class LiveService
     public static function lineupForMatch(array $match): ?array
     {
         if (!self::isEnabled()) return null;
-        $live = self::liveScores();
-        if (!$live) return null;
 
         $t1 = trim($match['team1'] ?? '');
         $t2 = trim($match['team2'] ?? '');
         $key = self::normalizeKey($t1, $t2);
         $rev = self::normalizeKey($t2, $t1);
-        $hit = $live[$key] ?? ($live[$rev] ?? null);
-        if (!$hit || empty($hit['fixture_id'])) return null;
-        $reversed = !isset($live[$key]) && isset($live[$rev]);
-        $fid = (int)$hit['fixture_id'];
+
+        $fid       = null;
+        $homeTeam  = '';
+        $reversed  = false;
+
+        // الاستراتيجية 1: مباريات اليوم (liveScores) — أسرع وأخفّ تكلفة
+        $live = self::liveScores();
+        if ($live) {
+            $hit = $live[$key] ?? ($live[$rev] ?? null);
+            if ($hit && !empty($hit['fixture_id'])) {
+                $fid      = (int)$hit['fixture_id'];
+                $homeTeam = (string)($hit['home'] ?? '');
+                $reversed = !isset($live[$key]) && isset($live[$rev]);
+            }
+        }
+
+        // الاستراتيجية 2: خريطة كل مباريات البطولة (لمباريات قادمة قبل يومها بأيام)
+        // → التشكيلة تظهر فوراً متى نشرتها API-Football، لا تنتظر يوم المباراة.
+        if ($fid === null) {
+            $map = self::fixturesMap();
+            if (isset($map[$key])) {
+                $fid      = (int)$map[$key]['id'];
+                $homeTeam = (string)$map[$key]['home'];
+                $reversed = false;
+            } elseif (isset($map[$rev])) {
+                $fid      = (int)$map[$rev]['id'];
+                $homeTeam = (string)$map[$rev]['home'];
+                $reversed = true;
+            }
+        }
+
+        if (!$fid) return null;
 
         $cacheFile = rtrim(CACHE_DIR, '/') . '/lineup-' . $fid . '.json';
         if (is_file($cacheFile) && (time() - filemtime($cacheFile) < LIVE_CACHE_TTL)) {
@@ -453,7 +479,7 @@ class LiveService
             ];
         };
 
-        $homeCanon = self::canon($hit['home'] ?? '');
+        $homeCanon = self::canon($homeTeam);
         $byHome = $byAway = null;
         foreach ($resp as $e) {
             if (self::canon($e['team']['name'] ?? '') === $homeCanon) $byHome = $parse($e);
@@ -465,5 +491,54 @@ class LiveService
                          : ['team1' => $byHome, 'team2' => $byAway];
         @file_put_contents($cacheFile, json_encode($out, JSON_UNESCAPED_UNICODE));
         return $out;
+    }
+
+    /**
+     * fixturesMap() — خريطة كل مباريات البطولة → fixture_id (للبحث خارج «مباريات اليوم»).
+     * طلب API واحد كل 24 ساعة (الجدول لا يتغيّر بعد ضبطه). يُستهلك ~1 من حصّة 100 يومياً.
+     * المفتاح: canon(home)+'|'+canon(away). القيمة: ['id' => int, 'home' => string].
+     */
+    private static function fixturesMap(): array
+    {
+        $cacheFile = rtrim(CACHE_DIR, '/') . '/af-fixtures.json';
+        if (is_file($cacheFile) && (time() - filemtime($cacheFile) < 86400)) {
+            $c = json_decode((string)@file_get_contents($cacheFile), true);
+            if (is_array($c)) return $c;
+        }
+
+        $url = 'https://' . APIFOOTBALL_HOST . '/fixtures'
+             . '?league=' . APIFOOTBALL_LEAGUE
+             . '&season=' . APIFOOTBALL_SEASON;
+        $raw = self::httpGet($url, ['x-apisports-key: ' . APIFOOTBALL_KEY]);
+        if ($raw === null) {
+            // فشل الجلب → خزّن خريطة فارغة مؤقّتاً لمدّة قصيرة لمنع الإلحاح
+            if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+            return [];
+        }
+
+        $json = json_decode($raw, true);
+        if (!is_array($json) || !isset($json['response'])) return [];
+
+        $map = [];
+        foreach ($json['response'] as $fx) {
+            $home = (string)($fx['teams']['home']['name'] ?? '');
+            $away = (string)($fx['teams']['away']['name'] ?? '');
+            $fid  = (int)($fx['fixture']['id'] ?? 0);
+            if ($home !== '' && $away !== '' && $fid > 0) {
+                $map[self::normalizeKey($home, $away)] = [
+                    'id'   => $fid,
+                    'home' => $home,
+                ];
+            }
+        }
+
+        if ($map) {
+            if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+            $tmp = $cacheFile . '.tmp';
+            if (@file_put_contents($tmp, json_encode($map, JSON_UNESCAPED_UNICODE)) !== false) {
+                @rename($tmp, $cacheFile);
+            }
+        }
+        return $map;
     }
 }

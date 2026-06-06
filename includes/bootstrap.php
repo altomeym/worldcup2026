@@ -48,6 +48,7 @@ require __DIR__ . '/AccountMail.php';
 require __DIR__ . '/PasswordReset.php';
 require __DIR__ . '/Referrals.php';
 require __DIR__ . '/Digest.php';
+require __DIR__ . '/RateGuard.php';
 require __DIR__ . '/XPublisher.php';
 require __DIR__ . '/TweetComposer.php';
 require __DIR__ . '/MatchTweets.php';

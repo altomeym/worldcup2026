@@ -46,6 +46,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $previewText = $text;
         }
     }
+
+    if ($do === 'pause') {
+        $hours = max(1, min(168, (int)($_POST['hours'] ?? 24)));
+        RateGuard::pauseFor($hours);
+        $notice = $L("تم إيقاف النشر التلقائي لمدّة {$hours} ساعة.", "Auto-publishing paused for {$hours} hours.");
+        $noticeOk = true;
+    }
+
+    if ($do === 'resume') {
+        RateGuard::resume();
+        $notice = $L('تم استئناف النشر التلقائي.', 'Auto-publishing resumed.');
+        $noticeOk = true;
+    }
 }
 
 $configured = XPublisher::configured();
@@ -59,6 +72,107 @@ $handle     = defined('X_HANDLE') ? X_HANDLE : 'wcup2026';
     <strong><?= e($notice) ?></strong>
   </div>
 <?php endif; ?>
+
+<!-- ============ 🛡️ حماية الحساب (RateGuard) ============ -->
+<?php
+$g = RateGuard::stats();
+$hPct = $g['hourly_cap'] > 0 ? min(100, (int)round(100 * $g['hourly_used'] / $g['hourly_cap'])) : 0;
+$dPct = $g['daily_cap']  > 0 ? min(100, (int)round(100 * $g['daily_used']  / $g['daily_cap']))  : 0;
+$hColor = $hPct >= 90 ? '#dc2626' : ($hPct >= 70 ? '#f59e0b' : '#16a34a');
+$dColor = $dPct >= 90 ? '#dc2626' : ($dPct >= 70 ? '#f59e0b' : '#16a34a');
+?>
+<div class="admin-card" style="border-inline-start:4px solid <?= $g['paused'] ? '#dc2626' : '#16a34a' ?>">
+  <h2>🛡️ <?= e($L('حماية الحساب من الإيقاف', 'Account-safety guard')) ?></h2>
+
+  <?php if ($g['paused']): ?>
+    <div class="admin-check" style="background:rgba(220,38,38,.1);padding:12px;border-radius:10px;margin-bottom:14px">
+      <span class="admin-check-ico">⏸️</span>
+      <span><strong><?= e($L('النشر التلقائي موقوف', 'Auto-publishing PAUSED')) ?></strong>
+        — <span class="admin-muted"><?= e($L('حتى', 'until')) ?> <?= e(date('Y-m-d H:i', $g['pause_until'])) ?>
+          (<?= e($L('بعد', 'in')) ?> <?= e(human_remaining($g['pause_until'] - time())) ?>)</span></span>
+    </div>
+  <?php else: ?>
+    <div class="admin-check" style="background:rgba(22,163,74,.08);padding:12px;border-radius:10px;margin-bottom:14px">
+      <span class="admin-check-ico">✅</span>
+      <span><strong><?= e($L('الحساب آمن — النشر فعّال', 'Account safe — publishing active')) ?></strong>
+        <span class="admin-muted">· <?= e($L('فاصل أدنى','min spacing')) ?>: <?= (int)$g['min_spacing'] ?>s</span>
+      </span>
+    </div>
+  <?php endif; ?>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <tr>
+        <th style="width:30%"><?= e($L('في آخر ساعة', 'Last hour')) ?></th>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <strong style="color:<?= $hColor ?>"><?= (int)$g['hourly_used'] ?> / <?= (int)$g['hourly_cap'] ?></strong>
+            <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden">
+              <div style="width:<?= $hPct ?>%;height:100%;background:<?= $hColor ?>;transition:width .3s"></div>
+            </div>
+            <span class="admin-muted"><?= $hPct ?>%</span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th><?= e($L('في آخر 24 ساعة', 'Last 24h')) ?></th>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <strong style="color:<?= $dColor ?>"><?= (int)$g['daily_used'] ?> / <?= (int)$g['daily_cap'] ?></strong>
+            <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden">
+              <div style="width:<?= $dPct ?>%;height:100%;background:<?= $dColor ?>;transition:width .3s"></div>
+            </div>
+            <span class="admin-muted"><?= $dPct ?>%</span>
+          </div>
+        </td>
+      </tr>
+      <?php if ((int)$g['fails_streak'] > 0): ?>
+      <tr>
+        <th><?= e($L('فشل متتالٍ', 'Consecutive failures')) ?></th>
+        <td><strong style="color:#f59e0b"><?= (int)$g['fails_streak'] ?> / 3</strong>
+          <span class="admin-muted">(<?= e($L('عند 3 → إيقاف 24 ساعة تلقائياً', 'at 3 → auto-pause 24h')) ?>)</span></td>
+      </tr>
+      <?php endif; ?>
+      <?php if (!empty($g['last_error'])): ?>
+      <tr>
+        <th><?= e($L('آخر خطأ', 'Last error')) ?></th>
+        <td><span class="admin-muted"><?= e(date('Y-m-d H:i', (int)$g['last_error']['ts'])) ?> · </span>
+          <code><?= e((string)($g['last_error']['err'] ?? '—')) ?></code></td>
+      </tr>
+      <?php endif; ?>
+    </table>
+  </div>
+
+  <div class="admin-toolbar" style="margin-top:14px;gap:8px">
+    <?php if ($g['paused']): ?>
+      <form method="post" action="admin.php?tab=x" style="display:inline">
+        <input type="hidden" name="tab" value="x">
+        <input type="hidden" name="do" value="resume">
+        <?= Admin::csrfField() ?>
+        <button type="submit" class="admin-btn admin-btn-primary"><?= e($L('▶ استئناف الآن', '▶ Resume now')) ?></button>
+      </form>
+    <?php else: ?>
+      <form method="post" action="admin.php?tab=x" style="display:inline-flex;gap:6px;align-items:center">
+        <input type="hidden" name="tab" value="x">
+        <input type="hidden" name="do" value="pause">
+        <?= Admin::csrfField() ?>
+        <select name="hours" class="admin-input">
+          <option value="1">1 <?= e($L('ساعة','hour')) ?></option>
+          <option value="6">6 <?= e($L('ساعات','hours')) ?></option>
+          <option value="24" selected>24 <?= e($L('ساعة','hours')) ?></option>
+          <option value="72">72 <?= e($L('ساعة','hours')) ?></option>
+          <option value="168">7 <?= e($L('أيام','days')) ?></option>
+        </select>
+        <button type="submit" class="admin-btn"><?= e($L('⏸ إيقاف يدوي', '⏸ Pause manually')) ?></button>
+      </form>
+    <?php endif; ?>
+  </div>
+
+  <p class="admin-muted" style="margin-top:12px;font-size:.85em">
+    <?= e($L('💡 الحدود الافتراضية محافظة جداً (8/ساعة · 30/يوم · 60ث فاصل). الحارس يكشف 429/403 تلقائياً ويوقف ساعة. الفشل المتراكم 3 مرّات يوقف يوماً كاملاً — كل ذلك لحماية حسابك من الإيقاف.',
+             '💡 Defaults are conservative (8/h · 30/day · 60s spacing). Guard auto-pauses on 429/403 for 1 hour. 3 consecutive failures trigger 24h pause — all to keep your account safe.')) ?>
+  </p>
+</div>
 
 <!-- ============ حالة الربط ============ -->
 <div class="admin-card">

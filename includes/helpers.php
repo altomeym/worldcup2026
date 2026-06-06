@@ -9,6 +9,25 @@ function e(?string $s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+/** يحوّل عدد ثوانٍ متبقّية إلى نصّ مقروء: "2س 34د" أو "12د 5ث". */
+function human_remaining(int $sec): string {
+    $sec = max(0, $sec);
+    $ar  = (function_exists('current_lang') && current_lang() === 'ar');
+    if ($sec >= 86400) {
+        $d = (int)floor($sec / 86400); $h = (int)floor(($sec % 86400) / 3600);
+        return $ar ? "{$d} يوم {$h} ساعة" : "{$d}d {$h}h";
+    }
+    if ($sec >= 3600) {
+        $h = (int)floor($sec / 3600); $m = (int)floor(($sec % 3600) / 60);
+        return $ar ? "{$h} ساعة {$m} دقيقة" : "{$h}h {$m}m";
+    }
+    if ($sec >= 60) {
+        $m = (int)floor($sec / 60); $s = $sec % 60;
+        return $ar ? "{$m} دقيقة {$s} ث" : "{$m}m {$s}s";
+    }
+    return $ar ? "{$sec} ث" : "{$sec}s";
+}
+
 /** رابط داخلي مع الحفاظ على اللغة الحالية (إلا إذا مُرّرت لغة صريحة) */
 function url(string $page, array $params = []): string {
     // لا نطمس لغة مُرّرت صراحةً (مثل زر تبديل اللغة)

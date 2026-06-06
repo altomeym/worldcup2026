@@ -51,6 +51,16 @@ if (!XPublisher::configured()) {
     exit(0);
 }
 
+// ---- 0.5) حارس الحماية: لو الحساب موقوف يدويّاً أو تلقائياً → خروج فوري ----
+$gStats = RateGuard::stats();
+if ($gStats['paused']) {
+    $log('[guard] account paused until ' . date('Y-m-d H:i:s', $gStats['pause_until'])
+        . ' (fails=' . $gStats['fails_streak'] . '). exit.');
+    exit(0);
+}
+$log('[guard] hourly=' . $gStats['hourly_used'] . '/' . $gStats['hourly_cap']
+    . ' daily=' . $gStats['daily_used'] . '/' . $gStats['daily_cap']);
+
 $sent = 0; $failed = 0;
 
 // ═══════════════════ A) الفترات اليوميّة (09:00/10:00/21:00/22:00) — AR + EN ═══════════════════

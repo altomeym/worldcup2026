@@ -45,6 +45,15 @@ class XPublisher
         if (mb_strlen($text, 'UTF-8') > self::LIMIT) {
             $text = mb_substr($text, 0, self::LIMIT - 1, 'UTF-8') . '…';
         }
+        // ── حارس الحماية: نتأكّد أنّنا ضمن الحدود قبل أي طلب شبكة ──
+        if (class_exists('RateGuard')) {
+            $g = RateGuard::check();
+            if (!$g['ok']) {
+                $err = 'rate_guard:' . $g['reason'] . ' wait=' . $g['wait'] . 's';
+                self::log(null, false, $err, $text);   // نسجّل في سجل X (بدون استدعاء RateGuard::record)
+                return ['ok' => false, 'id' => null, 'error' => $err];
+            }
+        }
 
         $auth = self::oauthHeader('POST', self::ENDPOINT, []);
         $body = json_encode(['text' => $text], JSON_UNESCAPED_UNICODE);
@@ -71,14 +80,18 @@ class XPublisher
         if ($code >= 200 && $code < 300 && is_array($j) && !empty($j['data']['id'])) {
             $id = (string)$j['data']['id'];
             self::log($id, true, null, $text);
+            if (class_exists('RateGuard')) RateGuard::record(true);
             return ['ok' => true, 'id' => $id, 'error' => null];
         }
 
-        $msg = $err !== '' ? $err
-             : (is_array($j) && !empty($j['detail']) ? (string)$j['detail']
-             : (is_array($j) && !empty($j['title'])  ? (string)$j['title']
-             : ('http_' . $code)));
+        // أضف رمز HTTP للخطأ كي يلتقطه RateGuard ويوقف عند 429/403
+        $detail = is_array($j) && !empty($j['detail']) ? (string)$j['detail']
+                : (is_array($j) && !empty($j['title']) ? (string)$j['title'] : '');
+        $msg = ($err !== '' ? $err : $detail);
+        if ($msg === '') $msg = 'http_' . $code;
+        elseif ($code >= 400) $msg = 'http_' . $code . ' ' . $msg;
         self::log(null, false, $msg, $text);
+        if (class_exists('RateGuard')) RateGuard::record(false, 'manual', $msg);
         return ['ok' => false, 'id' => null, 'error' => $msg];
     }
 

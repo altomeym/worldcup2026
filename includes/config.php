@@ -163,6 +163,15 @@ define('X_HANDLE',         (string)cfg_secret('X_HANDLE',         'wcup2026', $_
 // الوسوم الرسمية المُلحَقة بكل تغريدة (FIFA الرسمية + هوية الموقع).
 define('X_HASHTAGS',       '#WeAre26 #FIFAWorldCup26');
 
+// ---------- حدود حماية حساب X من الإيقاف (RateGuard) ----------
+// محافظة جداً للحفاظ على «سلامة» الحساب — يمكنك رفعها بثقة بعد أسبوع تشغيل ناجح.
+//   X_HOURLY_CAP   = أقصى تغريدات في أي ساعة متحرّكة (افتراضي 8)
+//   X_DAILY_CAP    = أقصى تغريدات في 24 ساعة (افتراضي 30)
+//   X_MIN_SPACING  = ثوانٍ بين أي تغريدتَين (افتراضي 60)
+define('X_HOURLY_CAP',  (int)cfg_secret('X_HOURLY_CAP',  8,  $__local));
+define('X_DAILY_CAP',   (int)cfg_secret('X_DAILY_CAP',   30, $__local));
+define('X_MIN_SPACING', (int)cfg_secret('X_MIN_SPACING', 60, $__local));
+
 // ---------- (اختياري) بوت تيليجرام ----------
 // فارغ = البوت معطّل تماماً (نقطة الويبهوك ترد 503 ولا تتصل بأي شيء).
 // لتفعيله: أنشئ بوتاً عبر @BotFather، ضع التوكن هنا، واضبط ويبهوك يشير إلى

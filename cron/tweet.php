@@ -134,5 +134,30 @@ if (!$skipMatches) {
     }
 }
 
+// ═══════════════════ E) أخبار جديدة من /news.php (AR + EN) ═══════════════════
+if (!$skipMatches) {
+    if (!NewsTweets::inWindow()) {
+        $log('[news] outside publish window (08:00–23:00) — skip.');
+    } else {
+        $nq = NewsTweets::pending();
+        $log('[news] candidates=' . count($nq));
+        $nsent = 0;
+        // نوزّع بالعدالة: AR و EN، أحدث أولاً، حتى MAX_PER_RUN
+        foreach ($nq as $job) {
+            if ($nsent >= NewsTweets::MAX_PER_RUN) break;
+            $label = '[' . $job['lang'] . '] ' . mb_substr($job['item']['title'] ?? '', 0, 60, 'UTF-8');
+            if ($dry) {
+                $log('[news] would tweet ' . $label);
+                $log('---'); $log(NewsTweets::buildTweet($job['item'], $job['lang'])); $log('---');
+                $nsent++;
+                continue;
+            }
+            $r = NewsTweets::sendOne($job['item'], $job['lang'], $job['id']);
+            if ($r['ok']) { $log('[news] OK ' . $label . ' id=' . $r['id']); $sent++; $nsent++; }
+            else          { $log('[news] FAIL ' . $label . ' ' . $r['error']); $failed++; }
+        }
+    }
+}
+
 $log("[done] sent={$sent} failed={$failed}");
 exit($failed > 0 ? 1 : 0);

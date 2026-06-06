@@ -227,6 +227,88 @@ $mLog = MatchTweets::recentLog(12);
   <?php endif; ?>
 </div>
 
+<!-- ============ تغريدات الأخبار (تلقائي عند جلب أخبار جديدة) ============ -->
+<?php
+$nPending = NewsTweets::pending();
+$nLog     = NewsTweets::recentLog(12);
+$nWindow  = NewsTweets::inWindow();
+?>
+<div class="admin-card">
+  <h2><?= e($L('تغريدات الأخبار (تلقائي)', 'News tweets (automatic)')) ?></h2>
+  <p class="admin-muted">
+    <?= e($L('حين يجلب الموقع أيّ خبر جديد، يُنشَر تغريدة تلقائياً (حتى 2 خبر لكل run · 1 عربي + 1 إنجليزي). الرابط يقود إلى /news.php — التراكتيك يبقى على موقعك.',
+             'When a new news item appears, it is auto-tweeted (up to 2 per run · 1 AR + 1 EN). Link points to /news.php — traffic stays on your site.')) ?>
+  </p>
+  <p class="admin-muted">
+    <?= e($L('نافذة النشر: ', 'Publish window: ')) ?>
+    <strong>08:00–23:00 (<?= e(DISPLAY_TIMEZONE) ?>)</strong> ·
+    <?= e($L('الآن:', 'Now:')) ?>
+    <span class="admin-badge <?= $nWindow ? 'admin-badge-ok' : 'admin-badge-warn' ?>">
+      <?= e($nWindow ? $L('داخل النافذة','In window') : $L('خارج النافذة','Outside')) ?>
+    </span>
+  </p>
+
+  <h3 style="margin-top:14px"><?= e($L('في الطابور', 'Queue')) ?></h3>
+  <?php if (!$nPending): ?>
+    <p class="admin-muted">
+      <?= e($L('لا أخبار جديدة بانتظار النشر.', 'No fresh news waiting.')) ?>
+    </p>
+  <?php else: ?>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr>
+          <th><?= e($L('اللغة','Lang')) ?></th>
+          <th><?= e($L('العنوان','Title')) ?></th>
+          <th><?= e($L('المصدر','Source')) ?></th>
+          <th><?= e($L('النشر','Published')) ?></th>
+        </tr></thead>
+        <tbody>
+          <?php foreach (array_slice($nPending, 0, 8) as $j):
+            $it = $j['item'];
+          ?>
+          <tr>
+            <td><code><?= e($j['lang']) ?></code></td>
+            <td style="max-width:380px"><?= e(mb_substr((string)($it['title'] ?? ''), 0, 110, 'UTF-8')) ?></td>
+            <td><span class="admin-muted"><?= e((string)($it['source'] ?? ($it['host'] ?? ''))) ?></span></td>
+            <td class="admin-muted"><?= e($j['ts'] > 0 ? date('Y-m-d H:i', $j['ts']) : '—') ?></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php endif; ?>
+
+  <h3 style="margin-top:18px"><?= e($L('آخر أخبار منشورة','Recently tweeted news')) ?></h3>
+  <?php if (!$nLog): ?>
+    <p class="admin-muted"><?= e($L('لا يوجد بعد.','None yet.')) ?></p>
+  <?php else: ?>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr>
+          <th><?= e($L('الوقت','Time')) ?></th>
+          <th><?= e($L('اللغة','Lang')) ?></th>
+          <th><?= e($L('العنوان','Title')) ?></th>
+          <th><?= e($L('الرابط','Link')) ?></th>
+        </tr></thead>
+        <tbody>
+          <?php foreach ($nLog as $r): ?>
+          <tr>
+            <td><?= e(date('Y-m-d H:i', (int)$r['at'])) ?></td>
+            <td><code><?= e($r['lang']) ?></code></td>
+            <td style="max-width:380px"><span class="admin-muted"><?= e(mb_substr((string)$r['title'], 0, 100, 'UTF-8')) ?></span></td>
+            <td>
+              <?php if (!empty($r['tweet'])): ?>
+                <a href="https://x.com/<?= e($handle) ?>/status/<?= e($r['tweet']) ?>" target="_blank" rel="noopener">↗ X</a>
+              <?php else: ?>—<?php endif; ?>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php endif; ?>
+</div>
+
 <!-- ============ تغريدات ترتيب المجموعات (بعد كل جولة) ============ -->
 <?php
 $gPending = GroupTweets::pending();

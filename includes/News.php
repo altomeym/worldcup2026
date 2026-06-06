@@ -12,10 +12,11 @@ if (!defined('WC2026')) { exit('Access denied'); }
 class News
 {
     /** أحدث الأخبار حسب اللغة الحالية، مدموجة من Bing + Google بلا تكرار */
-    public static function latest(int $limit = 0): array
+    public static function latest(int $limit = 0, ?string $forceLang = null): array
     {
         $limit = $limit ?: (defined('NEWS_MAX_ITEMS') ? NEWS_MAX_ITEMS : 18);
-        $lang  = current_lang();
+        // اللغة: إمّا مفروضة (للـ cron) أو من سياق الطلب الحالي.
+        $lang  = ($forceLang === 'ar' || $forceLang === 'en') ? $forceLang : current_lang();
         $urls  = ($lang === 'ar')
             ? [NEWS_RSS_AR, defined('NEWS_RSS_AR2') ? NEWS_RSS_AR2 : '']
             : [NEWS_RSS_EN, defined('NEWS_RSS_EN2') ? NEWS_RSS_EN2 : ''];

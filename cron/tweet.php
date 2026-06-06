@@ -40,48 +40,76 @@ if ($cli) {
 $dry   = isset($args['dry-run']) || isset($args['dry']);
 $force = isset($args['force']);
 $slot  = (string)($args['slot'] ?? '');
+$skipDaily   = isset($args['no-daily']);
+$skipMatches = isset($args['no-matches']);
 
 $log = function (string $m) { echo $m . "\n"; };
 
-// ---- 1) تحديد الفترة ----
-if ($slot === '') {
-    $auto = TweetComposer::currentSlot();
-    if ($auto === null) {
-        $log('[tweet] no slot active at this hour (' . date('H:i') . '). exit.');
-        exit(0);
-    }
-    $slot = $auto;
-}
-$log('[tweet] slot=' . $slot);
-
-// ---- 2) المفاتيح ----
+// ---- 0) الحارس: المفاتيح ----
 if (!XPublisher::configured()) {
     $log('[tweet] X keys not configured. exit.');
     exit(0);
 }
 
-// ---- 3) بوّابة «مرّة واحدة في اليوم» ----
-if (!$force && !XPublisher::claimSlot($slot)) {
-    $log('[tweet] slot already posted today. exit.');
-    exit(0);
+$sent = 0; $failed = 0;
+
+// ═══════════════════ A) الفترات اليوميّة (09:00 / 10:00 / 21:00) ═══════════════════
+if (!$skipDaily) {
+    $dailySlot = $slot !== '' ? $slot : (TweetComposer::currentSlot() ?? '');
+    if ($dailySlot === '') {
+        $log('[daily] no slot active at ' . date('H:i') . '.');
+    } elseif (!$force && !XPublisher::claimSlot($dailySlot)) {
+        $log('[daily] slot ' . $dailySlot . ' already posted today.');
+    } else {
+        $text = TweetComposer::build($dailySlot);
+        $log('[daily] slot=' . $dailySlot . ' chars=' . mb_strlen($text, 'UTF-8'));
+        if ($dry) {
+            $log('[daily] dry-run:'); $log('---'); $log($text); $log('---');
+        } else {
+            $r = XPublisher::tweet($text);
+            if ($r['ok']) { $log('[daily] OK id=' . $r['id']); $sent++; }
+            else          { $log('[daily] FAIL ' . $r['error']); $failed++; }
+        }
+    }
 }
 
-// ---- 4) البناء + النشر ----
-$text = TweetComposer::build($slot);
-$log('[tweet] text:');
-$log('---');
-$log($text);
-$log('--- (' . mb_strlen($text, 'UTF-8') . ' chars)');
-
-if ($dry) {
-    $log('[tweet] dry-run, not posting.');
-    exit(0);
+// ═══════════════════ B) قَبل المباراة (AR + EN لكل مباراة قادمة) ═══════════════════
+if (!$skipMatches) {
+    $pre = MatchTweets::pendingPre();
+    $log('[pre]  candidates=' . count($pre));
+    foreach ($pre as $job) {
+        if ($sent >= MatchTweets::MAX_PER_RUN) { $log('[pre] cap reached, stop.'); break; }
+        $m = $job['match']; $lg = $job['lang'];
+        $label = '#' . (int)$m['_index'] . ' ' . $m['team1'] . '-' . $m['team2'] . ' [' . $lg . ']';
+        if ($dry) {
+            $log('[pre] would tweet ' . $label);
+            $log('---'); $log(MatchTweets::buildPre($m, $lg)); $log('---');
+            continue;
+        }
+        $r = MatchTweets::sendPre($m, $lg);
+        if ($r['ok']) { $log('[pre] OK ' . $label . ' id=' . $r['id']); $sent++; }
+        else          { $log('[pre] FAIL ' . $label . ' ' . $r['error']); $failed++; }
+    }
 }
 
-$r = XPublisher::tweet($text);
-if ($r['ok']) {
-    $log('[tweet] OK — id=' . (string)$r['id']);
-    exit(0);
+// ═══════════════════ C) بعد المباراة (تقرير AI + تغريدة AR + EN) ═══════════════════
+if (!$skipMatches) {
+    $post = MatchTweets::pendingPost();
+    $log('[post] candidates=' . count($post));
+    foreach ($post as $job) {
+        if ($sent >= MatchTweets::MAX_PER_RUN) { $log('[post] cap reached, stop.'); break; }
+        $m = $job['match']; $lg = $job['lang'];
+        $label = '#' . (int)$m['_index'] . ' ' . $m['team1'] . '-' . $m['team2'] . ' [' . $lg . ']';
+        if ($dry) {
+            $log('[post] would tweet ' . $label);
+            $log('---'); $log(MatchTweets::buildPost($m, $lg)); $log('---');
+            continue;
+        }
+        $r = MatchTweets::sendPost($m, $lg);
+        if ($r['ok']) { $log('[post] OK ' . $label . ' id=' . $r['id']); $sent++; }
+        else          { $log('[post] FAIL ' . $label . ' ' . $r['error']); $failed++; }
+    }
 }
-$log('[tweet] FAIL — ' . (string)$r['error']);
-exit(1);
+
+$log("[done] sent={$sent} failed={$failed}");
+exit($failed > 0 ? 1 : 0);

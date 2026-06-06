@@ -140,9 +140,91 @@ $handle     = defined('X_HANDLE') ? X_HANDLE : 'wcup2026';
     </table>
   </div>
   <p class="admin-muted" style="margin-top:10px">
-    <?= e($L('سطر Cron المقترح (مرة في الساعة):', 'Suggested Cron line (every hour):')) ?>
-    <br><code>0 * * * * php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php</code>
+    <?= e($L('سطر Cron المقترح (كل 15 دقيقة — لالتقاط نوافذ ما-قبل-المباراة بدقّة):',
+             'Suggested Cron line (every 15 min — to catch pre-match windows accurately):')) ?>
+    <br><code>*/15 * * * * php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php</code>
   </p>
+</div>
+
+<!-- ============ تغريدات كل مباراة (قبل + بعد، AR+EN) ============ -->
+<?php
+$pre  = MatchTweets::pendingPre();
+$post = MatchTweets::pendingPost();
+$mLog = MatchTweets::recentLog(12);
+?>
+<div class="admin-card">
+  <h2><?= e($L('تغريدات كل مباراة (تلقائي)', 'Per-match tweets (automatic)')) ?></h2>
+  <p class="admin-muted">
+    <?= e($L('قبل المباراة بـ 30–75 دقيقة → تغريدتان (عربيّ + إنجليزيّ). بعد المباراة → تقرير ذكاء + تغريدتان. كل تغريدة مرّة واحدة فقط.',
+             'Between 30–75 min before kickoff → 2 tweets (AR + EN). After full time → AI report + 2 tweets. Each tweet posts exactly once.')) ?>
+  </p>
+
+  <h3 style="margin-top:14px"><?= e($L('في الطابور الآن', 'In the queue right now')) ?></h3>
+  <?php if (!$pre && !$post): ?>
+    <p class="admin-muted">
+      <?= e($L('لا شيء في الطابور حالياً — لا مباراة في نافذة الـ75 دقيقة، ولا مباراة منتهية تنتظر التقرير.',
+               'Queue empty — no match in the 75-min pre window, and no finished match waiting for its post tweet.')) ?>
+    </p>
+  <?php else: ?>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr>
+          <th><?= e($L('النوع', 'Type')) ?></th>
+          <th><?= e($L('المباراة', 'Match')) ?></th>
+          <th><?= e($L('اللغة', 'Lang')) ?></th>
+          <th><?= e($L('الموعد', 'When')) ?></th>
+        </tr></thead>
+        <tbody>
+          <?php foreach ($pre as $j):
+            $m = $j['match']; $ts = DataService::matchTimestamp($m);
+          ?>
+          <tr>
+            <td><span class="admin-badge admin-badge-warn"><?= e($L('قبل','PRE')) ?></span></td>
+            <td><strong>#<?= (int)$m['_index'] ?></strong> · <?= e($m['team1'] . ' vs ' . $m['team2']) ?></td>
+            <td><code><?= e($j['lang']) ?></code></td>
+            <td class="admin-muted"><?= e($ts ? date('Y-m-d H:i', $ts) : '—') ?></td>
+          </tr>
+          <?php endforeach; foreach ($post as $j):
+            $m = $j['match']; $ts = DataService::matchTimestamp($m);
+            $g1 = (int)$m['score']['ft'][0]; $g2 = (int)$m['score']['ft'][1];
+          ?>
+          <tr>
+            <td><span class="admin-badge admin-badge-ok"><?= e($L('بعد','POST')) ?></span></td>
+            <td><strong>#<?= (int)$m['_index'] ?></strong> · <?= e($m['team1']) ?> <strong><?= $g1 ?>-<?= $g2 ?></strong> <?= e($m['team2']) ?></td>
+            <td><code><?= e($j['lang']) ?></code></td>
+            <td class="admin-muted"><?= e($ts ? date('Y-m-d H:i', $ts) : '—') ?></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php endif; ?>
+
+  <h3 style="margin-top:18px"><?= e($L('آخر تغريدات منشورة لكل مباراة', 'Recent per-match tweets')) ?></h3>
+  <?php if (!$mLog): ?>
+    <p class="admin-muted"><?= e($L('لا يوجد بعد.', 'None yet.')) ?></p>
+  <?php else: ?>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr>
+          <th><?= e($L('الوقت', 'Time')) ?></th>
+          <th><?= e($L('المباراة', 'Match #')) ?></th>
+          <th><?= e($L('الفترة', 'Slot')) ?></th>
+          <th><?= e($L('الرابط', 'Link')) ?></th>
+        </tr></thead>
+        <tbody>
+          <?php foreach ($mLog as $r): ?>
+          <tr>
+            <td><?= e(date('Y-m-d H:i', (int)$r['at'])) ?></td>
+            <td>#<?= (int)$r['idx'] ?></td>
+            <td><code><?= e($r['slot']) ?></code></td>
+            <td><a href="https://x.com/<?= e($handle) ?>/status/<?= e($r['id']) ?>" target="_blank" rel="noopener">↗ X</a></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php endif; ?>
 </div>
 
 <?php if ($previewText !== ''): ?>

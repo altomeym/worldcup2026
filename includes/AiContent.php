@@ -39,7 +39,7 @@ class AiContent
      * forMatch() — يُرجّع نص المعاينة/الملخّص لمباراة (مخزَّن أو مُولَّد)، أو null.
      * $type: 'preview' | 'summary'
      */
-    public static function forMatch(array $m, string $type): ?string
+    public static function forMatch(array $m, string $type, ?string $forceLang = null): ?string
     {
         if (!self::enabled()) return null;
         $type = ($type === 'summary') ? 'summary' : 'preview';
@@ -55,7 +55,8 @@ class AiContent
         $finished = isset($m['score']['ft']) && is_array($m['score']['ft']);
         if ($type === 'summary' && !$finished) return null;
 
-        $lang = current_lang();
+        // اللغة: إمّا مفروضة (للـ cron) أو من السياق الحالي.
+        $lang = ($forceLang === 'ar' || $forceLang === 'en') ? $forceLang : current_lang();
         $file = rtrim(CACHE_DIR, '/') . "/ai_{$type}_{$idx}_{$lang}.txt";
 
         // مخزَّن؟ أعِده فوراً
@@ -120,12 +121,25 @@ class AiContent
         return $d;
     }
 
+    /** يرجّع اسم المنتخب باللغة المطلوبة (مستقل عن current_lang).
+     *  ملاحظة: مفاتيح teams_map case-sensitive، وقيمتها [0]=AR ،[1]=flag. */
+    private static function nameInLang(string $raw, string $lang): string
+    {
+        $raw = trim($raw);
+        if ($raw === '') return '';
+        if ($lang !== 'ar') return $raw;     // إنجليزي = الاسم الخام كما في openfootball
+        if (!function_exists('teams_map')) return $raw;
+        $map = teams_map();
+        return isset($map[$raw][0]) ? $map[$raw][0] : $raw;
+    }
+
     /** يبني الطلب ويستدعي الـAPI ويستخرج النص */
     private static function generate(array $m, string $type, string $lang): ?string
     {
         $isAr = ($lang === 'ar');
-        $t1   = team_name(trim($m['team1'] ?? ''));
-        $t2   = team_name(trim($m['team2'] ?? ''));
+        // الأسماء بلغة المخرجات (مهم في cron حيث current_lang قد لا تطابق $lang)
+        $t1   = self::nameInLang(trim($m['team1'] ?? ''), $lang);
+        $t2   = self::nameInLang(trim($m['team2'] ?? ''), $lang);
         $round  = trim($m['round'] ?? '');
         $group  = trim($m['group'] ?? '');
         $ground = trim($m['ground'] ?? '');

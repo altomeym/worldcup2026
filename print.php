@@ -147,10 +147,19 @@ html, body {
     font-size: 2.8mm; line-height: 1.2;
     vertical-align: middle;
 }
-.schedule .col-date  { text-align: center; font-weight: 700; width: 14mm; background: #f5f5f5; }
+.schedule .col-date  {
+    text-align: center; width: 16mm; background: #f5f5f5;
+    padding: 2mm 1mm; vertical-align: middle; line-height: 1.15;
+}
+.schedule .col-date .d-wday  { display: block; font-size: 2.4mm; font-weight: 700; color: #666; letter-spacing: .3mm; }
+.schedule .col-date .d-day   { display: block; font-size: 3.8mm; font-weight: 900; color: #000; margin-top: .5mm; }
+.schedule .col-date .d-year  { display: block; font-size: 2.4mm; font-weight: 700; color: #333; }
+.schedule .col-date .d-count { display: block; margin-top: 1mm; font-size: 1.9mm; font-weight: 500; color: #888; letter-spacing: .2mm; }
 .schedule .col-group { text-align: center; font-weight: 700; width: 10mm; background: #f5f5f5; }
 .schedule .col-time  { text-align: center; font-weight: 700; width: 13mm; background: #f5f5f5; font-family: 'Oswald', monospace; }
 .schedule .col-match { padding: 1mm 2mm; }
+/* خط فاصل أسود رفيع بين كل يوم وآخر — يوضّح حدود اليوم بصرياً */
+.schedule tbody tr.day-start td { border-top: 1.4px solid #000; }
 
 .match-row {
     display: flex; align-items: center; gap: 2mm;
@@ -264,26 +273,45 @@ html, body {
       </thead>
       <tbody>
         <?php
-        $lastDate = '';
-        foreach ($groupMatches as $m):
-          $ts    = DataService::matchTimestamp($m);
-          $group = preg_replace('/^Group /', '', $m['group'] ?? '—');
-          $t1    = $m['team1'] ?? '';
-          $t2    = $m['team2'] ?? '';
-          $u1    = $t1 !== '' ? flag_url($t1, 'w40') : '';
-          $u2    = $t2 !== '' ? flag_url($t2, 'w40') : '';
-          // اسم الفريق بالحرف اللاتيني (لقراءة دولية للبوستر)
-          $n1    = $t1; // openfootball uses English names
-          $n2    = $t2;
-          // التاريخ الإنجليزي القصير (مطابق لشكل البوسترات)
-          $dateLabel = $ts ? strtoupper(gmdate('d M', $ts)) : '—';
-          $showDate  = ($dateLabel !== $lastDate);
-          $lastDate  = $dateLabel;
+        // ───────── ندمج المباريات حسب اليوم (تاريخ موحَّد لكل يوم) ─────────
+        $byDay = [];   // 'YYYY-MM-DD' => [ ['label'=>'JUN 11', 'year'=>'2026', 'matches'=>[...]] ]
+        foreach ($groupMatches as $m) {
+            $ts = DataService::matchTimestamp($m);
+            $key = $ts ? gmdate('Y-m-d', $ts) : 'unknown';
+            if (!isset($byDay[$key])) {
+                $byDay[$key] = [
+                    'label'   => $ts ? strtoupper(gmdate('d M', $ts)) : '—',
+                    'year'    => $ts ? gmdate('Y', $ts) : '',
+                    'wday'    => $ts ? strtoupper(gmdate('D', $ts)) : '',  // MON/TUE/...
+                    'matches' => [],
+                ];
+            }
+            $byDay[$key]['matches'][] = $m;
+        }
+
+        $matchCount = 0;
+        foreach ($byDay as $day):
+            $rows = count($day['matches']);
+            $first = true;
+            foreach ($day['matches'] as $m):
+                $matchCount++;
+                $ts    = DataService::matchTimestamp($m);
+                $group = preg_replace('/^Group /', '', $m['group'] ?? '—');
+                $t1    = $m['team1'] ?? '';
+                $t2    = $m['team2'] ?? '';
+                $u1    = $t1 !== '' ? flag_url($t1, 'w40') : '';
+                $u2    = $t2 !== '' ? flag_url($t2, 'w40') : '';
+                $n1    = $t1; $n2 = $t2;
         ?>
-        <tr>
-          <td class="col-date">
-            <?= $showDate ? e($dateLabel) . '<br>' . e(($ts ? gmdate('Y', $ts) : '')) : '' ?>
-          </td>
+        <tr<?= $first ? ' class="day-start"' : '' ?>>
+          <?php if ($first): ?>
+            <td class="col-date" rowspan="<?= (int)$rows ?>">
+              <span class="d-wday"><?= e($day['wday']) ?></span>
+              <span class="d-day"><?= e($day['label']) ?></span>
+              <span class="d-year"><?= e($day['year']) ?></span>
+              <?php if ($rows > 1): ?><span class="d-count"><?= (int)$rows ?> matches</span><?php endif; ?>
+            </td>
+          <?php endif; ?>
           <td class="col-group"><?= e($group) ?></td>
           <td class="col-match">
             <div class="match-row">
@@ -303,7 +331,11 @@ html, body {
             <?php endif; ?>
           </td>
         </tr>
-        <?php endforeach; ?>
+        <?php
+                $first = false;
+            endforeach;
+        endforeach;
+        ?>
       </tbody>
     </table>
 

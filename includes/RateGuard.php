@@ -96,8 +96,13 @@ class RateGuard
         if ($ok) {
             $s[self::FAILS_KEY] = 0;
         } else {
-            // إيقاف فوريّ ساعة عند 429/403 — حماية من الإيقاف
-            if ($error !== null && self::isCritical($error)) {
+            // ★ 402 = نفاد الرصيد → إيقاف 24 ساعة فوراً (لا فائدة من إعادة المحاولة)
+            if ($error !== null && self::isInsufficientCredits($error)) {
+                $s[self::PAUSE_KEY] = time() + 86400;
+                $s['last_credit_error'] = ['ts' => time(), 'msg' => mb_substr($error, 0, 200, 'UTF-8')];
+            }
+            // 429/403/401 → إيقاف ساعة
+            elseif ($error !== null && self::isCritical($error)) {
                 $s[self::PAUSE_KEY] = time() + 3600;
             }
             // فشل متراكم → إيقاف يوم
@@ -199,5 +204,11 @@ class RateGuard
     {
         // 429 = rate limit · 403 = forbidden (suspended?) · 401 = invalid creds
         return (bool)preg_match('/(429|403|401|too many|forbidden|unauthorized|suspended)/i', $err);
+    }
+
+    /** نفاد الرصيد (402) — يستحقّ إيقاف 24 ساعة لتفادي رسائل فشل متكرّرة. */
+    private static function isInsufficientCredits(string $err): bool
+    {
+        return (bool)preg_match('/(http_?402|no.{0,10}credits|insufficient.{0,10}credit|does not have any credits|payment required)/i', $err);
     }
 }

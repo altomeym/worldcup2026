@@ -99,7 +99,27 @@ $dColor = $dPct >= 90 ? '#dc2626' : ($dPct >= 70 ? '#f59e0b' : '#16a34a');
 <div class="admin-card" style="border-inline-start:4px solid <?= $g['paused'] ? '#dc2626' : '#16a34a' ?>">
   <h2>🛡️ <?= e($L('حماية الحساب من الإيقاف', 'Account-safety guard')) ?></h2>
 
-  <?php if ($g['paused']): ?>
+  <?php
+    // نتحقّق من سبب الإيقاف — رصيد X أم سبب آخر؟
+    $creditErr = !empty($g['last_error']) && preg_match('/(402|credits|payment)/i', (string)$g['last_error']['err']);
+  ?>
+  <?php if ($g['paused'] && $creditErr): ?>
+    <div class="admin-check" style="background:rgba(245,158,11,.12);padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid rgba(245,158,11,.4)">
+      <strong style="font-size:1.05em">💳 <?= e($L('نفاد رصيد X — اشحن لتستأنف النشر', 'X credits depleted — top up to resume')) ?></strong>
+      <p style="margin:8px 0 4px;font-size:.92em">
+        <?= e($L('استهلكت رصيد $5 خلال 25 تغريدة (~$0.20/تغريدة). للمتابعة:', 'You\'ve used $5 on 25 tweets (~$0.20 each). To continue:')) ?>
+      </p>
+      <ol style="margin:6px 0;padding-inline-start:1.5em;font-size:.9em;color:var(--text-dim)">
+        <li><?= e($L('افتح','Open')) ?>: <a href="https://console.x.com/accounts/1857731426071801856/billing/credits" target="_blank" rel="noopener">console.x.com → Billing → Credits</a></li>
+        <li><?= e($L('اضغط Purchase credits → اشترِ $5 أو أكثر','Tap Purchase credits → buy $5+')) ?></li>
+        <li><?= e($L('ارجع هنا واضغط','Return here and tap')) ?> <strong><?= e($L('استئناف الآن','Resume now')) ?></strong></li>
+      </ol>
+      <p style="margin:8px 0 0;font-size:.85em">
+        ⏰ <?= e($L('الإيقاف التلقائي ينتهي','Auto-pause ends')) ?>: <?= e(date('Y-m-d H:i', $g['pause_until'])) ?>
+        (<?= e(human_remaining($g['pause_until'] - time())) ?>)
+      </p>
+    </div>
+  <?php elseif ($g['paused']): ?>
     <div class="admin-check" style="background:rgba(220,38,38,.1);padding:12px;border-radius:10px;margin-bottom:14px">
       <span class="admin-check-ico">⏸️</span>
       <span><strong><?= e($L('النشر التلقائي موقوف', 'Auto-publishing PAUSED')) ?></strong>

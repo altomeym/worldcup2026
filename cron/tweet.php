@@ -46,6 +46,9 @@ $capNews     = $drain ? 999 : NewsTweets::MAX_PER_RUN;
 $log  = function (string $m) { echo $m . "\n"; @flush(); };
 $pace = max(1, (defined('X_MIN_SPACING') ? (int)X_MIN_SPACING : 15) + 2);
 
+// بصمة نسخة الكود — تساعد على التحقّق من أن النسخة الصحيحة فعلاً تُشغَّل
+$log('[version] tweet.php v2.1-drain-sleep (' . date('Y-m-d H:i:s') . ' Asia/Dubai)');
+
 // (0) الحارس: المفاتيح
 if (!XPublisher::configured()) { $log('[tweet] X keys not configured. exit.'); exit(0); }
 

@@ -22,7 +22,7 @@ class Auth
     private const CSRF_KEY     = 'wc_auth_csrf';
     private const USER_MIN     = 3;
     private const USER_MAX     = 32;
-    private const PASS_MIN     = 6;
+    private const PASS_MIN     = 8;  // NIST 800-63B الحد الأدنى
     private const NAME_MAX     = 40;
     // تكلفة bcrypt مثبّتة (أعلى من الافتراضي 10) لتقوية التجزئة.
     private const PASS_OPTS    = ['cost' => 12];

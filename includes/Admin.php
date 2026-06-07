@@ -63,17 +63,10 @@ class Admin
         }
         self::session();
 
-        $hash  = defined('ADMIN_PASS_HASH') ? (string)ADMIN_PASS_HASH : '';
-        $plain = defined('ADMIN_PASS')      ? (string)ADMIN_PASS      : '';
-
-        $ok = false;
-        if ($hash !== '') {
-            // الهاش هو المسار الآمن المُفضَّل
-            $ok = password_verify($pass, $hash);
-        } elseif ($plain !== '') {
-            // توافق رجعي: مقارنة نص عادي بثبات زمني
-            $ok = hash_equals($plain, $pass);
-        }
+        $hash = defined('ADMIN_PASS_HASH') ? (string)ADMIN_PASS_HASH : '';
+        // ملاحظة أمنيّة: حُذف احتياطي ADMIN_PASS (نصّ عادي) — استخدم
+        // ADMIN_PASS_HASH (bcrypt) فقط في config.local.php. خلاف ذلك تُعطَّل اللوحة.
+        $ok = ($hash !== '') ? password_verify($pass, $hash) : false;
 
         if ($ok) {
             session_regenerate_id(true);
@@ -162,13 +155,12 @@ class Admin
         }
     }
 
-    /** عنوان IP الفعلي للزائر (يحترم وكيل/CDN). */
+    /** عنوان IP الفعلي للزائر — يستخدم منطق RateLimiter::ip() الذي يحترس من انتحال
+     *  X-Forwarded-For (لا يثق به إلا حين يكون REMOTE_ADDR من شبكة خاصّة موثوقة). */
     public static function ip(): string
     {
-        $fwd = (string)($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '');
-        if ($fwd !== '') {
-            $first = trim(explode(',', $fwd)[0]);
-            if ($first !== '') return $first;
+        if (class_exists('RateLimiter') && method_exists('RateLimiter', 'ip')) {
+            return RateLimiter::ip();
         }
         return (string)($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
     }

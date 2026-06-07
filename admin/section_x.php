@@ -59,6 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $notice = $L('تم استئناف النشر التلقائي.', 'Auto-publishing resumed.');
         $noticeOk = true;
     }
+
+    // وكيل آمن لـ test-schedule و drain — يبثّ النصّ بدل كشف INSTALL_TOKEN في HTML.
+    if ($do === 'cron-run' && in_array($_POST['mode'] ?? '', ['test-schedule', 'drain'], true)) {
+        while (ob_get_level() > 0) { ob_end_clean(); }
+        $mode = (string)$_POST['mode'];
+        $url  = rtrim(SITE_URL, '/') . '/cron/tweet.php?token=' . urlencode(INSTALL_TOKEN)
+              . '&' . ($mode === 'drain' ? 'drain=1&force=1' : 'test-schedule=1');
+        header('Content-Type: text/plain; charset=utf-8');
+        echo "── جاري التشغيل: {$mode} ──\n\n";
+        @flush();
+        $ctx = stream_context_create(['http' => ['timeout' => 300]]);
+        $out = @file_get_contents($url, false, $ctx);
+        echo (string)$out;
+        exit;
+    }
 }
 
 $configured = XPublisher::configured();
@@ -259,20 +274,22 @@ $dColor = $dPct >= 90 ? '#dc2626' : ($dPct >= 70 ? '#f59e0b' : '#16a34a');
     <br><code>*/15 * * * * php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php</code>
   </p>
 
-  <!-- زر اختبار شامل للجدول — يعرض كل التغريدات الست × لغتَين بدون نشر -->
-  <?php
-    $testUrl  = rtrim(SITE_URL, '/') . '/cron/tweet.php?token=' . urlencode(INSTALL_TOKEN) . '&test-schedule=1';
-    $drainUrl = rtrim(SITE_URL, '/') . '/cron/tweet.php?token=' . urlencode(INSTALL_TOKEN) . '&drain=1';
-  ?>
+  <!-- زر اختبار شامل للجدول — POST يبثّ النتيجة (يُخفي INSTALL_TOKEN عن HTML) -->
   <div style="margin-top:16px;padding:14px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:10px">
     <strong>🧪 <?= e($L('اختبار شامل لجدول النشر', 'Test full schedule')) ?></strong>
     <p class="admin-muted" style="margin:6px 0 10px">
       <?= e($L('يعرض كل التغريدات الـ12 (6 فترات × عربيّ وإنجليزيّ) دفعة واحدة — بدون نشر فعليّ.',
                'Shows all 12 tweets (6 slots × AR/EN) in one preview — no actual posting.')) ?>
     </p>
-    <a class="admin-btn admin-btn-primary" href="<?= e($testUrl) ?>" target="_blank" rel="noopener">
-      🧪 <?= e($L('افتح صفحة الاختبار', 'Open test page')) ?>
-    </a>
+    <form method="post" action="admin.php?tab=x" target="_blank" style="display:inline">
+      <input type="hidden" name="tab"  value="x">
+      <input type="hidden" name="do"   value="cron-run">
+      <input type="hidden" name="mode" value="test-schedule">
+      <?= Admin::csrfField() ?>
+      <button type="submit" class="admin-btn admin-btn-primary">
+        🧪 <?= e($L('شغّل الاختبار', 'Run test')) ?>
+      </button>
+    </form>
     <p class="admin-muted" style="font-size:.85em;margin-top:8px">
       <?= e($L('فحص فوريّ بدون نشر — مثالي للتحقّق من المحتوى والأوقات.',
                'Instant preview without publishing — ideal for verifying content and timing.')) ?>
@@ -284,9 +301,15 @@ $dColor = $dPct >= 90 ? '#dc2626' : ($dPct >= 70 ? '#f59e0b' : '#16a34a');
       <?= e($L('ينشر كل التغريدات المعلّقة (يومية + أخبار + مباريات) دفعة واحدة، مع احترام فاصل 17ث بين كل تغريدة وسقفَي حماية الحساب (12/ساعة · 50/يوم).',
                'Publishes every pending tweet (daily + news + matches) in one go, respecting 17s spacing and account-safety caps (12/h · 50/day).')) ?>
     </p>
-    <a class="admin-btn admin-btn-primary" href="<?= e($drainUrl) ?>" target="_blank" rel="noopener">
-      🚀 <?= e($L('افتح صفحة الإفراغ في تبويب جديد', 'Open drain page in new tab')) ?>
-    </a>
+    <form method="post" action="admin.php?tab=x" target="_blank" style="display:inline">
+      <input type="hidden" name="tab"  value="x">
+      <input type="hidden" name="do"   value="cron-run">
+      <input type="hidden" name="mode" value="drain">
+      <?= Admin::csrfField() ?>
+      <button type="submit" class="admin-btn admin-btn-primary">
+        🚀 <?= e($L('شغّل الإفراغ', 'Drain now')) ?>
+      </button>
+    </form>
     <p class="admin-muted" style="font-size:.85em;margin-top:8px">
       <?= e($L('سيستغرق ~85ث لكل 6 تغريدات. حافظ على التبويب مفتوحاً حتى يكتمل.',
                '~85s per 6 tweets. Keep the tab open until done.')) ?>

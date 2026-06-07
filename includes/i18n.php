@@ -56,6 +56,8 @@ function current_lang(): string {
                 'expires'  => time() + 31536000,
                 'path'     => '/',
                 'samesite' => 'Lax',
+                'secure'   => !empty($_SERVER['HTTPS']),
+                'httponly' => true,
             ]);
             $_COOKIE['wc_lang'] = $lang;
         }

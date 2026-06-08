@@ -36,19 +36,19 @@ class TweetComposer
         $h   = (int)date('G', $now);
         $started = DataService::tournamentStarted();
 
-        // قبل البطولة: news + countdown + trivia (التسويق والتذكير قبل الانطلاق)
+        // قبل البطولة: news + countdown + trivia (3 فترات للتسويق)
         if (!$started) {
             if ($h === self::SLOT_HOURS['news'])      return 'news';
             if ($h === self::SLOT_HOURS['countdown']) return 'countdown';
             if ($h === self::SLOT_HOURS['trivia'])    return 'trivia';
             return null;
         }
-        // أثناء البطولة: كل الفترات السبع
-        foreach (['recap', 'news', 'morning', 'trivia', 'evening', 'stats'] as $s) {
+        // ⭐ أثناء البطولة: 4 فترات أساسيّة فقط (المستخدم يكمل بتغريدات يدويّة)
+        //    recap = نتائج الليل · news = تذكير الأخبار
+        //    morning = مباريات اليوم · evening = نتائج المساء
+        foreach (['recap', 'news', 'morning', 'evening'] as $s) {
             if ($h === self::SLOT_HOURS[$s]) return $s;
         }
-        // countdown متاحة طوال البطولة كذلك (تعرض «اقتربت النهاية» أو ما تبقى لها)
-        if ($h === self::SLOT_HOURS['countdown']) return 'countdown';
         return null;
     }
 
@@ -368,10 +368,10 @@ class TweetComposer
              'when'  => $ar ? 'أثناء البطولة' : 'During tournament'],
             ['time' => '18:00', 'slot' => 'trivia',    'title' => $ar ? 'سؤال اليوم' : 'Daily trivia',
              'note'  => $ar ? 'سؤال معرفة + خيارات + رابط trivia.php (3 نقاط للإجابة)' : 'Question + options + link to trivia.php (3 pts)',
-             'when'  => $ar ? 'يومياً' : 'Every day'],
+             'when'  => $ar ? 'قبل البطولة فقط · (يدوي أثناء البطولة)' : 'Pre-tournament only · (manual during)'],
             ['time' => '22:00', 'slot' => 'stats',     'title' => $ar ? 'إحصائيات اليوم' : 'Daily stats',
              'note'  => $ar ? 'الهدّافون + البطاقات + إجمالي الأهداف' : 'Top scorers + cards + total goals',
-             'when'  => $ar ? 'أثناء البطولة' : 'During tournament'],
+             'when'  => $ar ? 'يدوي فقط (موفّر للميزانيّة)' : 'Manual only (budget saver)'],
             ['time' => '23:00', 'slot' => 'evening',   'title' => $ar ? 'نتائج المساء' : 'Evening results',
              'note'  => $ar ? 'نتائج آخر مباريات المساء + رابط الترتيب' : 'Late-evening results + leaderboard link',
              'when'  => $ar ? 'أثناء البطولة' : 'During tournament'],

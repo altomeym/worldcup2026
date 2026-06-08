@@ -211,28 +211,10 @@ if (!$skipMatches) {
     }
 }
 
-// ═══════════════════ E) أخبار جديدة ═══════════════════
-if (!$skipMatches) {
-    if (!NewsTweets::inWindow()) {
-        $log('[news] outside publish window (08:00–23:00) — skip.');
-    } else {
-        $nq = NewsTweets::pending();
-        $log('[news] candidates=' . count($nq));
-        $nsent = 0;
-        foreach ($nq as $job) {
-            if ($nsent >= $capNews) break;
-            $label = '[' . $job['lang'] . '] ' . mb_substr($job['item']['title'] ?? '', 0, 60, 'UTF-8');
-            if ($dry) {
-                $log('[news] would tweet ' . $label);
-                $log('---'); $log(NewsTweets::buildTweet($job['item'], $job['lang'])); $log('---');
-                $nsent++;
-                continue;
-            }
-            $r = $send('news', $label, fn() => NewsTweets::sendOne($job['item'], $job['lang'], $job['id']));
-            if (!empty($r['ok'])) $nsent++;
-        }
-    }
-}
+// ═══════════════════ E) أخبار جديدة — معطّل (استبدلناه بـ CTA يوميّ 14:00) ═══════════════════
+// بثّ كل خبر فردياً كان يستهلك كثيراً من الرصيد. البديل: تغريدة واحدة يوميّة من
+// TweetComposer (slot=news) تدعو لزيارة /news.php. الأخبار التفصيليّة تبقى على الموقع.
+$log('[news] feed broadcasting disabled — daily CTA via TweetComposer slot=news handles this.');
 
 $log("[done] sent={$sent} failed={$failed}");
 exit($failed > 0 ? 1 : 0);

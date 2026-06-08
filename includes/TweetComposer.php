@@ -21,6 +21,7 @@ class TweetComposer
     /** فترات النشر اليومية وساعاتها (Asia/Dubai). */
     private const SLOT_HOURS = [
         'recap'     => 9,    // نتائج مباريات الليل (تنبيه صباحي للجمهور)
+        'news'      => 14,   // 🆕 تذكير بصفحة الأخبار (CTA يوميّ يوجّه للموقع)
         'countdown' => 16,   // عدّ تنازلي عصراً قبل المباريات
         'morning'   => 17,   // معاينة مباريات اليوم (تحضير الجمهور)
         'trivia'    => 18,   // سؤال اليوم في وقت ذروة التفاعل
@@ -41,8 +42,8 @@ class TweetComposer
             if ($h === self::SLOT_HOURS['trivia'])    return 'trivia';
             return null;
         }
-        // أثناء البطولة: كل الفترات الست
-        foreach (['recap', 'morning', 'trivia', 'evening', 'stats'] as $s) {
+        // أثناء البطولة: كل الفترات السبع
+        foreach (['recap', 'news', 'morning', 'trivia', 'evening', 'stats'] as $s) {
             if ($h === self::SLOT_HOURS[$s]) return $s;
         }
         // countdown متاحة طوال البطولة كذلك (تعرض «اقتربت النهاية» أو ما تبقى لها)
@@ -62,6 +63,7 @@ class TweetComposer
             case 'stats':     return self::stats($ar, $lang);
             case 'trivia':    return self::trivia($ar, $lang);
             case 'recap':     return self::recap($ar);
+            case 'news':      return self::newsCTA($ar, $lang);
             case 'manual':
             default:          return self::manual($ar);
         }
@@ -177,6 +179,32 @@ class TweetComposer
         $foot = $ar ? "كل الأرقام والمتصدّرين 👇" : "Full numbers & leaders 👇";
         $body = $head . "\n" . implode("\n", $bullets) . "\n" . $foot;
         return self::sign($body, self::link("stats.php?lang={$lang}"), 'stats');
+    }
+
+    /** news — تذكير يوميّ بصفحة الأخبار (CTA يجلب الجمهور للموقع بدل بثّ كل خبر). */
+    private static function newsCTA(bool $ar, string $lang): string
+    {
+        $link = self::link("news.php?lang={$lang}");
+        if ($ar) {
+            $variants = [
+                "📰 شاهد آخر أخبار كأس العالم 2026 بتحديثات لحظيّة 👇",
+                "🚨 أهم أخبار المونديال اليوم — لا يفوتك خبر! 👇",
+                "📰 آخر مستجدّات كأس العالم 2026 على موقعنا · تحديثات يوميّة 👇",
+                "🔥 كل أخبار المونديال في مكان واحد — اقرأها كاملة 👇",
+                "📰 تابع نبض المونديال — تحديثات لحظيّة من كل المصادر 👇",
+            ];
+        } else {
+            $variants = [
+                "📰 Catch up on all World Cup 2026 news with live updates 👇",
+                "🚨 Today's biggest tournament headlines — don't miss any 👇",
+                "📰 All FIFA World Cup 2026 news in one place · daily updates 👇",
+                "🔥 Every World Cup story, gathered & curated 👇",
+                "📰 Follow the pulse of the tournament — live updates from all sources 👇",
+            ];
+        }
+        // اختر بناءً على اليوم (متغيّر يومياً ولكنه ثابت في اليوم نفسه)
+        $idx = (int)date('z') % count($variants);
+        return self::sign($variants[$idx], $link, 'news');
     }
 
     /** recap — صباحاً 09:00: نتائج آخر 24 ساعة (تشمل مباريات الليل في النطاق الأمريكي). */
@@ -328,6 +356,9 @@ class TweetComposer
             ['time' => '09:00', 'slot' => 'recap',     'title' => $ar ? 'صباح الكرة — نتائج الليل' : 'Morning recap — overnight scores',
              'note'  => $ar ? 'نتائج آخر مباريات الليل + رابط الترتيب' : 'Overnight results + leaderboard link',
              'when'  => $ar ? 'أثناء البطولة' : 'During tournament'],
+            ['time' => '14:00', 'slot' => 'news',      'title' => $ar ? 'تذكير الأخبار' : 'News reminder',
+             'note'  => $ar ? 'تغريدة واحدة يومياً تدعو لتصفّح أخبار الموقع' : 'One daily CTA to visit news page',
+             'when'  => $ar ? 'يومياً' : 'Every day'],
             ['time' => '16:00', 'slot' => 'countdown', 'title' => $ar ? 'العدّ التنازلي' : 'Countdown',
              'note'  => $ar ? 'كم يوم متبقٍ + رابط التوقّعات' : 'Days remaining + predictions link',
              'when'  => $ar ? 'قبل البطولة وأثناءها' : 'Pre + during tournament'],

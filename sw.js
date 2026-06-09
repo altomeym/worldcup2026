@@ -11,8 +11,8 @@
    ============================================================ */
 'use strict';
 
-/* v11 — مهلة أطول + fallback أذكى + navigator.onLine check + UI أجمل. */
-var CACHE = 'wc2026-v11';
+/* v12 — يتجاوز /admin + /login + /predict POST + /unsubscribe (صفحات شخصيّة لا تُكاش). */
+var CACHE = 'wc2026-v12';
 
 /* قشرة التطبيق — صفحات شائعة بكل لغة (يطابقها SW مع/بدون query). */
 var SHELL = [
@@ -220,9 +220,19 @@ self.addEventListener('fetch', function (e) {
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   if (url.origin !== self.location.origin) return;
 
-  // /api و /cron — شبكة فقط، نتجاوزها تماماً
-  if (/^\/api\//i.test(url.pathname))  return;
-  if (/^\/cron\//i.test(url.pathname)) return;
+  // ✨ المسارات التي لا يجب أن يلمسها SW أبداً (محتوى شخصي/حسّاس/POST):
+  //   /api/*        → JSON محتوى شخصي
+  //   /cron/*       → عمليّات خادم تستغرق ثوانٍ
+  //   /admin*       → لوحة تحكّم بجلسة + CSRF + معاينات حيّة
+  //   /login.php    → نموذج دخول (لا للتخزين)
+  //   /unsubscribe* → روابط شخصيّة موقّعة
+  //   /install.php  → ثبيت/تهيئة لمرّة واحدة
+  if (/^\/api\//i.test(url.pathname))       return;
+  if (/^\/cron\//i.test(url.pathname))      return;
+  if (/^\/admin/i.test(url.pathname))       return;
+  if (/^\/login\.php/i.test(url.pathname))  return;
+  if (/^\/unsubscribe/i.test(url.pathname)) return;
+  if (/^\/install\.php/i.test(url.pathname))return;
 
   var isNav = (req.mode === 'navigate') ||
               (req.headers.get('accept') || '').indexOf('text/html') !== -1;

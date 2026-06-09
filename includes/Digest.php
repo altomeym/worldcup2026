@@ -144,24 +144,29 @@ class Digest
         return time() <= ($end + 2 * 86400);
     }
 
-    /** يبني رسالة مستخدم واحد: ['subject','html','text']. */
+    /** يبني رسالة مستخدم واحد ثنائيّة اللغة (AR+EN): ['subject','html','text']. */
     public static function buildEmail(array $user, array $h, ?array $standing): array
     {
         $name  = $user['name'] !== '' ? $user['name'] : 'صديقنا';
+        $nameEn = $user['name'] !== '' ? $user['name'] : 'Friend';
         $site  = rtrim(defined('SITE_URL') ? SITE_URL : '', '/');
         $brand = defined('SITE_NAME_AR') ? SITE_NAME_AR : 'كأس العالم 2026';
+        $brandEn = 'FIFA World Cup 2026';
         $tzNote = defined('DISPLAY_TIMEZONE') ? DISPLAY_TIMEZONE : 'UTC';
 
-        // العنوان والافتتاحية حسب حالة البطولة
+        // ✨ عنوان ثنائي اللغة + افتتاحية لكل لغة
         if (!$h['started'] && $h['days_left'] > 0) {
-            $subject = "{$brand} — باقٍ {$h['days_left']} يوم على الانطلاق! 🏆";
-            $lead = "باقٍ <strong>{$h['days_left']}</strong> يوم على انطلاق المونديال — جهّز توقّعاتك واصعد في الترتيب!";
+            $subject = "{$brand} — باقٍ {$h['days_left']} يوم 🏆 · {$h['days_left']} days to {$brandEn}!";
+            $lead   = "باقٍ <strong>{$h['days_left']}</strong> يوم على انطلاق المونديال — جهّز توقّعاتك واصعد في الترتيب!";
+            $leadEn = "Only <strong>{$h['days_left']}</strong> days until kickoff — lock your predictions and climb the leaderboard!";
         } elseif ($h['started']) {
-            $subject = "{$brand} — نتائج اليوم وترتيبك ⚽";
-            $lead = "البطولة جارية الآن! إليك آخر النتائج ومباريات اليوم.";
+            $subject = "{$brand} — نتائج اليوم ⚽ · {$brandEn} — Today's Results";
+            $lead   = "البطولة جارية الآن! إليك آخر النتائج ومباريات اليوم.";
+            $leadEn = "The tournament is live! Here are the latest results and today's fixtures.";
         } else {
-            $subject = "{$brand} — مستجدّاتك وترتيبك";
-            $lead = "إليك أبرز ما في الموقع اليوم.";
+            $subject = "{$brand} — مستجدّاتك · Your {$brandEn} Update";
+            $lead   = "إليك أبرز ما في الموقع اليوم.";
+            $leadEn = "Here are today's tournament highlights.";
         }
 
         // ===== صفّ مباراة أنيق (أعلام + أسماء + نتيجة/وقت) =====
@@ -197,74 +202,110 @@ class Digest
                  . '</div>';
         };
 
-        // ===== بطاقة الترتيب (ذهبية، بارزة) =====
+        // ===== بطاقة الترتيب الذهبيّة (AR + EN معاً) =====
         if ($standing) {
             $pts = (int)$standing['points']; $rank = (int)$standing['rank']; $tot = (int)$standing['total'];
-            $note = !Predictions::pointsActive()
-                ? '<div style="font-size:12px;margin-top:6px;font-weight:600">تبدأ احتساب النقاط من انطلاق البطولة — الجميع يبدأ متساوياً ⚖️</div>'
+            $note   = !Predictions::pointsActive()
+                ? '<div style="font-size:12px;margin-top:6px;font-weight:600">احتساب النقاط يبدأ مع انطلاق البطولة — الجميع متساوون الآن ⚖️</div>'
+                : '';
+            $noteEn = !Predictions::pointsActive()
+                ? '<div style="font-size:12px;margin-top:4px;font-weight:600">Scoring begins at kickoff — everyone starts equal ⚖️</div>'
                 : '';
             $rankCard =
                 '<div style="background:linear-gradient(135deg,#f7e09a,#d9b24a);color:#2a1d00;border-radius:16px;padding:18px;text-align:center;margin:18px 0">'
-              . '<div style="font-size:13px;font-weight:700;letter-spacing:.04em">ترتيبك الحالي</div>'
-              . '<div style="font-size:38px;font-weight:900;line-height:1.1;margin:2px 0">#' . $rank . '</div>'
+              . '<div style="font-size:13px;font-weight:700;letter-spacing:.04em">ترتيبك الحالي · Your Rank</div>'
+              . '<div style="font-size:42px;font-weight:900;line-height:1.1;margin:4px 0">#' . $rank . '</div>'
               . '<div style="font-size:14px;font-weight:700">من ' . $tot . ' مشارك · نقاطك: ' . $pts . '</div>'
-              . $note
+              . '<div style="font-size:13px;font-weight:600;margin-top:2px">Out of ' . $tot . ' players · ' . $pts . ' pts</div>'
+              . $note . $noteEn
               . '</div>';
         } else {
             $rankCard =
                 '<div style="background:#11203a;border:1px solid #243a68;border-radius:16px;padding:18px;text-align:center;margin:18px 0">'
-              . '<div style="font-weight:700">لم تبدأ اللعب بعد!</div>'
-              . '<div style="color:#9fb0c8;font-size:14px;margin-top:4px">انضمّ لمسابقة التوقّعات واجمع النقاط ونافس العالم.</div>'
+              . '<div style="font-weight:700">لم تبدأ اللعب بعد! · You haven\'t played yet!</div>'
+              . '<div style="color:#9fb0c8;font-size:13px;margin-top:6px;line-height:1.7">انضمّ لمسابقة التوقّعات واجمع النقاط ونافس العالم.<br>'
+              . 'Join the predictions game, earn points, compete worldwide.</div>'
               . '</div>';
         }
 
-        $today    = $section('⚽ مباريات اليوم',     $h['today']);
-        $results  = $section('📊 نتائج سابقة',        $h['results']);
-        $upcoming = $section('🗓️ المباريات القادمة', $h['upcoming']);
+        // 🆕 عناوين الأقسام ثنائيّة
+        $today    = $section('⚽ مباريات اليوم · Today\'s Matches',   $h['today']);
+        $results  = $section('📊 نتائج سابقة · Recent Results',       $h['results']);
+        $upcoming = $section('🗓️ المباريات القادمة · Upcoming',       $h['upcoming']);
         if ($today === '' && $results === '' && $upcoming === '') {
-            $upcoming = '<p style="color:#9fb0c8;text-align:center">تُعرض المباريات قريباً.</p>';
+            $upcoming = '<p style="color:#9fb0c8;text-align:center">تُعرض المباريات قريباً.<br>Matches will appear soon.</p>';
         }
 
         $btn = fn($href, $label, $primary) =>
-            '<a href="' . e($href) . '" style="text-decoration:none;font-weight:800;border-radius:24px;padding:11px 18px;display:inline-block;margin:4px;'
+            '<a href="' . e($href) . '" style="text-decoration:none;font-weight:800;border-radius:24px;padding:11px 18px;display:inline-block;margin:4px;font-size:14px;'
             . ($primary ? 'background:#fff;color:#0a1626' : 'background:#1b2a45;color:#fff') . '">' . $label . '</a>';
 
         $unsub = e(self::unsubUrl((int)$user['id']));
 
+        // 🆕 قسم إنجليزي LTR منفصل أسفل العربي
+        $englishBlock =
+            '<div dir="ltr" lang="en" style="text-align:left;direction:ltr;padding:18px 0;border-top:1px dashed #243a68;margin-top:24px">'
+          . '<p style="font-size:15px;line-height:1.8;color:#cdd8ec;margin:0 0 14px"><strong>Hello ' . e($nameEn) . '</strong> 👋<br>' . $leadEn . '</p>'
+          . '<p style="color:#7e90ad;font-size:12px;margin:8px 0">All times in ' . e($tzNote) . '.</p>'
+          . '<div style="text-align:center;margin:18px 0">'
+          .   $btn($site . '/predict.php?lang=en', '🎯 Play Predictions', true)
+          .   $btn($site . '/bracket.php?lang=en', '🏆 Bracket',          false)
+          .   $btn($site . '/leaderboard.php?lang=en', '🏅 Leaderboard',  false)
+          . '</div>'
+          . '</div>';
+
         $html = '<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
           . '<body style="margin:0;background:#0a1626;font-family:Tahoma,Arial,sans-serif;color:#dfe7f5">'
           . '<div style="max-width:580px;margin:0 auto;padding:24px 18px">'
+          // header
           . '<div style="text-align:center;margin-bottom:14px">'
           .   '<span style="display:inline-block;background:#fff;color:#0a1626;font-weight:900;border-radius:12px;padding:9px 14px;font-size:22px">26</span>'
           .   '<div style="font-weight:900;margin-top:8px;font-size:19px">' . e($brand) . '</div>'
-          .   '<div style="color:#9fb0c8;font-size:12px">كندا · المكسيك · الولايات المتحدة</div>'
+          .   '<div style="color:#9fb0c8;font-size:12px;direction:ltr;display:inline-block">' . e($brandEn) . ' · Canada · Mexico · USA</div>'
           . '</div>'
+          // greeting AR
           . '<p style="font-size:16px">أهلاً <strong>' . e($name) . '</strong> 👋</p>'
           . '<p style="font-size:15px;line-height:1.8;color:#cdd8ec">' . $lead . '</p>'
+          // ranking card (bilingual)
           . $rankCard
+          // match sections
           . $today . $results . $upcoming
           . '<p style="color:#7e90ad;font-size:12px;text-align:center">كل المواعيد بتوقيت ' . e($tzNote) . '.</p>'
+          // AR buttons
           . '<div style="text-align:center;margin:22px 0">'
           .   $btn($site . '/predict.php', '🎯 العب التوقعات', true)
           .   $btn($site . '/bracket.php', '🏆 توقّع المشوار', false)
           .   $btn($site . '/leaderboard.php', '🏅 الصدارة', false)
           . '</div>'
+          // 🆕 English block
+          . $englishBlock
+          // footer (bilingual)
           . '<hr style="border:none;border-top:1px solid #243a68;margin:20px 0">'
-          . '<p style="color:#7e90ad;font-size:12px;text-align:center;line-height:1.9">'
+          . '<p style="color:#7e90ad;font-size:11px;text-align:center;line-height:1.9">'
           .   'وصلتك هذه الرسالة لأنك مشارك في ' . e($brand) . '.<br>'
-          .   '<a href="' . $unsub . '" style="color:#9fb0c8">إلغاء الاشتراك في النشرة</a> · '
+          .   '<span dir="ltr" style="display:inline-block">You received this email as a registered ' . e($brandEn) . ' player.</span><br><br>'
+          .   '<a href="' . $unsub . '" style="color:#9fb0c8">إلغاء الاشتراك · Unsubscribe</a> · '
           .   '<a href="' . e($site) . '" style="color:#9fb0c8">' . e(parse_url($site, PHP_URL_HOST) ?: $site) . '</a>'
           . '</p>'
           . '</div></body></html>';
 
+        // نص عادي (Plain) — ثنائي اللغة
         $rankText = $standing
             ? "ترتيبك: #" . (int)$standing['rank'] . " من " . (int)$standing['total'] . " · نقاطك: " . (int)$standing['points']
             : "انضمّ لمسابقة التوقّعات واجمع النقاط!";
+        $rankTextEn = $standing
+            ? "Your rank: #" . (int)$standing['rank'] . " of " . (int)$standing['total'] . " · " . (int)$standing['points'] . " pts"
+            : "Join the predictions game and earn points!";
         $text = "أهلاً {$name}،\n\n" . strip_tags($lead) . "\n\n{$rankText}\n\n"
               . "العب التوقعات: {$site}/predict.php\n"
               . "توقّع المشوار: {$site}/bracket.php\n"
               . "الصدارة: {$site}/leaderboard.php\n\n"
-              . "إلغاء الاشتراك: " . self::unsubUrl((int)$user['id']);
+              . "────────────────────\n\n"
+              . "Hello {$nameEn},\n\n" . strip_tags($leadEn) . "\n\n{$rankTextEn}\n\n"
+              . "Predictions: {$site}/predict.php?lang=en\n"
+              . "Bracket:     {$site}/bracket.php?lang=en\n"
+              . "Leaderboard: {$site}/leaderboard.php?lang=en\n\n"
+              . "إلغاء الاشتراك · Unsubscribe: " . self::unsubUrl((int)$user['id']);
 
         return ['subject' => $subject, 'html' => $html, 'text' => $text];
     }

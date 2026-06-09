@@ -1,6 +1,11 @@
 <?php
 /** admin/section_email.php — حالة النشرة البريدية: SMTP + إرسال تجريبي + سجلّ النتائج. */
-if (!defined('WC2026') || !Admin::authed()) { exit('Access denied'); }
+if (!defined('WC2026')) {
+    // فُتح مباشرة → حوّله للوحة الأدمن بدل "Access denied" المربكة
+    if (!headers_sent()) { header('Location: ../admin.php?tab=email', true, 302); exit; }
+    exit('<meta http-equiv="refresh" content="0;url=../admin.php?tab=email">');
+}
+if (!Admin::authed()) { exit('Access denied'); }
 $ar = (current_lang() === 'ar'); $L = fn($a, $e) => $ar ? $a : $e;
 
 // ---------- عمليّات POST (موثّق مسبقاً عبر admin.php) ----------

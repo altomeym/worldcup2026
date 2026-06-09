@@ -2,7 +2,11 @@
 /** admin/section_x.php — لوحة النشر التلقائي على X (تويتر).
  *  حالة المفاتيح + خطة النشر + معاينات الفترات + نشر تجريبي + سجلّ النشر.
  */
-if (!defined('WC2026') || !Admin::authed()) { exit('Access denied'); }
+if (!defined('WC2026')) {
+    if (!headers_sent()) { header('Location: ../admin.php?tab=x', true, 302); exit; }
+    exit('<meta http-equiv="refresh" content="0;url=../admin.php?tab=x">');
+}
+if (!Admin::authed()) { exit('Access denied'); }
 $ar = (current_lang() === 'ar'); $L = fn($a, $e) => $ar ? $a : $e;
 
 // ---------- إجراءات POST ----------

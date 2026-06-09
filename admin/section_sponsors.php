@@ -1,5 +1,9 @@
 <?php
-if (!defined('WC2026') || !Admin::authed()) { exit('Access denied'); }
+if (!defined('WC2026')) {
+    if (!headers_sent()) { header('Location: ../admin.php?tab=sponsors', true, 302); exit; }
+    exit('<meta http-equiv="refresh" content="0;url=../admin.php?tab=sponsors">');
+}
+if (!Admin::authed()) { exit('Access denied'); }
 require_once __DIR__ . '/../includes/SponsorStore.php';
 $ar = (current_lang() === 'ar'); $L = fn($a,$e)=>$ar?$a:$e;
 

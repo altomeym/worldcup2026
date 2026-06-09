@@ -1,5 +1,9 @@
 <?php
-if (!defined('WC2026') || !Admin::authed()) { exit('Access denied'); }
+if (!defined('WC2026')) {
+    if (!headers_sent()) { header('Location: ../admin.php?tab=participants', true, 302); exit; }
+    exit('<meta http-equiv="refresh" content="0;url=../admin.php?tab=participants">');
+}
+if (!Admin::authed()) { exit('Access denied'); }
 $ar = (current_lang() === 'ar'); $L = fn($a,$e)=>$ar?$a:$e;
 
 $pdo = Database::pdo();

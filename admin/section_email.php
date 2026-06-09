@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($do === 'sendall' || $do === 'send
     if (!Database::available()) {
         $notice = $L('قاعدة البيانات غير متاحة.', 'Database not available.');
     } else {
+        @set_time_limit(15);   // الإدراج لا يحتاج أكثر من ثوانٍ
         $predOnly = ($do === 'sendpredictors');
         $q = Digest::queueEnqueue($predOnly);
         $noticeOk = true;
@@ -47,9 +48,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($do === 'sendall' || $do === 'send
     }
 }
 
-// 🆕 معالجة دفعة من الطابور (10 رسائل)
+// 🆕 معالجة دفعة من الطابور (10 رسائل) + قطع الاتصال مع المتصفّح بعد إرسال الرد
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $do === 'queueprocess') {
-    $r = Digest::queueProcess(10);
+    // خطّة: نسجّل الرسالة، نُرسل الـHTML، نقطع الاتصال، ثم نعالج في الخلفيّة
+    $batch = 10;
+    // PRG (POST-Redirect-GET) — يُريح المتصفّح فوراً
+    if (function_exists('fastcgi_finish_request')) {
+        // أرسل redirect 303، ثم اقطع الاتصال، ثم عالج
+        header('Location: admin.php?tab=email&processed=1', true, 303);
+        // ادفع أيّ output متبقٍ
+        while (ob_get_level() > 0) { ob_end_flush(); }
+        flush();
+        @fastcgi_finish_request();   // ← السحر: المتصفّح حرّ الآن!
+        @set_time_limit(120);
+        Digest::queueProcess($batch);
+        exit;
+    }
+    // Fallback (بيئة بدون PHP-FPM): معالجة عاديّة
+    @set_time_limit(60);
+    $r = Digest::queueProcess($batch);
     $noticeOk = ($r['fail'] === 0);
     $notice = sprintf(
         $L('دفعة: %d نجح · %d فشل · %d متبقّون %s',
@@ -57,6 +74,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $do === 'queueprocess') {
         (int)$r['sent'], (int)$r['fail'], (int)$r['remaining'],
         $r['done'] ? ($ar ? '✓ اكتمل الطابور!' : '✓ Queue complete!') : ''
     );
+}
+
+// 🆕 رسالة بعد المعالجة عبر PRG
+if (isset($_GET['processed']) && $queue = Digest::queueRead()) {
+    $noticeOk = true;
+    $done = (int)($queue['sent'] ?? 0) + (int)($queue['fail'] ?? 0);
+    $tot  = (int)($queue['total'] ?? 0);
+    $notice = sprintf($L('✓ تمّت معالجة دفعة — %d من %d', '✓ Batch processed — %d of %d'), $done, $tot);
+} elseif (isset($_GET['processed'])) {
+    $noticeOk = true;
+    $notice = $L('✓ اكتمل الطابور بالكامل!', '✓ Queue fully processed!');
 }
 
 // 🆕 إلغاء الطابور

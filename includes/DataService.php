@@ -243,9 +243,17 @@ class DataService
     //  دوال جاهزة للصفحات
     // ========================================================
 
+    /** نتيجة allMatches() محفوظة بالذاكرة — تُبنى مرّة واحدة لكل طلب */
+    private static ?array $matchesMemo = null;
+
     /** كل المباريات (مصفوفة موحّدة) */
     public static function allMatches(): array
     {
+        // الصفحات تستدعيها عدّة مرات (اليوم/القادم/النتائج/الترتيب...) وكل
+        // استدعاء كان يعيد دمج LiveService لكل الـ104 مباريات → نبنيها مرّة واحدة.
+        if (self::$matchesMemo !== null) {
+            return self::$matchesMemo;
+        }
         $data = self::load();
         $demo = self::demoResults();      // نتائج تجريبية اختيارية (للتجربة فقط)
         $out  = [];
@@ -268,6 +276,7 @@ class DataService
             $out[] = $m;
             $i++;
         }
+        self::$matchesMemo = $out;
         return $out;
     }
 

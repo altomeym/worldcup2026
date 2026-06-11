@@ -11,6 +11,15 @@ if (!defined('WC2026')) { exit('Access denied'); }
 
 class Mailer
 {
+    /** آخر سبب فشل (للتشخيص في لوحة التحكم/سجل الكرون). */
+    private static string $lastError = '';
+
+    /** سبب آخر فشل إرسال — نصّ مقروء، أو '' إن لم يفشل شيء. */
+    public static function lastError(): string
+    {
+        return self::$lastError;
+    }
+
     /** هل بيانات SMTP مكتملة؟ */
     public static function smtpConfigured(): bool
     {
@@ -22,10 +31,19 @@ class Mailer
     /** يرسل رسالة واحدة. يرجّع true عند النجاح. */
     public static function send(string $to, string $subject, string $html, ?string $text = null): bool
     {
+        self::$lastError = '';
         $to = trim($to);
-        if (!filter_var($to, FILTER_VALIDATE_EMAIL)) return false;
+        if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+            self::$lastError = 'invalid_recipient';
+            return false;
+        }
 
-        $from     = defined('CONTACT_EMAIL') ? CONTACT_EMAIL : 'info@localhost';
+        // مع SMTP المصادق يجب أن يطابق المرسِل صندوق المصادقة (SMTP_USER) —
+        // أغلب الخوادم (ومنها Hostinger) ترفض MAIL FROM مختلفاً عن الحساب
+        // الموثَّق برفض 550 sender mismatch. CONTACT_EMAIL يبقى في Reply-To.
+        $from     = self::smtpConfigured()
+                  ? (string)SMTP_USER
+                  : (defined('CONTACT_EMAIL') ? CONTACT_EMAIL : 'info@localhost');
         $fromName = defined('SITE_NAME_AR') ? SITE_NAME_AR : 'World Cup 2026';
         $text     = $text ?? trim(preg_replace('/\n{3,}/', "\n\n", html_entity_decode(strip_tags($html), ENT_QUOTES, 'UTF-8')));
 
@@ -35,7 +53,9 @@ class Mailer
             return self::sendSmtp($from, $to, $encSubject, $headers, $body);
         }
         // mail() يضيف To/Subject بنفسه
-        return @mail($to, $encSubject, $body, $headers . "\r\n");
+        $ok = @mail($to, $encSubject, $body, $headers . "\r\n");
+        if (!$ok) self::$lastError = 'mail() returned false (لا SMTP مضبوط — اضبط SMTP_* في config.local.php)';
+        return $ok;
     }
 
     /** يبني ترويسات وجسم رسالة multipart/alternative. */
@@ -46,9 +66,10 @@ class Mailer
         $encSubj  = '=?UTF-8?B?' . base64_encode($subject) . '?=';
         $encName  = '=?UTF-8?B?' . base64_encode($fromName) . '?=';
 
+        $replyTo = (defined('CONTACT_EMAIL') && CONTACT_EMAIL !== '') ? CONTACT_EMAIL : $from;
         $headers =
             "From: {$encName} <{$from}>\r\n" .
-            "Reply-To: {$from}\r\n" .
+            "Reply-To: {$replyTo}\r\n" .
             "MIME-Version: 1.0\r\n" .
             "Content-Type: multipart/alternative; boundary=\"{$boundary}\"\r\n" .
             "Date: " . date('r') . "\r\n" .
@@ -79,44 +100,59 @@ class Mailer
         $transport = ($secure === 'ssl') ? "ssl://{$host}:{$port}" : "tcp://{$host}:{$port}";
         $ctx = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
         $fp = @stream_socket_client($transport, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $ctx);
-        if (!$fp) return false;
+        if (!$fp) {
+            self::$lastError = "connect failed: {$transport} — {$errstr} ({$errno})";
+            return false;
+        }
         stream_set_timeout($fp, $timeout);
 
-        $ehlo = parse_url(defined('SITE_URL') ? SITE_URL : '', PHP_URL_HOST) ?: 'localhost';
-        $ok = true;
-        $ok = $ok && self::expect($fp, '220');
-        self::cmd($fp, "EHLO {$ehlo}"); $ok = $ok && self::expect($fp, '250');
+        // step() يسجّل مرحلة الفشل + ردّ الخادم الفعلي — حتى يظهر السبب الحقيقي
+        // في لوحة التحكم بدل «فشل، تحقّق من SMTP» العمياء.
+        $step = function (string $stage, string $code) use ($fp): bool {
+            if (self::expect($fp, $code)) return true;
+            self::$lastError = "{$stage}: توقّع {$code} — ردّ الخادم: " . trim(self::$lastResp);
+            return false;
+        };
 
-        if ($secure === 'tls') {
-            self::cmd($fp, 'STARTTLS'); $ok = $ok && self::expect($fp, '220');
+        $ehlo = parse_url(defined('SITE_URL') ? SITE_URL : '', PHP_URL_HOST) ?: 'localhost';
+        $ok = $step('greeting', '220');
+        if ($ok) { self::cmd($fp, "EHLO {$ehlo}"); $ok = $step('EHLO', '250'); }
+
+        if ($ok && $secure === 'tls') {
+            self::cmd($fp, 'STARTTLS'); $ok = $step('STARTTLS', '220');
             if ($ok && !@stream_socket_enable_crypto($fp, true,
                     STREAM_CRYPTO_METHOD_TLS_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT)) {
+                self::$lastError = 'STARTTLS: فشل تفعيل التشفير';
                 $ok = false;
             }
-            self::cmd($fp, "EHLO {$ehlo}"); $ok = $ok && self::expect($fp, '250');
+            if ($ok) { self::cmd($fp, "EHLO {$ehlo}"); $ok = $step('EHLO(tls)', '250'); }
         }
 
-        self::cmd($fp, 'AUTH LOGIN');               $ok = $ok && self::expect($fp, '334');
-        self::cmd($fp, base64_encode(SMTP_USER));   $ok = $ok && self::expect($fp, '334');
-        self::cmd($fp, base64_encode(SMTP_PASS));   $ok = $ok && self::expect($fp, '235');
-        self::cmd($fp, "MAIL FROM:<{$from}>");       $ok = $ok && self::expect($fp, '250');
-        self::cmd($fp, "RCPT TO:<{$to}>");           $ok = $ok && self::expect($fp, '250');
-        self::cmd($fp, 'DATA');                      $ok = $ok && self::expect($fp, '354');
+        if ($ok) { self::cmd($fp, 'AUTH LOGIN');             $ok = $step('AUTH', '334'); }
+        if ($ok) { self::cmd($fp, base64_encode(SMTP_USER)); $ok = $step('AUTH user', '334'); }
+        if ($ok) { self::cmd($fp, base64_encode(SMTP_PASS)); $ok = $step('AUTH pass (كلمة سر SMTP)', '235'); }
+        if ($ok) { self::cmd($fp, "MAIL FROM:<{$from}>");     $ok = $step('MAIL FROM', '250'); }
+        if ($ok) { self::cmd($fp, "RCPT TO:<{$to}>");         $ok = $step('RCPT TO', '250'); }
+        if ($ok) { self::cmd($fp, 'DATA');                    $ok = $step('DATA', '354'); }
 
         if ($ok) {
             // الرسالة الكاملة: To + Subject + بقية الترويسات + الجسم، مع تهريب النقطة.
             $msg = "To: {$to}\r\nSubject: {$encSubject}\r\n" . $headers . "\r\n\r\n" . $body;
             $msg = preg_replace('/^\./m', '..', $msg);
             fwrite($fp, $msg . "\r\n.\r\n");
-            $ok = self::expect($fp, '250');
+            $ok = $step('message accept', '250');
         }
 
         self::cmd($fp, 'QUIT');
         fclose($fp);
+        if ($ok) self::$lastError = '';
         return $ok;
     }
 
     private static function cmd($fp, string $line): void { @fwrite($fp, $line . "\r\n"); }
+
+    /** آخر ردّ خام من خادم SMTP (للتشخيص). */
+    private static string $lastResp = '';
 
     /** يقرأ ردّ SMTP (متعدّد الأسطر) ويتحقّق من بدئه بالرمز المتوقّع. */
     private static function expect($fp, string $code): bool
@@ -127,6 +163,7 @@ class Mailer
             // السطر الأخير: الرمز متبوعاً بمسافة (لا شَرطة)
             if (isset($line[3]) && $line[3] === ' ') break;
         }
+        self::$lastResp = $data;
         return strpos($data, $code) === 0;
     }
 }

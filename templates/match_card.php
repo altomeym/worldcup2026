@@ -63,6 +63,22 @@ function render_match_card(array $m): void {
           <span class="mc-ground">📍 <?= e($m['ground']) ?></span>
         <?php endif; ?>
       </div>
+
+      <?php
+      // الحكم — يظهر متى أُعلن (من referees-manual.json / BUILTIN_REFEREES / API-Football)
+      $refName = trim((string)($m['referee'] ?? ($m['officials']['main']['name'] ?? '')));
+      $refFlag = strtolower(trim((string)($m['officials']['main']['flag'] ?? '')));
+      ?>
+      <?php if ($refName !== ''): ?>
+      <div class="mc-ref">
+        <span class="mc-ref-lbl"><?= e($ar ? 'الحكم:' : 'Referee:') ?></span>
+        <?php if ($refFlag !== ''): ?>
+          <img class="mc-ref-flag" src="https://flagcdn.com/w20/<?= e($refFlag) ?>.png"
+               alt="" width="18" height="13" loading="lazy">
+        <?php endif; ?>
+        <span class="mc-ref-name"><?= e(mb_convert_case(mb_strtolower($refName, 'UTF-8'), MB_CASE_TITLE, 'UTF-8')) ?></span>
+      </div>
+      <?php endif; ?>
     </a>
     <?php if ($canRemind): ?>
       <button type="button" class="mc-remind" data-remind

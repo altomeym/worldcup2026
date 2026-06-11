@@ -32,8 +32,10 @@ class XPublisher
      * يُرسل تغريدة ويعيد ['ok'=>bool, 'id'=>?string, 'error'=>?string].
      * يقصّ النص تلقائياً إن تجاوز 280 حرفاً (وحدة X هي codepoints UTF-16
      * تقريباً = mb_strlen هنا — كافٍ لتلافي الرفض).
+     * $imagePath: مسار PNG اختياري يُرفَق بالتغريدة (بطاقة المباراة).
+     *             فشل رفع الصورة لا يمنع التغريدة — تُنشر نصاً فقط.
      */
-    public static function tweet(string $text): array
+    public static function tweet(string $text, ?string $imagePath = null): array
     {
         if (!self::configured()) {
             return ['ok' => false, 'id' => null, 'error' => 'x_not_configured'];
@@ -55,8 +57,19 @@ class XPublisher
             }
         }
 
+        // ارفع الصورة أولاً (إن وُجدت) — best-effort: الفشل لا يوقف النشر.
+        $mediaId = null;
+        if ($imagePath !== null && $imagePath !== '' && is_file($imagePath)) {
+            $mediaId = self::uploadMedia($imagePath);
+        }
+
+        $payload = ['text' => $text];
+        if ($mediaId !== null) {
+            $payload['media'] = ['media_ids' => [$mediaId]];
+        }
+
         $auth = self::oauthHeader('POST', self::ENDPOINT, []);
-        $body = json_encode(['text' => $text], JSON_UNESCAPED_UNICODE);
+        $body = json_encode($payload, JSON_UNESCAPED_UNICODE);
 
         $ch = curl_init(self::ENDPOINT);
         curl_setopt_array($ch, [
@@ -93,6 +106,37 @@ class XPublisher
         self::log(null, false, $msg, $text);
         if (class_exists('RateGuard')) RateGuard::record(false, 'manual', $msg);
         return ['ok' => false, 'id' => null, 'error' => $msg];
+    }
+
+    /**
+     * uploadMedia() — يرفع صورة عبر v1.1 media/upload ويعيد media_id أو null.
+     * multipart/form-data: معطيات الجسم لا تدخل توقيع OAuth (حسب المواصفة).
+     */
+    private static function uploadMedia(string $path): ?string
+    {
+        if (!function_exists('curl_init') || !class_exists('CURLFile')) return null;
+        $url  = 'https://upload.twitter.com/1.1/media/upload.json';
+        $auth = self::oauthHeader('POST', $url, []);
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_HTTPHEADER     => ['Authorization: ' . $auth],
+            CURLOPT_POSTFIELDS     => ['media' => new CURLFile($path, 'image/png', 'card.png')],
+        ]);
+        $resp = curl_exec($ch);
+        $code = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        curl_close($ch);
+
+        $j = is_string($resp) ? json_decode($resp, true) : null;
+        if ($code >= 200 && $code < 300 && is_array($j) && !empty($j['media_id_string'])) {
+            return (string)$j['media_id_string'];
+        }
+        @error_log('XPublisher::uploadMedia failed http_' . $code . ' ' . mb_substr((string)$resp, 0, 200));
+        return null;
     }
 
     /** يبني ترويسة Authorization: OAuth ... للطلب. */
@@ -182,5 +226,22 @@ class XPublisher
         if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
         @file_put_contents($f, json_encode($state, JSON_UNESCAPED_UNICODE));
         return true;
+    }
+
+    /**
+     * releaseSlot() — يُحرّر فترة حُجزت بـclaimSlot لكن النشر فشل بعدها.
+     * بدون هذا كانت الفترة تُعتبر «منشورة اليوم» رغم الفشل، فلا يُعاد
+     * المحاولة في تشغيلات الكرون التالية — تغريدات اليوم تضيع بصمت.
+     */
+    public static function releaseSlot(string $slot): void
+    {
+        $f = rtrim(CACHE_DIR, '/') . '/x_slots.json';
+        if (!is_file($f)) return;
+        $state = json_decode((string)@file_get_contents($f), true);
+        if (!is_array($state)) return;
+        $key = date('Y-m-d') . '|' . $slot;
+        if (!isset($state[$key])) return;
+        unset($state[$key]);
+        @file_put_contents($f, json_encode($state, JSON_UNESCAPED_UNICODE));
     }
 }

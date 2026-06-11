@@ -48,6 +48,7 @@ if (class_exists('RefereesFetcher')) {
 // ──────────────────────────────────────────────────────────
 $cacheFile = rtrim(CACHE_DIR, '/') . '/af-fixtures.json';
 @unlink($cacheFile);
+@unlink($cacheFile . '.fail');   // امسح علامة الفشل أيضاً حتى لا تمنع الجلب الجديد
 echo "[refs] API-Football cache cleared\n";
 
 // أعد بناء الخريطة (طلب API واحد لكل البطولة)
@@ -64,6 +65,9 @@ foreach ($all as $m) {
         $found++;
         echo "[refs] ✓ {$t1} vs {$t2} → {$r}\n";
     }
+}
+if (function_exists('cron_heartbeat')) {
+    cron_heartbeat('refs', "referees={$found}/{$total}");
 }
 echo "\n[done] {$found}/{$total} matches have assigned referees.\n";
 exit(0);

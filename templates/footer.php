@@ -10,33 +10,29 @@ $lang       = current_lang();
 ?>
 </main><!-- /.site-main -->
 
-<!-- ============ الرعاة ============ -->
+<!-- ============ الرعاة (يظهر فقط عند وجود رعاة فعليين — لا خانات «شعارك هنا») ============ -->
+<?php if (!empty($sponsors)): ?>
 <section class="sponsors">
   <div class="wrap">
     <p class="sponsors-title"><?= e(t('sponsors_title')) ?></p>
     <div class="sponsors-row">
-      <?php if (!empty($sponsors)): ?>
-        <?php foreach ($sponsors as $sp):
-          $name = $sp['name'] ?? '';
-          $href = $sp['url']  ?? '';
-          $logo = $sp['logo'] ?? '';
-          $inner = $logo !== ''
-            ? '<img src="' . e($logo) . '" alt="' . e($name) . '" loading="lazy">'
-            : '<span>' . e($name) . '</span>';
-          if ($href !== ''): ?>
-            <a class="sponsor" href="<?= e($href) ?>" target="_blank" rel="noopener nofollow"><?= $inner ?></a>
-          <?php else: ?>
-            <span class="sponsor"><?= $inner ?></span>
-          <?php endif; ?>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <?php for ($i = 0; $i < (int)(defined('SPONSOR_PLACEHOLDERS') ? SPONSOR_PLACEHOLDERS : 0); $i++): ?>
-          <button type="button" class="sponsor sponsor-empty" data-contact-open><?= e($lang === 'ar' ? 'شعارك هنا' : 'Your logo here') ?></button>
-        <?php endfor; ?>
-      <?php endif; ?>
+      <?php foreach ($sponsors as $sp):
+        $name = $sp['name'] ?? '';
+        $href = $sp['url']  ?? '';
+        $logo = $sp['logo'] ?? '';
+        $inner = $logo !== ''
+          ? '<img src="' . e($logo) . '" alt="' . e($name) . '" loading="lazy">'
+          : '<span>' . e($name) . '</span>';
+        if ($href !== ''): ?>
+          <a class="sponsor" href="<?= e($href) ?>" target="_blank" rel="noopener nofollow"><?= $inner ?></a>
+        <?php else: ?>
+          <span class="sponsor"><?= $inner ?></span>
+        <?php endif; ?>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
+<?php endif; ?>
 
 <footer class="site-footer">
   <div class="wrap footer-grid">
@@ -187,6 +183,8 @@ $lang       = current_lang();
         <a href="<?= e(url('stats.php')) ?>"><?= e(t('stats') ?: ($lang==='ar'?'الإحصائيات':'Stats')) ?></a>
         <span class="dot">·</span>
         <a href="<?= e(url('predict.php')) ?>"><?= e($lang === 'ar' ? 'التوقّعات' : 'Predict') ?></a>
+        <span class="dot">·</span>
+        <a href="<?= e(url('privacy.php')) ?>"><?= e($lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy') ?></a>
       </div>
     </div>
   </div>

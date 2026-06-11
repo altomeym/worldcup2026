@@ -201,14 +201,34 @@ if (!$skipDaily) {
         $langs = defined('X_LANGS') && is_array(X_LANGS) && X_LANGS ? X_LANGS : ['ar', 'en'];
         foreach ($langs as $lg) {
             $slotKey = $dailySlot . '_' . $lg;
-            if (!$force && !XPublisher::claimSlot($slotKey)) {
+            // dry-run لا يحجز الفترة — كان يستهلكها فتُحجَب تغريدة اليوم الفعلية بعده!
+            if (!$force && !$dry && !XPublisher::claimSlot($slotKey)) {
                 $log('[daily] ' . $slotKey . ' already posted today.');
                 continue;
             }
             $text = TweetComposer::build($dailySlot, $lg);
             $log('[daily] slot=' . $slotKey . ' chars=' . mb_strlen($text, 'UTF-8'));
+
+            // بطاقة مصوّرة مرافقة (مباريات اليوم / النتائج) — null = تغريدة نصية
+            $img = null;
+            if (class_exists('TweetCardImage')) {
+                if ($dailySlot === 'morning') {
+                    $list = DataService::matchesOnDate();
+                    if ($list) $img = TweetCardImage::generate($list,
+                        ['title' => 'مباريات اليوم', 'subtitle' => 'كأس العالم 2026']);
+                } elseif ($dailySlot === 'evening' || $dailySlot === 'recap') {
+                    $list = DataService::latestResults(3);
+                    if ($list) $img = TweetCardImage::generate($list,
+                        ['title' => 'نتائج المباريات', 'subtitle' => 'كأس العالم 2026', 'mode' => 'result']);
+                }
+            }
+            if ($img) $log('[daily] card image: ' . basename($img));
+
             if ($dry) { $log('[daily] dry-run:'); $log('---'); $log($text); $log('---'); continue; }
-            $send('daily', $slotKey, fn() => XPublisher::tweet($text));
+            $r = $send('daily', $slotKey, fn() => XPublisher::tweet($text, $img));
+            // فشل النشر → حرّر الفترة حتى يعيد الكرون التالي المحاولة
+            // (كانت تُعتبر «منشورة» رغم الفشل فتضيع تغريدة اليوم بصمت).
+            if (empty($r['ok'])) { XPublisher::releaseSlot($slotKey); }
         }
     }
 }
@@ -256,5 +276,8 @@ if (!$skipMatches) {
 // TweetComposer (slot=news) تدعو لزيارة /news.php. الأخبار التفصيليّة تبقى على الموقع.
 $log('[news] feed broadcasting disabled — daily CTA via TweetComposer slot=news handles this.');
 
+if (function_exists('cron_heartbeat')) {
+    cron_heartbeat('tweet', "sent={$sent} failed={$failed}" . ($dry ? ' (dry)' : ''));
+}
 $log("[done] sent={$sent} failed={$failed}");
 exit($failed > 0 ? 1 : 0);

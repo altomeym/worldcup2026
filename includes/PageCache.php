@@ -25,13 +25,36 @@ class PageCache
 
         $file = self::file();
 
-        // إصابة: قدّم النسخة المخزّنة فوراً بلا أي تشغيل للصفحة.
-        if (is_file($file) && (time() - filemtime($file) < $ttl)) {
-            while (ob_get_level() > 0) { ob_end_clean(); }
-            header('Content-Type: text/html; charset=utf-8');
-            header('X-Page-Cache: HIT');
-            readfile($file);
-            exit;
+        if (is_file($file)) {
+            $age = time() - (int)@filemtime($file);
+
+            // إصابة: قدّم النسخة المخزّنة فوراً بلا أي تشغيل للصفحة.
+            if ($age < $ttl) {
+                while (ob_get_level() > 0) { ob_end_clean(); }
+                header('Content-Type: text/html; charset=utf-8');
+                header('X-Page-Cache: HIT');
+                readfile($file);
+                exit;
+            }
+
+            // قديمة لكنها موجودة (stale-while-revalidate): قدّمها للزائر فوراً،
+            // ثم جدّدها في الخلفية بعد قطع الاتصال (php-fpm فقط). تحديث mtime
+            // قبل التجديد = قفل تدافُع: عامل واحد يجدّد والبقية تخدم HIT.
+            // النتيجة: لا زائر ينتظر توليد صفحة إطلاقاً بعد أول زيارة.
+            $maxStale = $ttl * 30;   // أقصى عمر مقبول للتقديم القديم (30 دقيقة عند TTL=60)
+            if ($age < $maxStale && function_exists('fastcgi_finish_request')) {
+                @touch($file);
+                while (ob_get_level() > 0) { ob_end_clean(); }
+                header('Content-Type: text/html; charset=utf-8');
+                header('X-Page-Cache: STALE');
+                readfile($file);
+                @ignore_user_abort(true);
+                fastcgi_finish_request();
+                // أكمل تشغيل الصفحة في الخلفية والتقط إخراجها لحفظ نسخة جديدة.
+                self::$file = $file;
+                ob_start([self::class, 'finish']);
+                return;
+            }
         }
 
         // إخفاق: التقط إخراج الصفحة واحفظه عند الانتهاء.

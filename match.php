@@ -289,7 +289,13 @@ seo_sportsevent($m);
   <section class="lineup-box md-section">
     <h3 class="section-head">👕 <?= e(t('lineup')) ?></h3>
     <?php
-    $drewPitch = render_tactical_pitch($lineup, $t1, $t2, ['sample' => $lineupSample]);
+    // تشكيلة يدوية متوقعة (قبل الإعلان الرسمي) → وسم توضيحي فوق اللوحة
+    $lineupTag = (!$lineupSample && !empty($lineup['probable']))
+        ? (current_lang() === 'ar'
+            ? '📋 تشكيلة متوقعة — تُستبدل بالرسمية فور إعلانها'
+            : '📋 Probable lineup — updated once the official XI is announced')
+        : '';
+    $drewPitch = render_tactical_pitch($lineup, $t1, $t2, ['sample' => $lineupSample, 'tag' => $lineupTag]);
     if (!$drewPitch): ?>
       <div class="lineup-cols">
         <?php foreach (['team1' => $t1, 'team2' => $t2] as $side => $tn):

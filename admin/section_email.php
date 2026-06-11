@@ -25,9 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $do === 'sendtest') {
         $ok = Mailer::send($to, $mail['subject'], $mail['html'], $mail['text']);
         Digest::log('test', $ok ? 1 : 0, $ok ? 0 : 1, 1);
         $noticeOk = $ok;
+        $mailErr = (!$ok && Mailer::lastError() !== '') ? ' — ' . Mailer::lastError() : '';
         $notice = $ok
             ? $L('تم إرسال رسالة تجريبية إلى ' . $to . ' بنجاح ✓', 'Test email sent to ' . $to . ' ✓')
-            : $L('فشل الإرسال — تحقّق من بيانات SMTP.', 'Send failed — check SMTP settings.');
+            : $L('فشل الإرسال' . ($mailErr !== '' ? $mailErr : ' — تحقّق من بيانات SMTP.'),
+                 'Send failed' . ($mailErr !== '' ? $mailErr : ' — check SMTP settings.'));
     }
 }
 
@@ -67,13 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $do === 'queueprocess') {
     // Fallback (بيئة بدون PHP-FPM): معالجة عاديّة
     @set_time_limit(60);
     $r = Digest::queueProcess($batch);
-    $noticeOk = ($r['fail'] === 0);
+    $noticeOk = ($r['fail'] === 0 && ($r['error'] ?? '') === '');
     $notice = sprintf(
         $L('دفعة: %d نجح · %d فشل · %d متبقّون %s',
            'Batch: %d ok · %d failed · %d remaining %s'),
         (int)$r['sent'], (int)$r['fail'], (int)$r['remaining'],
         $r['done'] ? ($ar ? '✓ اكتمل الطابور!' : '✓ Queue complete!') : ''
     );
+    if (!empty($r['error'])) {
+        $notice .= ' — ' . $L('سبب الفشل: ', 'Failure reason: ') . (string)$r['error'];
+    }
 }
 
 // 🆕 رسالة بعد المعالجة عبر PRG
@@ -118,6 +123,36 @@ endif; ?>
     <strong><?= e($notice) ?></strong>
   </div>
 <?php endif; ?>
+
+<!-- ============ حالة الكرون (هل الإرسال التلقائي يعمل أصلاً؟) ============ -->
+<?php
+$hb       = function_exists('cron_heartbeats') ? cron_heartbeats() : [];
+$hbDigest = isset($hb['digest']['t']) ? (int)$hb['digest']['t'] : 0;
+$hbStale  = ($hbDigest === 0) || (time() - $hbDigest > 26 * 3600);   // يومي → تحذير بعد 26 ساعة
+?>
+<div class="admin-card" style="border-inline-start:4px solid <?= $hbStale ? '#dc2626' : '#16a34a' ?>">
+  <h2>⏱️ <?= e($L('حالة الإرسال التلقائي (Cron)', 'Automation status (Cron)')) ?></h2>
+  <?php if ($hbDigest === 0): ?>
+    <p><strong style="color:#ef4444"><?= e($L('كرون النشرة لم يعمل ولا مرّة!', 'Digest cron has NEVER run!')) ?></strong></p>
+    <p class="admin-muted" style="line-height:1.9"><?= e($L(
+      'النشرة لا تُرسَل تلقائياً إلا عبر مهمّة Cron. اذهب إلى hPanel → Advanced → Cron Jobs وأضف مهمّة يومية:',
+      'The digest only sends automatically via a Cron job. Go to hPanel → Advanced → Cron Jobs and add a daily task:')) ?></p>
+    <pre style="background:#0a1626;padding:10px 14px;border-radius:8px;overflow:auto;direction:ltr;font-size:12px">php /home/USER/domains/wcup2026.org/public_html/cron/digest.php</pre>
+  <?php else: ?>
+    <p>
+      <span class="admin-badge <?= $hbStale ? 'admin-badge-bad' : 'admin-badge-ok' ?>"><?= e($hbStale ? $L('متوقّف','Stalled') : $L('يعمل','Running')) ?></span>
+      <?= e($L('آخر تشغيل', 'Last run')) ?>: <strong><?= e(date('Y-m-d H:i', $hbDigest)) ?></strong>
+      (<?= e(human_remaining(time() - $hbDigest)) ?> <?= e($L('مضت','ago')) ?>)
+      <?php if (!empty($hb['digest']['summary'])): ?>
+        — <span class="admin-muted"><?= e((string)$hb['digest']['summary']) ?></span>
+      <?php endif; ?>
+    </p>
+    <?php if ($hbStale): ?>
+      <p class="admin-muted"><?= e($L('مرّ أكثر من يوم على آخر تشغيل — تحقّق من مهمّة الكرون في hPanel.',
+                                       'More than a day since last run — check the cron job in hPanel.')) ?></p>
+    <?php endif; ?>
+  <?php endif; ?>
+</div>
 
 <!-- ============ حالة SMTP ============ -->
 <div class="admin-card">
@@ -221,6 +256,18 @@ endif; ?>
     <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:#f59e0b"><?= $pendingN ?></div><div style="font-size:12px;color:#9fb3d1"><?= e($L('متبقّ','Remaining')) ?></div></div>
     <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:#cbd5e1"><?= $total ?></div><div style="font-size:12px;color:#9fb3d1"><?= e($L('إجمالي','Total')) ?></div></div>
   </div>
+
+  <?php if (!empty($queue['last_error'])): ?>
+  <div style="background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.35);border-radius:10px;padding:10px 14px;margin-bottom:14px">
+    <strong>⚠️ <?= e($L('سبب آخر فشل', 'Last failure reason')) ?>:</strong>
+    <span style="direction:ltr;display:inline-block"><?= e((string)$queue['last_error']) ?></span>
+    <?php if (stripos((string)$queue['last_error'], 'AUTH') !== false): ?>
+      <div class="admin-muted" style="margin-top:6px;font-size:13px"><?= e($L(
+        'فشل مصادقة = كلمة سر صندوق البريد خاطئة. صحّحها في hPanel → Emails ثم حدّث SMTP_PASS في config.local.php.',
+        'Auth failure = wrong mailbox password. Fix it in hPanel → Emails then update SMTP_PASS in config.local.php.')) ?></div>
+    <?php endif; ?>
+  </div>
+  <?php endif; ?>
 
   <div style="display:flex;gap:10px;flex-wrap:wrap">
     <form method="post" action="admin.php" style="display:inline">

@@ -52,9 +52,13 @@ if ($test !== '') {
     if ($dry) { $log($mail['subject']); $log(''); $log($mail['text']); exit; }
     $ok = Mailer::send($test, $mail['subject'], $mail['html'], $mail['text']);
     Digest::log('test', $ok ? 1 : 0, $ok ? 0 : 1, 1);
-    $log($ok ? "test sent to {$test}" : "test FAILED (تحقّق من بيانات SMTP)");
+    $log($ok ? "test sent to {$test}"
+             : "test FAILED — " . (Mailer::lastError() !== '' ? Mailer::lastError() : 'تحقّق من بيانات SMTP'));
     exit;
 }
+
+// نبض الكرون: تثبت لوحة التحكم أن المهمة مضبوطة وتعمل فعلاً.
+if (function_exists('cron_heartbeat')) { cron_heartbeat('digest', 'started'); }
 
 // 🆕 معالجة الطابور أوّلاً — لو يوجد إرسال يدوي معلّق من admin
 $queue = Digest::queueRead();
@@ -62,6 +66,12 @@ if ($queue && !empty($queue['pending'])) {
     $log("[queue] found " . count($queue['pending']) . " pending — processing batch...");
     $r = Digest::queueProcess(20); // 20 رسالة لكل تشغيل cron
     $log("[queue] batch: sent={$r['sent']} fail={$r['fail']} remaining={$r['remaining']}" . ($r['done'] ? ' DONE' : ''));
+    if ($r['fail'] > 0 && class_exists('Mailer') && Mailer::lastError() !== '') {
+        $log('[queue] آخر سبب فشل: ' . Mailer::lastError());
+    }
+    if (function_exists('cron_heartbeat')) {
+        cron_heartbeat('digest', "queue: sent={$r['sent']} fail={$r['fail']} remaining={$r['remaining']}");
+    }
     if (!$r['done']) {
         // ما زال الطابور قيد التنفيذ — لا تشغّل النشرة الدوريّة هذه الجلسة
         exit;
@@ -103,7 +113,17 @@ foreach ($recips as $u) {
 }
 
 if (!$dry) {
-    @file_put_contents($stateFile, date('Y-m-d'));
+    // لا تُسجَّل «أُرسلت اليوم» إذا فشل كل شيء — وإلا تُحجَب إعادة المحاولة
+    // يومين كاملين رغم أن أحداً لم يستلم النشرة.
+    if ($sent > 0 || $fail === 0) {
+        @file_put_contents($stateFile, date('Y-m-d'));
+    }
     Digest::log($predOnly ? 'digest-predictors' : 'digest', $sent, $fail, count($recips));
+}
+if ($fail > 0 && class_exists('Mailer') && Mailer::lastError() !== '') {
+    $log('آخر سبب فشل: ' . Mailer::lastError());
+}
+if (function_exists('cron_heartbeat')) {
+    cron_heartbeat('digest', "sent={$sent} fail={$fail} rcpt=" . count($recips) . ($dry ? ' (dry)' : ''));
 }
 $log("done: sent={$sent} fail={$fail} recipients=" . count($recips) . ($dry ? ' (dry-run)' : ''));

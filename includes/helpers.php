@@ -9,6 +9,28 @@ function e(?string $s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+/**
+ * cron_heartbeat() — يسجّل أن سكربت كرون اشتغل الآن (مع ملخّص النتيجة).
+ * تعرضها لوحة التحكم لتكشف فوراً ما إذا كانت مهام الكرون مضبوطة وتعمل فعلاً —
+ * أكثر سبب شائع لـ«النشرة لا تُرسَل / النشر التلقائي متوقّف» هو كرون غير مضبوط.
+ */
+function cron_heartbeat(string $name, string $summary = ''): void {
+    $f = rtrim(CACHE_DIR, '/') . '/cron_heartbeat.json';
+    $d = is_file($f) ? (json_decode((string)@file_get_contents($f), true) ?: []) : [];
+    if (!is_array($d)) $d = [];
+    $d[$name] = ['t' => time(), 'summary' => mb_substr($summary, 0, 200, 'UTF-8')];
+    if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+    @file_put_contents($f, json_encode($d, JSON_UNESCAPED_UNICODE));
+}
+
+/** آخر نبضات الكرون: ['tweet' => ['t'=>ts,'summary'=>..], 'digest' => ...]. */
+function cron_heartbeats(): array {
+    $f = rtrim(CACHE_DIR, '/') . '/cron_heartbeat.json';
+    if (!is_file($f)) return [];
+    $d = json_decode((string)@file_get_contents($f), true);
+    return is_array($d) ? $d : [];
+}
+
 /** يحوّل عدد ثوانٍ متبقّية إلى نصّ مقروء: "2س 34د" أو "12د 5ث". */
 function human_remaining(int $sec): string {
     $sec = max(0, $sec);

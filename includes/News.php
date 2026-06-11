@@ -28,6 +28,17 @@ class News
             if (is_array($d)) return array_slice($d, 0, $limit);
         }
 
+        // فشل قريب مُسجَّل → لا تعاود جلب RSS في كل طلب (مهلتا 5 ثوانٍ لكل صفحة)،
+        // قدّم النسخة القديمة إن وُجدت.
+        $failMarker = $cache . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < 300)) {
+            if (is_file($cache)) {
+                $d = json_decode((string)@file_get_contents($cache), true);
+                if (is_array($d)) return array_slice($d, 0, $limit);
+            }
+            return [];
+        }
+
         // اجلب من المصدرين وادمج (Bing أولاً ليحتفظ بصوره عند التكرار)
         $items = [];
         foreach ($urls as $u) {
@@ -53,10 +64,13 @@ class News
         if ($items) {
             if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
             @file_put_contents($cache, json_encode($items, JSON_UNESCAPED_UNICODE));
+            @unlink($failMarker);
             return array_slice($items, 0, $limit);
         }
 
-        // فشل → كاش قديم إن وُجد
+        // فشل → سجّله (يمنع إعادة المحاولة مع كل طلب) ثم كاش قديم إن وُجد
+        if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+        @touch($failMarker);
         if (is_file($cache)) {
             $d = json_decode((string)@file_get_contents($cache), true);
             if (is_array($d)) return array_slice($d, 0, $limit);

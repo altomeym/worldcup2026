@@ -69,12 +69,19 @@ function security_init(): void
 
     // CSP: يسمح بالخطوط (Google Fonts) والصور الخارجية (أعلام/ويكيبيديا/أخبار).
     // 'unsafe-inline' للنصوص البرمجية المضمّنة (الإخراج كله مُهرَّب أصلاً).
+    // عند تفعيل AdSense (ADSENSE_CLIENT) تُضاف نطاقات جوجل الإعلانية المطلوبة
+    // (سكربت + إطارات الإعلانات + اتصالات القياس) — بدونها يحجب المتصفح الإعلانات.
+    $adsOn   = defined('ADSENSE_CLIENT') && ADSENSE_CLIENT !== '';
+    $adHosts = ' https://*.googlesyndication.com https://*.doubleclick.net'
+             . ' https://*.google.com https://*.gstatic.com'
+             . ' https://*.adtrafficquality.google https://fundingchoicesmessages.google.com';
     $csp = "default-src 'self'; "
-         . "script-src 'self' 'unsafe-inline'; "
+         . "script-src 'self' 'unsafe-inline'" . ($adsOn ? $adHosts : '') . "; "
          . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
          . "font-src 'self' https://fonts.gstatic.com; "
          . "img-src 'self' data: https:; "
-         . "connect-src 'self'; "
+         . "connect-src 'self'" . ($adsOn ? $adHosts : '') . "; "
+         . "frame-src 'self'" . ($adsOn ? $adHosts : '') . "; "
          . "object-src 'none'; "
          . "base-uri 'self'; "
          . "form-action 'self'; "

@@ -118,8 +118,12 @@ function render_tactical_pitch(array $lineup, string $t1en, string $t2en, array 
     $f2 = !empty($L2['formation']) ? $L2['formation'] : '';
     ?>
     <div class="tboard<?= $sample ? ' tboard-sample' : '' ?>">
-      <?php if ($sample): ?>
-        <span class="tboard-tag">🧪 <?= e(t('lineup_preview_tag')) ?></span>
+      <?php
+      // وسم أعلى اللوحة: «تجريبية» للنموذج، أو وسم مخصّص (مثل «تشكيلة متوقعة»)
+      $boardTag = $sample ? ('🧪 ' . t('lineup_preview_tag')) : trim((string)($opts['tag'] ?? ''));
+      ?>
+      <?php if ($boardTag !== ''): ?>
+        <span class="tboard-tag"><?= e($boardTag) ?></span>
       <?php endif; ?>
 
       <div class="tboard-head">

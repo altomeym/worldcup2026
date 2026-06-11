@@ -49,6 +49,11 @@ define('CONTACT_PHONE', (string)cfg_secret('CONTACT_PHONE', '', $__local));
 define('GOOGLE_SITE_VERIFICATION', (string)cfg_secret('GOOGLE_SITE_VERIFICATION', '', $__local));
 define('BING_SITE_VERIFICATION', (string)cfg_secret('BING_SITE_VERIFICATION', '', $__local));
 
+// ---------- إعلانات Google AdSense ----------
+// معرّف الناشر (ca-pub-...). فارغ = لا إعلانات ولا أي تغيير في CSP.
+// عند ضبطه: يُحقن سكربت AdSense في <head> وتُوسَّع CSP لنطاقات جوجل تلقائياً.
+define('ADSENSE_CLIENT', (string)cfg_secret('ADSENSE_CLIENT', 'ca-pub-7946017229023665', $__local));
+
 // ---------- مصدر البيانات (مجاني 100% — بدون مفتاح API) ----------
 // openfootball: بيانات ملكية عامة، بدون حد طلبات، بدون تسجيل
 define('DATA_SOURCE', 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');
@@ -160,11 +165,19 @@ define('X_ACCESS_TOKEN',   (string)cfg_secret('X_ACCESS_TOKEN',   '', $__local))
 define('X_ACCESS_SECRET',  (string)cfg_secret('X_ACCESS_SECRET',  '', $__local));
 // اسم الحساب (يُعرَض في لوحة التحكم — تجميلي فقط).
 define('X_HANDLE',         (string)cfg_secret('X_HANDLE',         'wcup2026', $__local));
-// الوسوم الرسمية المُلحَقة بكل تغريدة — عربيّة + إنجليزيّة لتغطية الجمهورَين.
+// الوسوم المُلحَقة بكل تغريدة — عربيّة + إنجليزيّة لتغطية الجمهورَين.
 // X_HASHTAGS       = 4 هاشتاكات للتغريدات اليوميّة العامّة
 // X_HASHTAGS_CORE  = 2 هاشتاكات أقصر — للتغريدات التي تضيف هاشتاكات منتخبات/مضيف
-define('X_HASHTAGS',       '#كأس_العالم_2026 #المونديال #WeAre26 #FIFAWorldCup26');
-define('X_HASHTAGS_CORE',  '#كأس_العالم_2026 #FIFAWorldCup26');
+// الاختيار على أساس حجم البحث الفعلي وقت البطولة (يونيو 2026):
+//   #كأس_العالم_2026 + #المونديال = الأعلى تداولاً عربياً
+//   #WorldCup2026 = الوسم العالمي الأضخم في الافتتاح · #FIFAWorldCup = وسم FIFA الدائم
+//   (#WeAre26 شعار حملة تسويقية لا يبحث عنه الجمهور — أُزيل)
+// قابلة للتجاوز من config.local.php دون تعديل هذا الملف:
+//   'X_HASHTAGS' => '#وسم1 #وسم2 ...',
+define('X_HASHTAGS',      (string)cfg_secret('X_HASHTAGS',
+    '#كأس_العالم_2026 #المونديال #WorldCup2026 #FIFAWorldCup', $__local));
+define('X_HASHTAGS_CORE', (string)cfg_secret('X_HASHTAGS_CORE',
+    '#كأس_العالم_2026 #WorldCup2026', $__local));
 
 // ---------- حدود حماية حساب X من الإيقاف (RateGuard) ----------
 // محافظة لكن واقعيّة — تسمح بـ ~10-12 تغريدة/ساعة (مساحة محترمة)، تبقى بعيدة

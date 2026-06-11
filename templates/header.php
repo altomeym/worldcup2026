@@ -62,6 +62,10 @@ seo_head([
     'image'       => (isset($page_image) && $page_image !== '') ? $page_image : null,
 ]);
 ?>
+<?php if (defined('ADSENSE_CLIENT') && ADSENSE_CLIENT !== ''): ?>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= e(ADSENSE_CLIENT) ?>"
+     crossorigin="anonymous"></script>
+<?php endif; ?>
 <link rel="preconnect" href="https://flagcdn.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -189,28 +189,44 @@ class Digest
         $sent  = 0; $fail = 0;
         $batch = max(1, min(50, $batch));
 
+        $lastErr = '';
         for ($i = 0; $i < $batch && !empty($q['pending']); $i++) {
             $u = array_shift($q['pending']);
             if (!is_array($u) || empty($u['email'])) continue;
             $mail = self::buildEmail($u, $h, $stand[$u['id']] ?? null);
             $ok   = Mailer::send($u['email'], $mail['subject'], $mail['html'], $mail['text']);
-            $ok ? $sent++ : $fail++;
+            if ($ok) {
+                $sent++;
+            } else {
+                $fail++;
+                if (method_exists('Mailer', 'lastError') && Mailer::lastError() !== '') {
+                    $lastErr = Mailer::lastError();
+                }
+                // فشل مصادقة SMTP → كل الرسائل التالية ستفشل بنفس السبب.
+                // أوقف الدفعة فوراً وأبقِ المتبقّين في الطابور بدل حرقهم واحداً واحداً.
+                if (strpos($lastErr, 'AUTH') !== false || strpos($lastErr, 'connect failed') !== false) {
+                    array_unshift($q['pending'], $u);   // أعد المستلِم الحالي للطابور
+                    $fail--;
+                    break;
+                }
+            }
             usleep(150000); // 0.15ث بين الرسائل (ضمن نفس الدفعة فقط)
         }
 
         $q['sent'] += $sent;
         $q['fail'] += $fail;
+        if ($lastErr !== '') $q['last_error'] = mb_substr($lastErr, 0, 250, 'UTF-8');
         $remaining = count($q['pending']);
 
         if ($remaining === 0) {
             // اكتمل الطابور — سجّل النتيجة + احذفه
             self::log($q['type'], (int)$q['sent'], (int)$q['fail'], (int)$q['total']);
             self::queueClear();
-            return ['sent' => $sent, 'fail' => $fail, 'remaining' => 0, 'done' => true];
+            return ['sent' => $sent, 'fail' => $fail, 'remaining' => 0, 'done' => true, 'error' => $lastErr];
         }
 
         self::queueWrite($q);
-        return ['sent' => $sent, 'fail' => $fail, 'remaining' => $remaining, 'done' => false];
+        return ['sent' => $sent, 'fail' => $fail, 'remaining' => $remaining, 'done' => false, 'error' => $lastErr];
     }
 
     /** عناصر مشتركة بين كل الرسائل (تُحسب مرة واحدة). */

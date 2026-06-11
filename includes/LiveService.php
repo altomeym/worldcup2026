@@ -35,10 +35,8 @@ class LiveService
         if (self::$live !== null) {
             return self::$live;
         }
-        if (!self::isEnabled()) {
-            self::$live = [];
-            return self::$live;
-        }
+        // ملاحظة: لم نعد نتوقف عند غياب مفتاح API-Football —
+        // EspnLive (مجاني بلا مفتاح) يتكفّل بالنتائج اللحظية كاحتياط دائم.
 
         // 1) جرّب الكاش اللحظي أولاً
         $cacheFile = rtrim(CACHE_DIR, '/') . '/live.json';
@@ -51,17 +49,30 @@ class LiveService
             }
         }
 
-        // 2) اجلب من API-Football
-        $fetched = self::fetchLive();
+        // فشل قريب مُسجَّل → لا تعاود الجلب في كل طلب، قدّم آخر نسخة متاحة
+        $failMarker = $cacheFile . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < 60)) {
+            $stale = is_file($cacheFile) ? json_decode((string)@file_get_contents($cacheFile), true) : null;
+            self::$live = is_array($stale) ? $stale : [];
+            return self::$live;
+        }
+
+        // 2) اجلب من API-Football (إن كان مفعّلاً)، وإلا/وعند فشله → ESPN المجاني
+        $fetched = self::isEnabled() ? self::fetchLive() : null;
+        if ($fetched === null && class_exists('EspnLive')) {
+            $fetched = EspnLive::fetchLive();
+        }
         if ($fetched !== null) {
             // كتابة ذرّية
             $tmp = $cacheFile . '.tmp';
             if (@file_put_contents($tmp, json_encode($fetched, JSON_UNESCAPED_UNICODE)) !== false) {
                 @rename($tmp, $cacheFile);
             }
+            @unlink($failMarker);
             self::$live = $fetched;
             return self::$live;
         }
+        @touch($failMarker);
 
         // 3) فشل → استخدم آخر كاش متاح (حتى لو قديم)
         if (is_file($cacheFile)) {
@@ -95,6 +106,9 @@ class LiveService
 
         $json = json_decode($raw, true);
         if (!is_array($json) || !isset($json['response'])) return null;
+        // API-Football يعيد أخطاء الخطة/المفتاح بحالة HTTP 200 و response فارغ —
+        // اعتبرها فشلاً صريحاً حتى يتفعّل احتياط ESPN المجاني بدلاً منه.
+        if (!empty($json['errors'])) return null;
 
         $out = [];
         foreach ($json['response'] as $fx) {
@@ -148,6 +162,13 @@ class LiveService
             }
         }
 
+        // فشل قريب → لا تعاود الجلب الآن، قدّم آخر نسخة متاحة
+        $failMarker = $cacheFile . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < 120)) {
+            $stale = is_file($cacheFile) ? json_decode((string)@file_get_contents($cacheFile), true) : null;
+            return is_array($stale) ? $stale : [];
+        }
+
         // 2) اجلب أحداث المباراة (نوع البطاقات فقط)
         $fetched = self::fetchEvents($fixtureId, $home);
         if ($fetched !== null) {
@@ -155,8 +176,10 @@ class LiveService
             if (@file_put_contents($tmp, json_encode($fetched, JSON_UNESCAPED_UNICODE)) !== false) {
                 @rename($tmp, $cacheFile);
             }
+            @unlink($failMarker);
             return $fetched;
         }
+        @touch($failMarker);
 
         // 3) فشل → آخر كاش متاح (حتى لو قديم)
         if (is_file($cacheFile)) {
@@ -287,8 +310,8 @@ class LiveService
             }
         }
 
-        if (!self::isEnabled()) return $match;
-
+        // النتائج اللحظية تعمل حتى بدون مفتاح API-Football (احتياط ESPN المجاني) —
+        // أما الإحصائيات/البطاقات/التشكيلات فتتحقق دوالها من المفتاح بنفسها.
         $live = self::liveScores();
         if (!$live) return $match;
 
@@ -319,7 +342,7 @@ class LiveService
         }
         $match['_live']        = ($hit['status'] === 'live');
         $match['_live_minute'] = $hit['elapsed'] ?? null;
-        $match['_live_source'] = 'api-football';
+        $match['_live_source'] = (string)($hit['_src'] ?? 'api-football');
 
         // اسم الحكم (إن توفّر فقط) — من النتائج اللحظيّة
         if (!empty($hit['referee'])) {
@@ -440,6 +463,11 @@ class LiveService
      */
     public static function lineupForMatch(array $match): ?array
     {
+        // (0) الملف اليدوي data/lineups-manual.json — أولوية قصوى.
+        //     لا يحتاج API إطلاقاً (خطة API-Football المجانية لا تدعم موسم 2026).
+        $manual = self::manualLineup($match);
+        if ($manual !== null) return $manual;
+
         if (!self::isEnabled()) return null;
 
         $t1 = trim($match['team1'] ?? '');
@@ -533,6 +561,110 @@ class LiveService
     }
 
     /**
+     * manualLineup() — تشكيلة من data/lineups-manual.json (أولوية فوق API).
+     * صيغة الملف — المفتاح "Team1|Team2" بالأسماء الإنجليزية (كما في openfootball):
+     * {
+     *   "Mexico|South Africa": {
+     *     "team1": { "formation": "4-3-3", "coach": "اسم المدرب",
+     *                "start": [ {"name":"...","number":1}, ... 11 لاعباً بالترتيب: حارس ثم دفاع ثم وسط ثم هجوم ],
+     *                "subs":  [ {"name":"...","number":12}, ... ] },
+     *     "team2": { ... }
+     *   }
+     * }
+     * مواضع الملعب (grid) تُحسب تلقائياً من الخطة إن لم تُذكر.
+     */
+    private static function manualLineup(array $match): ?array
+    {
+        static $all = null;
+        if ($all === null) {
+            $f = __DIR__ . '/../data/lineups-manual.json';
+            $d = is_file($f) ? json_decode((string)@file_get_contents($f), true) : null;
+            $all = is_array($d) ? $d : [];
+            foreach (array_keys($all) as $k) {           // تجاهل حقول _README الإدارية
+                if (strpos((string)$k, '_') === 0) unset($all[$k]);
+            }
+        }
+        if (!$all) return null;
+
+        $t1 = trim((string)($match['team1'] ?? ''));
+        $t2 = trim((string)($match['team2'] ?? ''));
+        if ($t1 === '' || $t2 === '') return null;
+
+        $entry = $all[$t1 . '|' . $t2] ?? null;
+        $rev   = false;
+        if ($entry === null && isset($all[$t2 . '|' . $t1])) {
+            $entry = $all[$t2 . '|' . $t1];
+            $rev   = true;
+        }
+        if (!is_array($entry)) return null;
+
+        $A = self::normalizeManualTeam($entry['team1'] ?? null);
+        $B = self::normalizeManualTeam($entry['team2'] ?? null);
+        if ($A === null || $B === null) return null;
+
+        $out = $rev ? ['team1' => $B, 'team2' => $A] : ['team1' => $A, 'team2' => $B];
+        if (!empty($entry['probable'])) { $out['probable'] = true; }   // وسم «متوقعة» في العرض
+        return $out;
+    }
+
+    /** يطبّع فريقاً من الملف اليدوي ويحسب grid تلقائياً من الخطة عند غيابه. */
+    private static function normalizeManualTeam($t): ?array
+    {
+        if (!is_array($t)) return null;
+        $formation = trim((string)($t['formation'] ?? ''));
+
+        $start = [];
+        foreach ((is_array($t['start'] ?? null) ? $t['start'] : []) as $p) {
+            if (is_string($p)) $p = ['name' => $p];
+            if (!is_array($p)) continue;
+            $n = trim((string)($p['name'] ?? ''));
+            if ($n === '') continue;
+            $start[] = [
+                'name'   => $n,
+                'number' => (isset($p['number']) && $p['number'] !== '') ? (int)$p['number'] : null,
+                'grid'   => trim((string)($p['grid'] ?? '')),
+            ];
+        }
+        if (count($start) < 7) return null;   // تشكيلة غير مكتملة → تجاهل المدخل
+
+        // أكمل مواضع الملعب من الخطة: GK في الصف 1، ثم صفوف الخطة (4-3-3 → 4 ثم 3 ثم 3)
+        $missingGrid = false;
+        foreach ($start as $p) { if ($p['grid'] === '') { $missingGrid = true; break; } }
+        if ($missingGrid) {
+            $rows = array_values(array_filter(array_map('intval', explode('-', $formation)), fn($x) => $x > 0));
+            if (!$rows || array_sum($rows) !== count($start) - 1) {
+                $rows = [4, 3, 3];   // خطة افتراضية إن غابت/لم تطابق العدد
+            }
+            $gridList = ['1:1'];
+            $row = 2;
+            foreach ($rows as $cnt) {
+                for ($cCol = 1; $cCol <= $cnt; $cCol++) { $gridList[] = $row . ':' . $cCol; }
+                $row++;
+            }
+            foreach ($start as $i => &$p) {
+                if ($p['grid'] === '') { $p['grid'] = $gridList[$i] ?? ''; }
+            }
+            unset($p);
+        }
+
+        $subs = [];
+        foreach ((is_array($t['subs'] ?? null) ? $t['subs'] : []) as $p) {
+            if (is_string($p)) $p = ['name' => $p];
+            if (!is_array($p)) continue;
+            $n = trim((string)($p['name'] ?? ''));
+            if ($n === '') continue;
+            $subs[] = ['name' => $n, 'number' => (isset($p['number']) && $p['number'] !== '') ? (int)$p['number'] : null];
+        }
+
+        return [
+            'formation' => $formation,
+            'coach'     => trim((string)($t['coach'] ?? '')),
+            'start'     => $start,
+            'subs'      => $subs,
+        ];
+    }
+
+    /**
      * refereeFor() — يبحث عن الحكم بالترتيب:
      *   1) data/referees-manual.json  (أولويّة قصوى — تُضاف يدوياً عند إعلان FIFA)
      *   2) API-Football fixturesMap   (تلقائي حين تُحدّث API-Football بياناتها)
@@ -568,6 +700,9 @@ class LiveService
      *   3) API-Football
      * كلّ ما سبق يُثرى تلقائياً بمساعدَين + علم + دولة من Wikipedia.
      */
+    /** نتائج officialsFor محفوظة بالذاكرة لكل زوج فريقين (تُستدعى لكل مباراة في كل allMatches) */
+    private static array $officialsMemo = [];
+
     public static function officialsFor(array $match): array
     {
         $empty = ['main' => null, 'assistants' => [], 'var' => null, 'fourth' => null];
@@ -576,6 +711,11 @@ class LiveService
         $t2 = trim((string)($match['team2'] ?? ''));
         if ($t1 === '' || $t2 === '') return $empty;
 
+        $memoKey = $t1 . '|' . $t2;
+        if (isset(self::$officialsMemo[$memoKey])) {
+            return self::$officialsMemo[$memoKey];
+        }
+
         // ────────────────────────────────────────────────
         // (1) الملف اليدوي — أولويّة قصوى
         // ────────────────────────────────────────────────
@@ -583,10 +723,10 @@ class LiveService
         $entry  = $manual[$t1 . '|' . $t2] ?? ($manual[$t2 . '|' . $t1] ?? null);
         if ($entry !== null) {
             if (is_string($entry) && trim($entry) !== '') {
-                return self::enrich(['main' => ['name' => trim($entry)]]);
+                return self::$officialsMemo[$memoKey] = self::enrich(['main' => ['name' => trim($entry)]]);
             }
             if (is_array($entry)) {
-                return self::enrich([
+                return self::$officialsMemo[$memoKey] = self::enrich([
                     'main'       => self::normalizeOfficial($entry['main']       ?? null),
                     'assistants' => self::normalizeOfficials($entry['assistants'] ?? null),
                     'var'        => self::normalizeOfficial($entry['var']        ?? null),
@@ -600,7 +740,7 @@ class LiveService
         // ────────────────────────────────────────────────
         $bi = self::BUILTIN_REFEREES[$t1 . '|' . $t2] ?? (self::BUILTIN_REFEREES[$t2 . '|' . $t1] ?? null);
         if (is_array($bi)) {
-            return self::enrich([
+            return self::$officialsMemo[$memoKey] = self::enrich([
                 'main'       => self::normalizeOfficial($bi['main']       ?? null),
                 'assistants' => self::normalizeOfficials($bi['assistants'] ?? null),
                 'var'        => self::normalizeOfficial($bi['var']        ?? null),
@@ -618,12 +758,12 @@ class LiveService
                 if (is_array($hit)) {
                     $ref = isset($hit['referee']) ? trim((string)$hit['referee']) : '';
                     if ($ref !== '') {
-                        return self::enrich(['main' => ['name' => $ref]]);
+                        return self::$officialsMemo[$memoKey] = self::enrich(['main' => ['name' => $ref]]);
                     }
                 }
             }
         }
-        return $empty;
+        return self::$officialsMemo[$memoKey] = $empty;
     }
 
     /**
@@ -717,16 +857,26 @@ class LiveService
         // كاش
         $cacheFile = rtrim(CACHE_DIR, '/') . '/af-stats-' . $fid . '.json';
         $ttl = (($match['_status'] ?? '') === 'finished') ? 86400 : 60;
-        if (is_file($cacheFile) && (time() - filemtime($cacheFile) < $ttl)) {
+        $stale = null;
+        if (is_file($cacheFile)) {
             $c = json_decode((string)@file_get_contents($cacheFile), true);
-            if (is_array($c)) return $c;
+            if (is_array($c)) {
+                if (time() - filemtime($cacheFile) < $ttl) return $c;
+                $stale = $c;
+            }
+        }
+
+        // فشل قريب → لا تعاود الجلب الآن (يمنع دفع مهلة 5 ثوانٍ لكل مباراة في كل طلب)
+        $failMarker = $cacheFile . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < 120)) {
+            return $stale ?? [];
         }
 
         $url = 'https://' . APIFOOTBALL_HOST . '/fixtures/statistics?fixture=' . $fid;
         $raw = self::httpGet($url, ['x-apisports-key: ' . APIFOOTBALL_KEY]);
-        if ($raw === null) return [];
+        if ($raw === null) { @touch($failMarker); return $stale ?? []; }
         $json = json_decode($raw, true);
-        if (!is_array($json) || empty($json['response'])) return [];
+        if (!is_array($json) || empty($json['response'])) { @touch($failMarker); return $stale ?? []; }
 
         // الاستجابة: مصفوفتان (home, away) لكلٍّ منها قائمة statistics.type/value
         $homeName = (string)($hit['home'] ?? $t1);
@@ -811,10 +961,23 @@ class LiveService
      */
     private static function fixturesMap(): array
     {
+        static $memo = null;
+        if ($memo !== null) return $memo;
+
         $cacheFile = rtrim(CACHE_DIR, '/') . '/af-fixtures.json';
-        if (is_file($cacheFile) && (time() - filemtime($cacheFile) < 86400)) {
+        $stale     = null;
+        if (is_file($cacheFile)) {
             $c = json_decode((string)@file_get_contents($cacheFile), true);
-            if (is_array($c)) return $c;
+            if (is_array($c)) {
+                if (time() - filemtime($cacheFile) < 86400) return $memo = $c;
+                $stale = $c;   // قديمة لكنها صالحة كاحتياط عند فشل الجلب
+            }
+        }
+
+        // فشل قريب مُسجَّل → لا تعاود الجلب في كل طلب (كانت كل صفحة تدفع مهلة 5 ثوانٍ)
+        $failMarker = $cacheFile . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < 300)) {
+            return $memo = ($stale ?? []);
         }
 
         $url = 'https://' . APIFOOTBALL_HOST . '/fixtures'
@@ -822,13 +985,17 @@ class LiveService
              . '&season=' . APIFOOTBALL_SEASON;
         $raw = self::httpGet($url, ['x-apisports-key: ' . APIFOOTBALL_KEY]);
         if ($raw === null) {
-            // فشل الجلب → خزّن خريطة فارغة مؤقّتاً لمدّة قصيرة لمنع الإلحاح
+            // فشل الجلب → سجّل الفشل (يمنع الإلحاح) وقدّم النسخة القديمة إن وُجدت
             if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
-            return [];
+            @touch($failMarker);
+            return $memo = ($stale ?? []);
         }
 
         $json = json_decode($raw, true);
-        if (!is_array($json) || !isset($json['response'])) return [];
+        if (!is_array($json) || !isset($json['response'])) {
+            @touch($failMarker);
+            return $memo = ($stale ?? []);
+        }
 
         $map = [];
         foreach ($json['response'] as $fx) {
@@ -851,7 +1018,11 @@ class LiveService
             if (@file_put_contents($tmp, json_encode($map, JSON_UNESCAPED_UNICODE)) !== false) {
                 @rename($tmp, $cacheFile);
             }
+            @unlink($failMarker);
+        } else {
+            // استجابة سليمة لكن فارغة (مثلاً نفدت الحصّة) → سجّلها فشلاً مؤقّتاً أيضاً
+            @touch($failMarker);
         }
-        return $map;
+        return $memo = ($map ?: ($stale ?? []));
     }
 }

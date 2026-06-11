@@ -33,6 +33,7 @@ $pages = [
     ['stickers.php',  '0.7', 'weekly'],
     ['trivia.php',    '0.7', 'daily'],
     ['archive.php',   '0.6', 'monthly'],
+    ['privacy.php',   '0.3', 'yearly'],
 ];
 
 // صفحات المباريات

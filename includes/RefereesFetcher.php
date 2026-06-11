@@ -22,15 +22,43 @@ class RefereesFetcher
     const WIKI_URL  = 'https://en.wikipedia.org/w/api.php?action=parse&page=2026_FIFA_World_Cup_officials&format=json&prop=wikitext&redirects=true';
     const CACHE_TTL = 604800; // 7 أيّام
 
+    /** مهلة إعادة المحاولة بعد جلب فاشل/فارغ — تمنع إعادة الجلب في كل طلب. */
+    const FAIL_RETRY_AFTER = 900; // 15 دقيقة
+
+    /** نسخة الذاكرة لهذا الطلب — lookup() تُستدعى عدّة مرات في الصفحة الواحدة. */
+    private static ?array $memo = null;
+
     /** يقرأ قائمة الحكام المُحلَّلة (من الكاش أو يجلبها من Wikipedia). */
     public static function all(): array
     {
+        if (self::$memo !== null) return self::$memo;
+
         $cacheFile = self::cachePath();
-        if (is_file($cacheFile) && (time() - filemtime($cacheFile) < self::CACHE_TTL)) {
+        $cached    = null;
+        if (is_file($cacheFile)) {
             $d = json_decode((string)@file_get_contents($cacheFile), true);
-            if (is_array($d)) return $d;
+            if (is_array($d)) $cached = $d;
         }
-        return self::refresh();
+
+        // كاش حديث → استخدمه مباشرة.
+        if ($cached !== null && (time() - filemtime($cacheFile) < self::CACHE_TTL)) {
+            return self::$memo = $cached;
+        }
+
+        // فشل قريب مُسجَّل؟ لا تعاود الجلب الآن — قدّم القديم (إن وُجد) بدل تعليق الصفحة.
+        $failMarker = $cacheFile . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < self::FAIL_RETRY_AFTER)) {
+            return self::$memo = ($cached ?? []);
+        }
+
+        $fresh = self::refresh();
+        // فشل الجلب/التحليل → سجّل الفشل (حتى لا يتكرّر مع كل طلب) وقدّم القديم.
+        if (!$fresh) {
+            if (!is_dir(dirname($failMarker))) @mkdir(dirname($failMarker), 0755, true);
+            @touch($failMarker);
+            return self::$memo = ($cached ?? []);
+        }
+        return self::$memo = $fresh;
     }
 
     /** يفرض جلباً جديداً من Wikipedia + يحفظ النتيجة. */
@@ -48,6 +76,7 @@ class RefereesFetcher
         $cacheFile = self::cachePath();
         if (!is_dir(dirname($cacheFile))) @mkdir(dirname($cacheFile), 0755, true);
         @file_put_contents($cacheFile, json_encode($list, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        @unlink($cacheFile . '.fail');
         return $list;
     }
 
@@ -242,14 +271,24 @@ class RefereesFetcher
 
     private static function httpGet(string $url): ?string
     {
-        $ctx = stream_context_create([
+        // الجالب الموحّد (cURL بمهلة صارمة 6 ثوانٍ، بلا تراكم مهلات) — كانت
+        // file_get_contents هنا بمهلة 20 ثانية تعلّق عمّال php-fpm وتسبّب 504.
+        if (function_exists('http_get')) {
+            return http_get($url, [
+                'timeout' => 6,
+                'ua'      => 'wcup2026.org/1.0 (contact: salah232@gmail.com)',
+            ]);
+        }
+        $prev = @ini_set('default_socket_timeout', '6');
+        $ctx  = stream_context_create([
             'http' => [
                 'method'  => 'GET',
                 'header'  => "User-Agent: wcup2026.org/1.0 (contact: salah232@gmail.com)\r\n",
-                'timeout' => 20,
+                'timeout' => 6,
             ],
         ]);
         $r = @file_get_contents($url, false, $ctx);
+        if ($prev !== false) { @ini_set('default_socket_timeout', (string)$prev); }
         return ($r === false) ? null : $r;
     }
 }

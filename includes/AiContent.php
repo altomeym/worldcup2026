@@ -65,13 +65,18 @@ class AiContent
             if ($c !== false && trim($c) !== '') return $c;
         }
 
+        // فشل قريب → لا تعاود النداء في كل طلب
+        if (!self::canAttempt($file)) return null;
+
         // ولّد ثم خزّن
         $text = self::generate($m, $type, $lang);
         if ($text !== null && trim($text) !== '') {
             if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
             @file_put_contents($file, $text);
+            self::clearFail($file);
             return $text;
         }
+        self::markFail($file);
         return null;
     }
 
@@ -94,6 +99,9 @@ class AiContent
             if (is_array($d) && isset($d['p1'], $d['p2'])) return $d;
         }
 
+        // فشل قريب → لا تعاود النداء في كل طلب
+        if (!self::canAttempt($file)) return null;
+
         $payload = [
             'model'      => defined('AI_MODEL') ? AI_MODEL : 'claude-haiku-4-5',
             'max_tokens' => 20,
@@ -109,15 +117,16 @@ class AiContent
             ]],
         ];
         $resp = self::call($payload);
-        if ($resp === null) return null;
+        if ($resp === null) { self::markFail($file); return null; }
         $text = '';
         foreach ($resp['content'] ?? [] as $block) {
             if (($block['type'] ?? '') === 'text') { $text = $block['text']; break; }
         }
-        if (!preg_match('/(\d{1,2})\s*[-:]\s*(\d{1,2})/', $text, $mm)) return null;
+        if (!preg_match('/(\d{1,2})\s*[-:]\s*(\d{1,2})/', $text, $mm)) { self::markFail($file); return null; }
         $d = ['p1' => min(30, (int)$mm[1]), 'p2' => min(30, (int)$mm[2])];
         if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
         @file_put_contents($file, json_encode($d));
+        self::clearFail($file);
         return $d;
     }
 
@@ -216,6 +225,9 @@ class AiContent
             if (self::validTrivia($d)) return $d;
         }
 
+        // فشل قريب → بنك الأسئلة الاحتياطي مباشرة دون نداء جديد
+        if (!self::canAttempt($file)) return self::fallbackTrivia($lang);
+
         $langWord = ($lang === 'ar') ? 'Arabic' : 'English';
         $payload = [
             'model'      => defined('AI_MODEL') ? AI_MODEL : 'claude-haiku-4-5',
@@ -236,7 +248,7 @@ class AiContent
             ]],
         ];
         $resp = self::call($payload);
-        if ($resp === null) return self::fallbackTrivia($lang);
+        if ($resp === null) { self::markFail($file); return self::fallbackTrivia($lang); }
         $text = '';
         foreach ($resp['content'] ?? [] as $block) {
             if (($block['type'] ?? '') === 'text') { $text = $block['text']; break; }
@@ -244,10 +256,11 @@ class AiContent
         // أزل أي أسوار ```json
         $text = trim(preg_replace('/^```[a-z]*|```$/m', '', $text));
         $d = json_decode($text, true);
-        if (!self::validTrivia($d)) return self::fallbackTrivia($lang);
+        if (!self::validTrivia($d)) { self::markFail($file); return self::fallbackTrivia($lang); }
         $d['correct'] = (int)$d['correct'];
         if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
         @file_put_contents($file, json_encode($d, JSON_UNESCAPED_UNICODE));
+        self::clearFail($file);
         return $d;
     }
 
@@ -529,6 +542,9 @@ class AiContent
             if ($c !== false && trim($c) !== '') return $c;
         }
 
+        // فشل قريب → لا تعاود النداء في كل طلب (كانت كل زيارة لـ«اليوم» تنتظر المهلة كاملة)
+        if (!self::canAttempt($file)) return null;
+
         $langWord = ($lang === 'ar') ? 'Arabic' : 'English';
 
         // حقائق اليوم: مباريات اليوم (إن وُجد DataService) لتأطير القصة دون اختراع وقائع.
@@ -573,16 +589,17 @@ class AiContent
         ];
 
         $resp = self::call($payload);
-        if ($resp === null) return null;
+        if ($resp === null) { self::markFail($file); return null; }
         $text = '';
         foreach ($resp['content'] ?? [] as $block) {
             if (($block['type'] ?? '') === 'text') { $text = $block['text']; break; }
         }
         $text = self::clean($text);
-        if ($text === '') return null;
+        if ($text === '') { self::markFail($file); return null; }
 
         if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
         @file_put_contents($file, $text);
+        self::clearFail($file);
         return $text;
     }
 
@@ -594,6 +611,29 @@ class AiContent
         $text = str_replace(['**', '__', '`', '#'], '', $text);
         $text = preg_replace("/\n{3,}/", "\n\n", $text);
         return trim($text);
+    }
+
+    // ========================================================
+    //  تخزين الفشل (negative cache): توليدٌ فشل لا يُعاد في كل طلب —
+    //  كانت كل زيارة تدفع مهلة AI_TIMEOUT كاملة عند تعثّر النداء.
+    // ========================================================
+
+    /** هل نحاول التوليد لهذا الملف الآن؟ (فشل خلال آخر 10 دقائق → لا) */
+    private static function canAttempt(string $file): bool
+    {
+        $fm = $file . '.fail';
+        return !(is_file($fm) && (time() - filemtime($fm) < 600));
+    }
+
+    private static function markFail(string $file): void
+    {
+        if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+        @touch($file . '.fail');
+    }
+
+    private static function clearFail(string $file): void
+    {
+        @unlink($file . '.fail');
     }
 
     /** نداء HTTP إلى Claude Messages API */

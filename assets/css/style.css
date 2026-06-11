@@ -470,6 +470,16 @@ img { display: block; max-width: 100%; }
 }
 .mc-ground { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* الحكم داخل بطاقة المباراة */
+.mc-ref {
+  margin-top: 6px;
+  font-size: .74rem; color: var(--text-faint);
+  display: flex; align-items: center; gap: 6px;
+  overflow: hidden; white-space: nowrap;
+}
+.mc-ref-flag { border-radius: 2px; flex: 0 0 auto; }
+.mc-ref-name { overflow: hidden; text-overflow: ellipsis; }
+
 /* ---------- العلم ---------- */
 .flag {
   border-radius: 4px; width: 44px; aspect-ratio: 3 / 2; height: auto;

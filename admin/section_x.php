@@ -26,7 +26,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $notice = $L('المفاتيح غير مضبوطة — أضف X_API_KEY / X_API_SECRET / X_ACCESS_TOKEN / X_ACCESS_SECRET في config.local.php.',
                          'Keys not set — add X_API_KEY / X_API_SECRET / X_ACCESS_TOKEN / X_ACCESS_SECRET to config.local.php.');
         } else {
-            $r = XPublisher::tweet($text);
+            // بطاقة مصوّرة مرافقة لفترات المباريات/النتائج (نفس منطق الكرون)
+            $img = null;
+            if (class_exists('TweetCardImage')) {
+                if ($slot === 'morning') {
+                    $list = DataService::matchesOnDate();
+                    if ($list) $img = TweetCardImage::generate($list, ['title' => 'مباريات اليوم', 'subtitle' => 'كأس العالم 2026']);
+                } elseif ($slot === 'evening' || $slot === 'recap') {
+                    $list = DataService::latestResults(3);
+                    if ($list) $img = TweetCardImage::generate($list, ['title' => 'نتائج المباريات', 'subtitle' => 'كأس العالم 2026', 'mode' => 'result']);
+                }
+            }
+            $r = XPublisher::tweet($text, $img);
             $noticeOk = (bool)$r['ok'];
             $notice = $r['ok']
                 ? $L('تم النشر ✓ — معرّف التغريدة: ' . $r['id'], 'Tweet posted ✓ — ID: ' . $r['id'])
@@ -91,6 +102,37 @@ $handle     = defined('X_HANDLE') ? X_HANDLE : 'wcup2026';
     <strong><?= e($notice) ?></strong>
   </div>
 <?php endif; ?>
+
+<!-- ============ حالة الكرون (هل النشر التلقائي يعمل أصلاً؟) ============ -->
+<?php
+$hb      = function_exists('cron_heartbeats') ? cron_heartbeats() : [];
+$hbTweet = isset($hb['tweet']['t']) ? (int)$hb['tweet']['t'] : 0;
+// المفترض كل 15 دقيقة → تحذير إذا تجاوز ساعتين
+$hbStale = ($hbTweet === 0) || (time() - $hbTweet > 2 * 3600);
+?>
+<div class="admin-card" style="border-inline-start:4px solid <?= $hbStale ? '#dc2626' : '#16a34a' ?>">
+  <h2>⏱️ <?= e($L('حالة النشر التلقائي (Cron)', 'Automation status (Cron)')) ?></h2>
+  <?php if ($hbTweet === 0): ?>
+    <p><strong style="color:#ef4444"><?= e($L('كرون التغريد لم يعمل ولا مرّة!', 'Tweet cron has NEVER run!')) ?></strong></p>
+    <p class="admin-muted" style="line-height:1.9"><?= e($L(
+      'النشر التلقائي لا يحدث إلا عبر مهمّة Cron كل 15 دقيقة. اذهب إلى hPanel → Advanced → Cron Jobs وأضف:',
+      'Auto-publishing only happens via a Cron job every 15 minutes. Go to hPanel → Advanced → Cron Jobs and add:')) ?></p>
+    <pre style="background:#0a1626;padding:10px 14px;border-radius:8px;overflow:auto;direction:ltr;font-size:12px">*/15 * * * *  php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php</pre>
+  <?php else: ?>
+    <p>
+      <span class="admin-badge <?= $hbStale ? 'admin-badge-bad' : 'admin-badge-ok' ?>"><?= e($hbStale ? $L('متوقّف','Stalled') : $L('يعمل','Running')) ?></span>
+      <?= e($L('آخر تشغيل', 'Last run')) ?>: <strong><?= e(date('Y-m-d H:i', $hbTweet)) ?></strong>
+      (<?= e(human_remaining(time() - $hbTweet)) ?> <?= e($L('مضت','ago')) ?>)
+      <?php if (!empty($hb['tweet']['summary'])): ?>
+        — <span class="admin-muted"><?= e((string)$hb['tweet']['summary']) ?></span>
+      <?php endif; ?>
+    </p>
+    <?php if ($hbStale): ?>
+      <p class="admin-muted"><?= e($L('مرّت أكثر من ساعتين على آخر تشغيل — تحقّق من مهمّة الكرون في hPanel.',
+                                       'More than 2 hours since last run — check the cron job in hPanel.')) ?></p>
+    <?php endif; ?>
+  <?php endif; ?>
+</div>
 
 <!-- ============ 🛡️ حماية الحساب (RateGuard) ============ -->
 <?php

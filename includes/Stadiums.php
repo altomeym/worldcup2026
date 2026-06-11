@@ -135,6 +135,12 @@ class Stadiums
             return trim((string)@file_get_contents($cf));
         }
 
+        // فشل قريب مُسجَّل → لا تعاود سؤال Wikipedia في كل طلب
+        $failMarker = $cf . '.fail';
+        if (is_file($failMarker) && (time() - filemtime($failMarker) < 900)) {
+            return is_file($cf) ? trim((string)@file_get_contents($cf)) : '';
+        }
+
         $url  = 'https://en.wikipedia.org/api/rest_v1/page/summary/' . rawurlencode($s['wiki']);
         $body = self::httpGet($url);
         $img  = '';
@@ -155,6 +161,9 @@ class Stadiums
         }
         if ($img !== '') {
             @file_put_contents($cf, $img);
+            @unlink($failMarker);
+        } else {
+            @touch($failMarker);
         }
         return $img;
     }

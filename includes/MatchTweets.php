@@ -78,7 +78,11 @@ class MatchTweets
     public static function sendPre(array $m, string $lang): array
     {
         $text = self::buildPre($m, $lang);
-        $r = XPublisher::tweet($text);
+        // بطاقة مصوّرة بأسلوب القنوات الرياضية — ترفع التفاعل بوضوح
+        $img = class_exists('TweetCardImage')
+             ? TweetCardImage::generate([$m], ['title' => 'مباراة قادمة', 'subtitle' => 'كأس العالم 2026'])
+             : null;
+        $r = XPublisher::tweet($text, $img);
         if ($r['ok']) self::markSent((int)$m['_index'], 'pre', $lang, (string)$r['id']);
         return $r + ['text' => $text];
     }
@@ -87,7 +91,10 @@ class MatchTweets
     public static function sendPost(array $m, string $lang): array
     {
         $text = self::buildPost($m, $lang);
-        $r = XPublisher::tweet($text);
+        $img = class_exists('TweetCardImage')
+             ? TweetCardImage::generate([$m], ['title' => 'نتيجة المباراة', 'subtitle' => 'كأس العالم 2026', 'mode' => 'result'])
+             : null;
+        $r = XPublisher::tweet($text, $img);
         if ($r['ok']) self::markSent((int)$m['_index'], 'post', $lang, (string)$r['id']);
         return $r + ['text' => $text];
     }

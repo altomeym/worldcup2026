@@ -11,8 +11,10 @@
    ============================================================ */
 'use strict';
 
-/* v12 — يتجاوز /admin + /login + /predict POST + /unsubscribe (صفحات شخصيّة لا تُكاش). */
-var CACHE = 'wc2026-v12';
+/* v13 — لا تظهر صفحة «غير متصل» إلا عند فشل الشبكة فعلاً:
+   المهلة تقدّم الكاش إن وُجد، وإلا تنتظر ردّ الشبكة مهما تأخّر،
+   والردّ المتأخّر يُخزَّن دائماً ليُفيد الزيارة التالية. */
+var CACHE = 'wc2026-v13';
 
 /* قشرة التطبيق — صفحات شائعة بكل لغة (يطابقها SW مع/بدون query). */
 var SHELL = [
@@ -79,8 +81,10 @@ var OFFLINE_HTML =
   '</ul>' +
   '</div></body></html>';
 
-/* مهلة أطول — Hostinger قد يستغرق 5-7 ثوانٍ لأوّل تحميل. */
-var NAV_TIMEOUT = 10000;
+/* بعد إصلاحات الخادم (stale-while-revalidate) الصفحات ترد خلال ~1 ثانية.
+   المهلة هنا «تبديل للكاش» فقط — لو تجاوزها الخادم نقدّم النسخة المخزّنة
+   فوراً، ويبقى طلب الشبكة جارياً ليُخزَّن ردّه للزيارة القادمة. */
+var NAV_TIMEOUT = 6000;
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
@@ -134,62 +138,68 @@ function isCacheableResponse(res) {
   return res && res.status === 200 && res.type === 'basic' && !res.headers.get('Set-Cookie');
 }
 
-/* شبكة-أوّلاً بمهلة 10 ثوانٍ — fallback متعدّد المستويات للكاش. */
-function networkFirstNav(req) {
-  return new Promise(function (resolve) {
-    var done = false;
-    var timer = setTimeout(function () {
-      if (done) return;
-      done = true;
-      smartCacheFallback(req).then(resolve);
-    }, NAV_TIMEOUT);
-
-    fetch(req).then(function (res) {
-      if (done) return;
-      done = true; clearTimeout(timer);
-      if (isCacheableResponse(res)) {
-        var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put(req, copy).catch(function () {}); }).catch(function () {});
-      }
-      resolve(res);
-    }).catch(function () {
-      if (done) return;
-      done = true; clearTimeout(timer);
-      smartCacheFallback(req).then(resolve);
-    });
-  });
-}
-
-/* 🆕 Fallback ذكي بـ4 مستويات:
-   1) كاش بنفس الـURL تماماً.
-   2) كاش متجاهلاً الـquery-string (?lang=ar / ?d=xxx).
-   3) كاش الصفحة الرئيسية / (دائماً موجودة).
-   4) صفحة الأوفلاين الجميلة.
-   لو navigator.onLine = true → نُحاول مرّة أخيرة شبكة قبل عرض الأوفلاين. */
-function smartCacheFallback(req) {
+/* يبحث في الكاش فقط (بلا صفحة أوفلاين):
+   1) نفس الـURL تماماً → 2) متجاهلاً الـquery-string → 3) الصفحة الرئيسية.
+   يُرجع undefined إن لم يوجد شيء. */
+function cachedFallback(req) {
   return caches.open(CACHE).then(function (c) {
     return c.match(req).then(function (m1) {
       if (m1) return m1;
       return c.match(req, { ignoreSearch: true }).then(function (m2) {
         if (m2) return m2;
-        return c.match('/').then(function (m3) {
-          if (m3) return m3;
-          // محاولة شبكة أخيرة لو المتصفّح يقول إنّنا متّصلون
-          if (self.navigator && self.navigator.onLine === true) {
-            return fetch(req).catch(function () {
-              return c.match(OFFLINE_URL).then(function (off) {
-                return off || new Response(OFFLINE_HTML, {
-                  status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
-                });
-              });
-            });
-          }
-          return c.match(OFFLINE_URL).then(function (off) {
-            return off || new Response(OFFLINE_HTML, {
-              status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
-            });
-          });
-        });
+        return c.match('/');
+      });
+    });
+  }).catch(function () { return undefined; });
+}
+
+/* صفحة الأوفلاين — آخر حل على الإطلاق. */
+function offlineResponse() {
+  return caches.open(CACHE)
+    .then(function (c) { return c.match(OFFLINE_URL); })
+    .catch(function () { return undefined; })
+    .then(function (off) {
+      return off || new Response(OFFLINE_HTML, {
+        status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
+      });
+    });
+}
+
+/* شبكة-أوّلاً:
+   - المهلة لا تعرض «غير متصل» أبداً — تقدّم الكاش إن وُجد، وإلا تنتظر الشبكة
+     مهما تأخّرت (المستخدم متّصل والخادم بطيء ≠ أوفلاين).
+   - الردّ المتأخّر (بعد المهلة) يُخزَّن دائماً ليُفيد الزيارة القادمة.
+   - صفحة الأوفلاين تظهر فقط عند فشل الشبكة الفعلي + خلوّ الكاش تماماً. */
+function networkFirstNav(req) {
+  return new Promise(function (resolve) {
+    var done = false;
+
+    var timer = setTimeout(function () {
+      cachedFallback(req).then(function (m) {
+        if (done || !m) return;   // لا كاش → اترك طلب الشبكة الجاري يكمل
+        done = true;
+        resolve(m);
+      });
+    }, NAV_TIMEOUT);
+
+    fetch(req).then(function (res) {
+      // خزّن دائماً — حتى الردّ الذي وصل بعد المهلة يفيد الزيارة التالية.
+      if (isCacheableResponse(res)) {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(req, copy).catch(function () {}); }).catch(function () {});
+      }
+      if (done) return;
+      done = true; clearTimeout(timer);
+      resolve(res);
+    }).catch(function () {
+      clearTimeout(timer);
+      if (done) return;
+      // فشل شبكة فعلي → كاش، ثم صفحة الأوفلاين كآخر حل.
+      cachedFallback(req).then(function (m) {
+        if (done) return;
+        done = true;
+        if (m) { resolve(m); return; }
+        offlineResponse().then(resolve);
       });
     });
   });

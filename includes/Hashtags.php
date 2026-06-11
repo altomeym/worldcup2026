@@ -3,7 +3,7 @@
  * Hashtags.php — مولّد هاشتاكات ذكي لكل أنواع التغريدات.
  * ============================================================
  * يجمع 4 أبعاد:
- *   1) أساس قصير  : #كأس_العالم_2026 #FIFAWorldCup26 (يبقى دائماً)
+ *   1) أساس قصير  : من X_HASHTAGS_CORE في config (يبقى دائماً)
  *   2) فريق محدّد : #الأرجنتين #فرنسا (لمباريات بعينها)
  *   3) مضيف الملعب: #كندا أو #المكسيك أو #USA حسب الملعب
  *   4) مرحلة/فترة: #دور_المجموعات / #مباريات_اليوم / #تحدّي_المعرفة …
@@ -128,33 +128,35 @@ class Hashtags
             // تجنّب التكرار: لو المضيف هو نفسه أحد الفريقَين، تخطّه
             if (!in_array($host, $tags, true)) $tags[] = $host;
         }
-        // أساس قصير (هاشتاكان) — يترك مساحة للنتيجة والاسم
-        $tags[] = '#كأس_العالم_2026';
-        $tags[] = '#FIFAWorldCup26';
+        // أساس قصير (هاشتاكان من الإعدادات) — يترك مساحة للنتيجة والاسم
+        foreach (explode(' ', self::core()) as $t) {
+            if ($t !== '') $tags[] = $t;
+        }
         return implode(' ', array_unique($tags));
     }
 
-    /** هاشتاكات فترة يوميّة: مرحلة + فترة + أساس عالمي (5-6 هاشتاكات). */
+    /** هاشتاكات فترة يوميّة: مرحلة + فترة + الأساس من الإعدادات (5-6 هاشتاكات). */
     public static function forDailySlot(string $slot): string
     {
         $tags = [];
         if ($ph = self::phase())          $tags[] = $ph;
         if ($st = self::dailySlot($slot)) $tags[] = $st;
-        // أساس مختلط — وصول عربي + عالمي
-        $tags[] = '#كأس_العالم_2026';
-        $tags[] = '#FIFAWorldCup26';
-        $tags[] = '#WorldCup2026';   // 🌍 ترند عالمي قويّ
+        // الأساس من X_HASHTAGS_CORE (عربي + عالمي) — يتغيّر من config دون تعديل هنا
+        foreach (explode(' ', self::core()) as $t) {
+            if ($t !== '') $tags[] = $t;
+        }
+        $tags[] = '#المونديال';   // الأعلى تداولاً عربياً وقت المباريات
         return implode(' ', array_unique($tags));
     }
 
-    /** هاشتاكات ترتيب مجموعة: حرف المجموعة + أساس كامل. */
+    /** هاشتاكات ترتيب مجموعة: حرف المجموعة + الأساس الكامل من الإعدادات. */
     public static function forGroup(string $group): string
     {
         $tags = [];
         if ($g = self::group($group)) $tags[] = $g;
-        $tags[] = '#كأس_العالم_2026';
-        $tags[] = '#المونديال';
-        $tags[] = '#FIFAWorldCup26';
+        foreach (explode(' ', self::full()) as $t) {
+            if ($t !== '') $tags[] = $t;
+        }
         return implode(' ', array_unique($tags));
     }
 }

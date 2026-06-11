@@ -849,9 +849,28 @@ class LiveService
         $t2 = trim((string)($match['team2'] ?? ''));
         if ($t1 === '' || $t2 === '') return [];
 
-        $map = self::fixturesMap();
-        $hit = $map[self::normalizeKey($t1, $t2)] ?? ($map[self::normalizeKey($t2, $t1)] ?? null);
-        $fid = (int)($hit['id'] ?? 0);
+        // ✨ ابحث عن fixture_id بأربع وسائل بالترتيب:
+        // ١) كاش اللحظي (live.json) — يحوي fixture_id لكل مباراة اليوم (الأسرع، الأحدث)
+        // ٢) fixturesMap (af-fixtures.json) — كاش جدول الموسم الكامل
+        // ٣) homeName للـreversed
+        $fid = 0;
+        $homeName = null;
+        $live = self::liveScores();
+        if (is_array($live)) {
+            $k1 = self::normalizeKey($t1, $t2);
+            $k2 = self::normalizeKey($t2, $t1);
+            $hit = $live[$k1] ?? ($live[$k2] ?? null);
+            if (is_array($hit) && !empty($hit['fixture_id'])) {
+                $fid = (int)$hit['fixture_id'];
+                $homeName = (string)($hit['home'] ?? '');
+            }
+        }
+        if ($fid <= 0) {
+            $map = self::fixturesMap();
+            $hit = $map[self::normalizeKey($t1, $t2)] ?? ($map[self::normalizeKey($t2, $t1)] ?? null);
+            $fid = (int)($hit['id'] ?? 0);
+            $homeName = (string)($hit['home'] ?? $homeName);
+        }
         if ($fid <= 0) return [];
 
         // كاش
@@ -879,7 +898,8 @@ class LiveService
         if (!is_array($json) || empty($json['response'])) { @touch($failMarker); return $stale ?? []; }
 
         // الاستجابة: مصفوفتان (home, away) لكلٍّ منها قائمة statistics.type/value
-        $homeName = (string)($hit['home'] ?? $t1);
+        // استخدم homeName المكتشف أعلاه (من live أو fixturesMap) — مع fallback لـ$t1
+        $homeName = $homeName ?: $t1;
         $homeData = []; $awayData = [];
         foreach ($json['response'] as $team) {
             $isHome = ((string)($team['team']['name'] ?? '')) === $homeName;

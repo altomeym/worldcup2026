@@ -28,10 +28,24 @@ if (!$cli) {
 }
 
 $matchIdx = (int)($_GET['match'] ?? 0);
+$clear    = isset($_GET['clear']);
 
 echo str_repeat('═', 60) . "\n";
 echo "  🔌 API-Football Connection Diagnostic  ·  " . date('Y-m-d H:i:s') . "\n";
 echo str_repeat('═', 60) . "\n\n";
+
+// 🆕 تنظيف الكاش بالكامل
+if ($clear) {
+    $cleared = [];
+    foreach (glob(rtrim(CACHE_DIR,'/').'/af-*.json') ?: [] as $f) { @unlink($f); $cleared[] = basename($f); }
+    foreach (glob(rtrim(CACHE_DIR,'/').'/live*.json') ?: [] as $f) { @unlink($f); $cleared[] = basename($f); }
+    foreach (glob(rtrim(CACHE_DIR,'/').'/live*.json.fail') ?: [] as $f) { @unlink($f); $cleared[] = basename($f); }
+    echo "[CLEAR] تم حذف " . count($cleared) . " ملفّ كاش:\n";
+    foreach ($cleared as $f) echo "   ✓ {$f}\n";
+    echo "\nالآن طلب جديد سيُجلب من API-Football مباشرة.\n";
+    echo "أعد تحميل الصفحة بدون &clear=1 للمتابعة.\n";
+    exit;
+}
 
 // ────────────────────────────────────────────────
 // (1) المفتاح والإعداد

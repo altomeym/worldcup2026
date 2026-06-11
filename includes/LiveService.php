@@ -463,9 +463,17 @@ class LiveService
      */
     public static function lineupForMatch(array $match): ?array
     {
-        // (0) الملف اليدوي data/lineups-manual.json — أولوية قصوى.
-        //     لا يحتاج API إطلاقاً (خطة API-Football المجانية لا تدعم موسم 2026).
+        // (0) الملف اليدوي data/lineups-manual.json:
+        //     - مؤكَّدة (بدون probable) → أولوية قصوى، تنتهي هنا.
+        //     - متوقّعة (probable:true) → تُستبدل تلقائياً بالرسمية من ESPN فور صدورها.
         $manual = self::manualLineup($match);
+        if ($manual !== null && empty($manual['probable'])) return $manual;
+
+        // (1) 🆕 التشكيلة الرسمية من ESPN (مجاني — تصدر قبل الانطلاق بساعة تقريباً)
+        $espn = self::espnLineup($match);
+        if ($espn !== null) return $espn;
+
+        // متوقّعة يدويّة كاحتياط حتى صدور الرسمية
         if ($manual !== null) return $manual;
 
         if (!self::isEnabled()) return null;
@@ -573,6 +581,34 @@ class LiveService
      * }
      * مواضع الملعب (grid) تُحسب تلقائياً من الخطة إن لم تُذكر.
      */
+    /**
+     * espnLineup() — التشكيلة الرسمية من ESPN، مُحوَّلة لاتجاه team1/team2.
+     * يعيد null لو لم تصدر بعد (ESPN ينشرها قبل الانطلاق بساعة تقريباً).
+     */
+    private static function espnLineup(array $match): ?array
+    {
+        if (!class_exists('EspnLive')) return null;
+        $t1 = trim((string)($match['team1'] ?? ''));
+        $t2 = trim((string)($match['team2'] ?? ''));
+        if ($t1 === '' || $t2 === '') return null;
+
+        $live = self::liveScores();
+        if (!is_array($live) || !$live) return null;
+        $k1 = self::normalizeKey($t1, $t2);
+        $k2 = self::normalizeKey($t2, $t1);
+        $hit = $live[$k1] ?? ($live[$k2] ?? null);
+        if (!is_array($hit) || empty($hit['espn_id'])) return null;
+
+        $lu = EspnLive::lineupFor((string)$hit['espn_id']);
+        if ($lu === null) return null;
+
+        // مضيف ESPN = team1 عندنا إذا طابق المفتاح المباشر، وإلا معكوس
+        $reversed = !isset($live[$k1]) && isset($live[$k2]);
+        return $reversed
+            ? ['team1' => $lu['away'], 'team2' => $lu['home']]
+            : ['team1' => $lu['home'], 'team2' => $lu['away']];
+    }
+
     private static function manualLineup(array $match): ?array
     {
         static $all = null;
@@ -844,34 +880,42 @@ class LiveService
      */
     public static function statsFor(array $match): array
     {
-        if (!self::isEnabled()) return [];
         $t1 = trim((string)($match['team1'] ?? ''));
         $t2 = trim((string)($match['team2'] ?? ''));
         if ($t1 === '' || $t2 === '') return [];
 
-        // ✨ ابحث عن fixture_id بأربع وسائل بالترتيب:
-        // ١) كاش اللحظي (live.json) — يحوي fixture_id لكل مباراة اليوم (الأسرع، الأحدث)
-        // ٢) fixturesMap (af-fixtures.json) — كاش جدول الموسم الكامل
-        // ٣) homeName للـreversed
+        // ✨ ابحث عن المعرّف بالترتيب:
+        // ١) كاش اللحظي (live.json) — fixture_id (API-Football) أو espn_id (ESPN المجاني)
+        // ٢) fixturesMap (af-fixtures.json) — جدول الموسم (يتطلّب خطة مدفوعة لموسم 2026)
         $fid = 0;
+        $espnId = '';
         $homeName = null;
         $live = self::liveScores();
         if (is_array($live)) {
             $k1 = self::normalizeKey($t1, $t2);
             $k2 = self::normalizeKey($t2, $t1);
             $hit = $live[$k1] ?? ($live[$k2] ?? null);
-            if (is_array($hit) && !empty($hit['fixture_id'])) {
-                $fid = (int)$hit['fixture_id'];
+            if (is_array($hit)) {
+                if (!empty($hit['fixture_id'])) $fid = (int)$hit['fixture_id'];
+                if (!empty($hit['espn_id']))    $espnId = (string)$hit['espn_id'];
                 $homeName = (string)($hit['home'] ?? '');
             }
         }
-        if ($fid <= 0) {
+        if ($fid <= 0 && self::isEnabled()) {
             $map = self::fixturesMap();
             $hit = $map[self::normalizeKey($t1, $t2)] ?? ($map[self::normalizeKey($t2, $t1)] ?? null);
             $fid = (int)($hit['id'] ?? 0);
             $homeName = (string)($hit['home'] ?? $homeName);
         }
-        if ($fid <= 0) return [];
+
+        // 🆕 لا fixture_id (الخطة المجانية لا تدعم 2026)؟ → إحصائيات ESPN المجانيّة
+        if ($fid <= 0) {
+            if ($espnId !== '' && class_exists('EspnLive')) {
+                return EspnLive::statsFor($espnId);   // v=[مضيف,ضيف] — applyTo يعكس عند الحاجة
+            }
+            return [];
+        }
+        if (!self::isEnabled()) return [];
 
         // كاش
         $cacheFile = rtrim(CACHE_DIR, '/') . '/af-stats-' . $fid . '.json';

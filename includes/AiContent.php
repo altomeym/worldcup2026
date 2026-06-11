@@ -54,10 +54,20 @@ class AiContent
 
         $finished = isset($m['score']['ft']) && is_array($m['score']['ft']);
         if ($type === 'summary' && !$finished) return null;
+        // 🆕 لا تولّد التقرير أثناء المباراة — openfootball قد يحمل نتيجة جزئيّة
+        //    (التقرير النهائي يتولّد تلقائياً بعد صافرة النهاية)
+        if ($type === 'summary' && !empty($m['_live'])) return null;
 
         // اللغة: إمّا مفروضة (للـ cron) أو من السياق الحالي.
         $lang = ($forceLang === 'ar' || $forceLang === 'en') ? $forceLang : current_lang();
-        $file = rtrim(CACHE_DIR, '/') . "/ai_{$type}_{$idx}_{$lang}.txt";
+
+        // 🆕 مفتاح كاش التقرير يتضمّن النتيجة — لو صُحّحت نتيجة مبكّرة خاطئة
+        //    يتولّد تقرير جديد تلقائياً بالنتيجة الصحيحة (القديم يُهمَل).
+        $scoreTag = '';
+        if ($type === 'summary') {
+            $scoreTag = '_' . (int)$m['score']['ft'][0] . '-' . (int)$m['score']['ft'][1];
+        }
+        $file = rtrim(CACHE_DIR, '/') . "/ai_{$type}_{$idx}{$scoreTag}_{$lang}.txt";
 
         // مخزَّن؟ أعِده فوراً
         if (is_file($file)) {
@@ -169,6 +179,35 @@ class AiContent
             if (isset($m['score']['p']) && is_array($m['score']['p'])) {
                 $facts .= "Penalty shootout: {$m['score']['p'][0]} - {$m['score']['p'][1]}\n";
             }
+
+            // 🆕 الهدّافون (من openfootball goals1/goals2) — التقرير يذكر مَن سجّل ومتى
+            $fmtGoals = function ($goals): string {
+                if (!is_array($goals)) return '';
+                $parts = [];
+                foreach ($goals as $g) {
+                    $n = trim((string)($g['name'] ?? ''));
+                    if ($n === '') continue;
+                    $min = isset($g['minute']) ? (int)$g['minute'] : null;
+                    $off = !empty($g['offset']) ? '+' . (int)$g['offset'] : '';
+                    $pen = !empty($g['penalty']) ? ' (pen)' : (!empty($g['owngoal']) ? ' (own goal)' : '');
+                    $parts[] = $n . ($min !== null ? " {$min}{$off}'" : '') . $pen;
+                }
+                return implode(', ', $parts);
+            };
+            if ($sc1 = $fmtGoals($m['goals1'] ?? null)) $facts .= "{$t1} scorers: {$sc1}\n";
+            if ($sc2 = $fmtGoals($m['goals2'] ?? null)) $facts .= "{$t2} scorers: {$sc2}\n";
+
+            // 🆕 الإحصائيات الرسميّة (من أرشيف ESPN عبر applyTo) — تقرير غنيّ بالأرقام
+            if (!empty($m['stats']) && is_array($m['stats'])) {
+                $facts .= "Official match statistics ({$t1} - {$t2}):\n";
+                foreach ($m['stats'] as $s) {
+                    $u = (string)($s['unit'] ?? '');
+                    $facts .= "  " . ($s['k_en'] ?? '') . ": {$s['v'][0]}{$u} - {$s['v'][1]}{$u}\n";
+                }
+            }
+            if (!empty($m['referee'])) {
+                $facts .= "Referee: " . trim((string)$m['referee']) . "\n";
+            }
         }
 
         $langWord = $isAr ? 'Arabic' : 'English';
@@ -177,11 +216,13 @@ class AiContent
             : ($isAr ? 'معاينة قصيرة قبل المباراة' : 'a short pre-match preview');
 
         $system = "You are a professional football writer for a FIFA World Cup 2026 website. "
-            . "Write strictly in {$langWord}. Produce {$kind}: engaging, factual, 80-120 words. "
+            . "Write strictly in {$langWord}. Produce {$kind}: engaging, factual, 80-130 words. "
             . "Output ONLY the body text as 1-2 plain paragraphs. "
             . "Do NOT add any title, heading, label, bullet, or markdown symbols (no #, *, etc.) — "
             . "start directly with the first sentence. "
             . "Use ONLY the facts provided plus widely-known general background about the teams. "
+            . "When scorers or official statistics are provided, weave the most telling ones "
+            . "(goals with minutes, possession, shots) naturally into the narrative. "
             . "Do NOT invent specific lineups, injuries, quotes, dates, or statistics that are not given.";
 
         $payload = [

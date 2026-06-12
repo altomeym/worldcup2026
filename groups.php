@@ -9,6 +9,12 @@ $page_title = t('groups');
 $tables     = Standings::all();
 $thirds     = Standings::thirdPlaceRanking();
 
+// ?g=A → معاينة الرابط (تويتر/واتساب) تعرض بطاقة ترتيب هذه المجموعة ببيانات حقيقيّة
+$gParam = strtoupper(preg_replace('/[^A-La-l]/', '', (string)($_GET['g'] ?? '')));
+if ($gParam !== '') {
+    $page_image = url('card_img.php', ['mode' => 'group', 'g' => $gParam[0], 'd' => date('Ymd')]);
+}
+
 tpl('header');
 ?>
 

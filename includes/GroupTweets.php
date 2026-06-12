@@ -60,12 +60,12 @@ class GroupTweets
         $rows = Standings::forGroup($group);
         $gLetter = preg_replace('/^Group\s+/', '', $group);
 
-        // العنوان حسب المرحلة
+        // العنوان حسب المرحلة — العربي ثنائيّ مختصر (وصول محلّي + عالمي بتغريدة واحدة)
         if ($ar) {
             $heads = [
-                'round1' => "📊 الجولة الأولى ولّت — مجموعة {$gLetter}",
-                'round2' => "🔥 الجولة الثانية انتهت — مجموعة {$gLetter}",
-                'final'  => "🏁 المجموعة {$gLetter} اكتملت — المتأهّلون 🎉",
+                'round1' => "📊 ترتيب مجموعة {$gLetter} · Group {$gLetter} standings — MD1",
+                'round2' => "🔥 ترتيب مجموعة {$gLetter} · Group {$gLetter} standings — MD2",
+                'final'  => "🏁 المجموعة {$gLetter} اكتملت · Group {$gLetter} final 🎉",
             ];
         } else {
             $heads = [
@@ -80,20 +80,25 @@ class GroupTweets
         $lines = [];
         $medals = ['🥇', '🥈', '🥉', '4️⃣'];
         foreach (array_slice($rows, 0, 4) as $i => $r) {
-            $name = self::nameInLang((string)$r['team'], $lang);
-            $flag = self::flagEmoji((string)$r['team']);
+            $teamEn = (string)$r['team'];
+            $name = self::nameInLang($teamEn, $lang);
+            $flag = self::flagEmoji($teamEn);
             $pts  = (int)$r['pts'];
             $gd   = (int)$r['gd'];
             $gdStr = ($gd > 0 ? '+' : '') . $gd;
             $medal = $medals[$i] ?? (string)($i + 1);
-            $lines[] = "{$medal} {$flag} {$name} · {$pts} " . ($ar ? "نقطة" : "pts") . " · {$gdStr}";
+            // العربي: الاسمان معاً (مختصر وثنائي) — "المكسيك Mexico · 3 pts · +2"
+            $lines[] = $ar
+                ? "{$medal} {$flag} {$name} {$teamEn} · {$pts} pts · {$gdStr}"
+                : "{$medal} {$flag} {$name} · {$pts} pts · {$gdStr}";
         }
 
         // الـ CTA + الرابط + الوسوم — مع هاشتاك المجموعة #مجموعة_A
-        $url  = self::link("groups.php?lang={$lang}");
+        // g= لتُظهر معاينة الرابط بطاقةَ ترتيب هذه المجموعة تحديداً (بيانات حقيقيّة)
+        $url  = self::link("groups.php?lang={$lang}&g={$gLetter}&d=" . date('Ymd'));
         $tags = class_exists('Hashtags') ? Hashtags::forGroup($group)
               : (defined('X_HASHTAGS') ? X_HASHTAGS : '#FIFAWorldCup26');
-        $cta  = $ar ? "كل المجموعات والتفاصيل 👇" : "Full standings & details 👇";
+        $cta  = $ar ? "كل التفاصيل · Full standings 👇" : "Full standings & details 👇";
 
         // إضافة حماس للمرحلة النهائيّة (المتأهّلون)
         if ($milestone === 'final') {
@@ -168,7 +173,8 @@ class GroupTweets
     {
         $n = 0;
         foreach ($matches as $m) {
-            if (isset($m['score']['ft']) && is_array($m['score']['ft'])) $n++;
+            // منتهية فعلاً — لا جارية بنتيجة لحظيّة (وإلا تنطلق التغريدة بترتيب خاطئ)
+            if (isset($m['score']['ft']) && is_array($m['score']['ft']) && empty($m['_live'])) $n++;
         }
         return $n;
     }

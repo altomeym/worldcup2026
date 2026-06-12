@@ -97,11 +97,12 @@ class Standings
             }
         }
 
-        // معالجة المباريات المنتهية فقط
+        // معالجة المباريات المنتهية فقط (لا الجارية — نتيجة ESPN الحيّة تُكتب أثناء اللعب)
         foreach ($matches as $m) {
             if (!isset($m['score']['ft']) || !is_array($m['score']['ft'])) {
                 continue;
             }
+            if (!empty($m['_live'])) continue;
             $t1 = trim($m['team1'] ?? '');
             $t2 = trim($m['team2'] ?? '');
             if (!isset($table[$t1], $table[$t2])) continue;
@@ -185,6 +186,7 @@ class Standings
 
         foreach ($matches as $m) {
             if (!isset($m['score']['ft']) || !is_array($m['score']['ft'])) continue;
+            if (!empty($m['_live'])) continue;
             $t1 = trim($m['team1'] ?? '');
             $t2 = trim($m['team2'] ?? '');
             if (!isset($inCluster[$t1], $inCluster[$t2])) continue;   // كلاهما داخل العنقود

@@ -107,6 +107,56 @@ try {
         imagestring($im, $fontIdx, (int)(($W - $w)/2), $y, $text, $color);
     };
 
+    // 🆕 بطاقة ترتيب مجموعة (?mode=group&g=A) — بيانات حقيقيّة من Standings بنفس الهوية
+    if (($_GET['mode'] ?? '') === 'group') {
+        $gL = strtoupper(preg_replace('/[^A-La-l]/', '', (string)($_GET['g'] ?? '')));
+        $gL = $gL !== '' ? $gL[0] : 'A';
+        $rows = class_exists('Standings') ? Standings::forGroup('Group ' . $gL) : [];
+
+        // جالب أعلام محلي (نسخة مصغّرة من جالب وضع المباراة)
+        $fetch = function (string $url) {
+            if ($url === '') return false;
+            $cf = rtrim(CACHE_DIR, '/') . '/flag_' . md5($url) . '.png';
+            if (is_file($cf)) { $r = @file_get_contents($cf); if ($r !== false) { $i = @imagecreatefromstring($r); if ($i) return $i; } }
+            $raw = http_get($url, ['timeout' => 8]);
+            if (!$raw) return false;
+            @file_put_contents($cf, $raw);
+            return @imagecreatefromstring($raw);
+        };
+
+        if ($hasFont && $rows) {
+            $centerText($im, 30, 92, $gold, $font, 'GROUP ' . $gL . '  .  STANDINGS  .  WORLD CUP 2026');
+            $y = 150;
+            foreach (array_slice($rows, 0, 4) as $i => $r) {
+                $teamEn = (string)$r['team'];
+                $rowBg = imagecolorallocatealpha($im, 255, 255, 255, 118);
+                imagefilledrectangle($im, 80, $y, $W - 80, $y + 84, $rowBg);
+                imagettftext($im, 34, 0, 104, $y + 58, $gold, $font, (string)($i + 1));
+                $fl = $fetch(flag_url($teamEn, 'w160'));
+                if ($fl) {
+                    imagecopyresampled($im, $fl, 165, $y + 12, 0, 0, 90, 60, imagesx($fl), imagesy($fl));
+                    imagedestroy($fl);
+                    imagerectangle($im, 165, $y + 12, 255, $y + 72, imagecolorallocate($im, 36, 66, 104));
+                }
+                imagettftext($im, 30, 0, 290, $y + 56, $white, $font, strtoupper($teamEn));
+                $pts = (int)$r['pts']; $gd = (int)$r['gd'];
+                $ptStr = $pts . ' PTS';
+                $bb = imagettfbbox(30, 0, $font, $ptStr); $w = $bb[2] - $bb[0];
+                imagettftext($im, 30, 0, (int)($W - 270 - $w), $y + 56, $white, $font, $ptStr);
+                $gdStr = ($gd > 0 ? '+' : '') . $gd;
+                $bb = imagettfbbox(26, 0, $font, $gdStr); $w = $bb[2] - $bb[0];
+                imagettftext($im, 26, 0, (int)($W - 110 - $w), $y + 54, $dim, $font, $gdStr);
+                $y += 102;
+            }
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $centerText($im, 24, $H - 42, $white, $font, $domain . '  .  LIVE STANDINGS');
+        } else {
+            $centerBuiltin($im, 5, 280, $white, 'GROUP ' . $gL . ' STANDINGS');
+            $centerBuiltin($im, 4, 330, $dim, 'wcup2026.org');
+        }
+        imagepng($im); imagedestroy($im); exit;
+    }
+
     // عنوان علوي حسب النوع/الوضع (لاتيني — GD لا يشكّل العربية)
     $titleMap = [
         'predict' => 'MY PREDICTION  .  FIFA WORLD CUP 2026',

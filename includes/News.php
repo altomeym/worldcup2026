@@ -223,6 +223,7 @@ class News
     private static function fetch(string $url): ?string
     {
         // جلب موحّد بمهلة صارمة بلا تراكم (راجع http_get في helpers.php).
-        return http_get($url, ['ua' => 'Mozilla/5.0 WorldCup2026Site/1.0']);
+        // UA متصفّح كامل — Bing/Google يحظران الـUA البوتيّة من IPs الاستضافات
+        return http_get($url, ['ua' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36']);
     }
 }

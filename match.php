@@ -213,6 +213,25 @@ seo_sportsevent($m);
     </section>
   <?php endif; endif; ?>
 
+  <!-- ============ 🎬 ملخّص الفيديو الرسمي (beIN عبر يوتيوب) ============ -->
+  <?php
+  $video = $hasScore ? Highlights::forMatch($m) : null;
+  if ($video): ?>
+    <section class="md-section video-box">
+      <h3 class="section-head">🎬 <?= e($L('ملخّص المباراة (فيديو)','Match highlights (video)')) ?></h3>
+      <div class="video-embed">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/<?= e($video['id']) ?>"
+          title="<?= e($video['title']) ?>"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      <p class="video-credit"><?= e($L('المصدر: beIN SPORTS — القناة الرسمية','Source: beIN SPORTS — official channel')) ?></p>
+    </section>
+  <?php endif; ?>
+
   <!-- ============ الأحداث (خط زمني موحّد) ============ -->
   <?php if (!empty($events)): ?>
     <section class="md-section">

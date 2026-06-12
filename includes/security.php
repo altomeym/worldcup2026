@@ -81,7 +81,8 @@ function security_init(): void
          . "font-src 'self' https://fonts.gstatic.com; "
          . "img-src 'self' data: https:; "
          . "connect-src 'self'" . ($adsOn ? $adHosts : '') . "; "
-         . "frame-src 'self'" . ($adsOn ? $adHosts : '') . "; "
+         // youtube-nocookie: تضمين ملخّصات المباريات (وضع الخصوصيّة المعزّز)
+         . "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com" . ($adsOn ? $adHosts : '') . "; "
          . "object-src 'none'; "
          . "base-uri 'self'; "
          . "form-action 'self'; "

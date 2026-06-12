@@ -87,9 +87,9 @@ class GroupTweets
             $gd   = (int)$r['gd'];
             $gdStr = ($gd > 0 ? '+' : '') . $gd;
             $medal = $medals[$i] ?? (string)($i + 1);
-            // العربي: الاسمان معاً (مختصر وثنائي) — "المكسيك Mexico · 3 pts · +2"
+            // العربي: الاسمان معاً مختصراً (فارق الأهداف تعرضه بطاقة الصورة)
             $lines[] = $ar
-                ? "{$medal} {$flag} {$name} {$teamEn} · {$pts} pts · {$gdStr}"
+                ? "{$medal} {$flag} {$name} {$teamEn} · {$pts} pts"
                 : "{$medal} {$flag} {$name} · {$pts} pts · {$gdStr}";
         }
 

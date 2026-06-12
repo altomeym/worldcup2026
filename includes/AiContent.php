@@ -225,8 +225,24 @@ class AiContent
             . "(goals with minutes, possession, shots) naturally into the narrative. "
             . "Do NOT invent specific lineups, injuries, quotes, dates, or statistics that are not given.";
 
+        // 🆕 صرامة الأرقام في التقارير: كل رقم يجب أن يطابق الحقائق حرفياً.
+        if ($type === 'summary') {
+            $g1 = (int)$m['score']['ft'][0];
+            $g2 = (int)$m['score']['ft'][1];
+            $system .= " CRITICAL NUMERICAL ACCURACY: the final score was exactly {$g1}-{$g2} "
+                . "(total goals: " . ($g1 + $g2) . "). Every number you write MUST match the facts exactly. "
+                . "Never use goal-tally words like ثنائية/ثلاثية/رباعية/خماسية/هاتريك/brace/hat-trick "
+                . "unless that number EXACTLY equals a team's goal count in the provided score.";
+        }
+
+        // 🆕 التقرير النهائي يستخدم نموذجاً أدقّ (AI_MODEL_SUMMARY) — 104 تقريراً
+        //    فقط طوال البطولة، والدقّة فيه أهم من فرق التكلفة الزهيد.
+        $model = ($type === 'summary' && defined('AI_MODEL_SUMMARY') && AI_MODEL_SUMMARY !== '')
+            ? AI_MODEL_SUMMARY
+            : (defined('AI_MODEL') ? AI_MODEL : 'claude-haiku-4-5');
+
         $payload = [
-            'model'      => defined('AI_MODEL') ? AI_MODEL : 'claude-haiku-4-5',
+            'model'      => $model,
             'max_tokens' => defined('AI_MAX_TOKENS') ? AI_MAX_TOKENS : 700,
             'system'     => [[
                 'type' => 'text',
@@ -239,14 +255,70 @@ class AiContent
             ]],
         ];
 
-        $resp = self::call($payload);
+        // 🆕 مهلة أطول للتقرير النهائي: Sonnet العربي يحتاج >10 ثوانٍ.
+        //    عبر cron/CLI: 90ث مريحة · عبر الويب: 28ث (تحت حدّ nginx، ولمرّة واحدة فقط ثم كاش)
+        $callTimeout = ($type === 'summary') ? ((PHP_SAPI === 'cli') ? 90 : 28) : null;
+
+        $resp = self::call($payload, $callTimeout);
         if ($resp === null) return null;
+        $text = null;
         foreach ($resp['content'] ?? [] as $block) {
             if (($block['type'] ?? '') === 'text' && isset($block['text'])) {
-                return self::clean($block['text']);
+                $text = self::clean($block['text']);
+                break;
             }
         }
-        return null;
+        if ($text === null) return null;
+
+        // 🆕 فحص تحقّق رياضي للتقرير — يرفض أيّ نصّ يناقض النتيجة
+        if ($type === 'summary' && !self::summaryNumbersOk($text, (int)$m['score']['ft'][0], (int)$m['score']['ft'][1])) {
+            // محاولة تصحيح واحدة بملاحظة صريحة
+            $payload['messages'][] = ['role' => 'assistant', 'content' => $text];
+            $payload['messages'][] = ['role' => 'user', 'content' =>
+                "Your text contains a number that contradicts the final score "
+                . "({$m['score']['ft'][0]}-{$m['score']['ft'][1]}). Rewrite it with every number "
+                . "matching the facts exactly. Output only the corrected body text."];
+            $resp = self::call($payload, $callTimeout);
+            $text = null;
+            foreach (($resp['content'] ?? []) as $block) {
+                if (($block['type'] ?? '') === 'text' && isset($block['text'])) {
+                    $text = self::clean($block['text']);
+                    break;
+                }
+            }
+            if ($text === null
+                || !self::summaryNumbersOk($text, (int)$m['score']['ft'][0], (int)$m['score']['ft'][1])) {
+                return null;   // ارفضه نهائياً — أفضل ألّا يظهر تقرير من أن يظهر خاطئاً
+            }
+        }
+        return $text;
+    }
+
+    /**
+     * 🆕 summaryNumbersOk() — تحقّق حتمي أنّ التقرير لا يناقض النتيجة:
+     * كلمات الحصيلة العربية/الإنجليزية (ثنائية/رباعية/هاتريك...) يجب أن
+     * تطابق عدد أهداف أحد الفريقَين أو المجموع — وإلا يُرفض النص.
+     */
+    private static function summaryNumbersOk(string $text, int $g1, int $g2): bool
+    {
+        $valid = [$g1, $g2, $g1 + $g2];
+        $tally = [
+            'ثنائي' => 2, 'ثلاثي' => 3, 'هاتريك' => 3, 'رباعي' => 4,
+            'خماسي' => 5, 'سداسي' => 6, 'سباعي' => 7,
+            'brace' => 2, 'hat-trick' => 3, 'hat trick' => 3,
+        ];
+        foreach ($tally as $word => $n) {
+            if (mb_stripos($text, $word, 0, 'UTF-8') !== false && !in_array($n, $valid, true)) {
+                // سجلّ الرفض — يساعد على ضبط القائمة لو ظهرت إيجابيّات كاذبة
+                @file_put_contents(
+                    rtrim(CACHE_DIR, '/') . '/ai_rejects.log',
+                    date('Y-m-d H:i') . " [{$word}={$n} vs {$g1}-{$g2}] " . mb_substr($text, 0, 400) . "\n---\n",
+                    FILE_APPEND
+                );
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -678,7 +750,7 @@ class AiContent
     }
 
     /** نداء HTTP إلى Claude Messages API */
-    private static function call(array $payload): ?array
+    private static function call(array $payload, ?int $timeout = null): ?array
     {
         if (!function_exists('curl_init')) return null;
         $ch = curl_init(self::ENDPOINT);
@@ -691,7 +763,7 @@ class AiContent
                 'anthropic-version: 2023-06-01',
             ],
             CURLOPT_POSTFIELDS     => json_encode($payload, JSON_UNESCAPED_UNICODE),
-            CURLOPT_TIMEOUT        => defined('AI_TIMEOUT') ? AI_TIMEOUT : 20,
+            CURLOPT_TIMEOUT        => $timeout ?? (defined('AI_TIMEOUT') ? AI_TIMEOUT : 20),
             CURLOPT_CONNECTTIMEOUT => 8,
             CURLOPT_SSL_VERIFYPEER => true,
         ]);

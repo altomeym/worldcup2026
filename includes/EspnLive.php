@@ -196,6 +196,32 @@ class EspnLive
     }
 
     /**
+     * scoreFor($eventId) — النتيجة النهائيّة من رأس الملخّص.
+     * يعيد ['home'=>g, 'away'=>g, 'finished'=>bool] أو null.
+     * يُستخدم لاستعادة نتيجة مباراة منتهية حين يتأخّر openfootball المجتمعي.
+     */
+    public static function scoreFor(string $eventId): ?array
+    {
+        $j = self::summary($eventId);
+        if (!is_array($j)) return null;
+        $comp = $j['header']['competitions'][0] ?? null;
+        if (!is_array($comp)) return null;
+
+        $state = strtolower((string)($comp['status']['type']['state'] ?? ''));
+        $home = $away = null;
+        foreach (($comp['competitors'] ?? []) as $c) {
+            if (($c['homeAway'] ?? '') === 'home') $home = $c;
+            elseif (($c['homeAway'] ?? '') === 'away') $away = $c;
+        }
+        if (!$home || !$away) return null;
+        return [
+            'home'     => (int)($home['score'] ?? 0),
+            'away'     => (int)($away['score'] ?? 0),
+            'finished' => ($state === 'post'),
+        ];
+    }
+
+    /**
      * eventsFor($eventId) — الأهداف والبطاقات من keyEvents:
      *   ['goals' => [['side','name','minute','offset?','penalty?','owngoal?']],
      *    'cards' => [['side','minute','name','type'=>'yellow'|'red']]]

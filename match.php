@@ -219,16 +219,19 @@ seo_sportsevent($m);
   if ($video): ?>
     <section class="md-section video-box">
       <h3 class="section-head">🎬 <?= e($L('ملخّص المباراة (فيديو)','Match highlights (video)')) ?></h3>
-      <div class="video-embed">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/<?= e($video['id']) ?>"
-          title="<?= e($video['title']) ?>"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-          referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      </div>
-      <p class="video-credit"><?= e($L('المصدر: beIN SPORTS — القناة الرسمية','Source: beIN SPORTS — official channel')) ?></p>
+      <?php
+      // beIN يحظر تضمين فيديوهاته (سياسة الشريك على يوتيوب) — لذا نعرض
+      // بطاقة بصورة الفيديو الرسمية وزرّ تشغيل يفتح يوتيوب في تبويب جديد.
+      $watchUrl = 'https://www.youtube.com/watch?v=' . rawurlencode($video['id']);
+      $thumbUrl = 'https://i.ytimg.com/vi/' . rawurlencode($video['id']) . '/hqdefault.jpg';
+      ?>
+      <a class="video-thumb" href="<?= e($watchUrl) ?>" target="_blank" rel="noopener"
+         title="<?= e($video['title']) ?>">
+        <img src="<?= e($thumbUrl) ?>" alt="<?= e($video['title']) ?>" loading="lazy">
+        <span class="video-play" aria-hidden="true">▶</span>
+        <span class="video-cta"><?= e($L('شاهد الملخّص على YouTube ↗','Watch highlights on YouTube ↗')) ?></span>
+      </a>
+      <p class="video-credit"><?= e($L('المصدر: beIN SPORTS — القناة الرسمية ليوتيوب','Source: beIN SPORTS — official YouTube channel')) ?></p>
     </section>
   <?php endif; ?>
 

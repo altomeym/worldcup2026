@@ -1636,6 +1636,26 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 }
 .video-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
 .video-credit { color: var(--text-dim); font-size:.78rem; text-align:center; margin-top:8px; }
+/* بطاقة فيديو بصورة مصغّرة (beIN يحظر التضمين — تفتح يوتيوب مباشرة) */
+.video-thumb {
+    position:relative; display:block; width:100%; aspect-ratio:16/9;
+    border-radius:14px; overflow:hidden; background:#0d1b30;
+    box-shadow:0 10px 36px rgba(0,0,0,.35); text-decoration:none;
+}
+.video-thumb img { width:100%; height:100%; object-fit:cover; transition:transform .25s; }
+.video-thumb:hover img { transform:scale(1.04); }
+.video-play {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:72px; height:50px; display:grid; place-items:center;
+    background:rgba(255,0,0,.9); color:#fff; font-size:1.3rem;
+    border-radius:14px; box-shadow:0 6px 24px rgba(0,0,0,.5); transition:transform .15s;
+}
+.video-thumb:hover .video-play { transform:translate(-50%,-50%) scale(1.1); }
+.video-cta {
+    position:absolute; bottom:0; inset-inline:0; padding:14px;
+    background:linear-gradient(transparent, rgba(5,12,24,.92));
+    color:#fff; font-weight:800; font-size:.95rem; text-align:center;
+}
 /* 📊 إحصائيات الحكم */
 .ref-stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-bottom:16px; }
 .ref-stat { background:#11203a; border:1px solid #243a68; border-radius:12px; padding:14px; text-align:center; }

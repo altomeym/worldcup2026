@@ -142,8 +142,9 @@ class TweetComposer
             $lines[] = self::matchLine($m, $ar, withTime: true);
         }
         $foot = $ar ? "كل التفاصيل بتوقيتك المحلي 👇" : "All times in your local timezone 👇";
+        // وسوم فرق المباراة الأبرز فقط (4 وسوم) — أكثر تُبتر نصّ التغريدة
         return self::sign($headline . "\n" . implode("\n", $lines) . "\n" . $foot, $link, 'morning',
-                          self::teamTags($next));
+                          self::teamTags($next, 1));
     }
 
     private static function evening(bool $ar): string

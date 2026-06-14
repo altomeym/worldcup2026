@@ -240,18 +240,19 @@ try {
                         imagettftext($im, 15, 0, (int)($W/2 - ($bb[2]-$bb[0])/2), $y + 14, $gold, $fontAr, $hs);
                     }
                     $by = $y + 24; $bh = 62; $mid = $by + (int)($bh/2);
-                    imagefilledrectangle($im, 60, $by, $W - 60, $by + $bh, imagecolorallocatealpha($im, 255, 255, 255, 120));
+                    // شريط داكن شفّاف ليبرز اسم المنتخب الأبيض
+                    imagefilledrectangle($im, 60, $by, $W - 60, $by + $bh, imagecolorallocatealpha($im, 10, 14, 64, 64));
 
-                    // صندوق الوقت في الوسط (كحلي + نص أبيض)
+                    // صندوق الوقت في الوسط (أبيض + نص كحلي) — يبرز على الشريط الداكن
                     $boxW = 186; $bx1 = (int)($W/2 - $boxW/2);
-                    imagefilledrectangle($im, $bx1, $by + 6, $bx1 + $boxW, $by + $bh - 6, $navyText);
+                    imagefilledrectangle($im, $bx1, $by + 6, $bx1 + $boxW, $by + $bh - 6, $white);
                     $time = $ts ? date('H:i', $ts) : '--:--';
                     $bb = imagettfbbox(28, 0, $font, $time);
-                    imagettftext($im, 28, 0, (int)($W/2 - ($bb[2]-$bb[0])/2), $mid + 4, $white, $font, $time);
+                    imagettftext($im, 28, 0, (int)($W/2 - ($bb[2]-$bb[0])/2), $mid + 4, $navyText, $font, $time);
                     $tl = $shape('بتوقيت الإمارات'); $bb = imagettfbbox(12, 0, $fontAr, $tl);
-                    imagettftext($im, 12, 0, (int)($W/2 - ($bb[2]-$bb[0])/2), $mid + 22, $dim, $fontAr, $tl);
+                    imagettftext($im, 12, 0, (int)($W/2 - ($bb[2]-$bb[0])/2), $mid + 22, $navyText, $fontAr, $tl);
 
-                    // علم + اسم الفريقين (AR فوق · EN تحت)
+                    // علم + اسم الفريقين (AR أبيض فوق · EN أزرق فاتح تحت)
                     $fw = 54; $fh = 36; $fy = $mid - (int)($fh/2);
                     // يمين: الفريق الأول (محاذاة يمين)
                     $f1x = $W - 60 - 22 - $fw;
@@ -261,8 +262,8 @@ try {
                     }
                     $rEdge = $f1x - 16;
                     $n1 = $shape(function_exists('team_name') ? team_name($t1) : $t1);
-                    $bb = imagettfbbox(23, 0, $fontAr, $n1); imagettftext($im, 23, 0, (int)($rEdge - ($bb[2]-$bb[0])), $mid - 1, $navyText, $fontAr, $n1);
-                    $e1 = strtoupper($t1); $bb = imagettfbbox(13, 0, $font, $e1); imagettftext($im, 13, 0, (int)($rEdge - ($bb[2]-$bb[0])), $mid + 21, $enBlue, $font, $e1);
+                    $bb = imagettfbbox(23, 0, $fontAr, $n1); imagettftext($im, 23, 0, (int)($rEdge - ($bb[2]-$bb[0])), $mid - 1, $white, $fontAr, $n1);
+                    $e1 = strtoupper($t1); $bb = imagettfbbox(13, 0, $font, $e1); imagettftext($im, 13, 0, (int)($rEdge - ($bb[2]-$bb[0])), $mid + 21, $dim, $font, $e1);
                     // يسار: الفريق الثاني (محاذاة يسار)
                     $f2x = 60 + 22;
                     if ($fl2 = $fetch(flag_url($t2, 'w160'))) {
@@ -271,8 +272,8 @@ try {
                     }
                     $lEdge = $f2x + $fw + 16;
                     $n2 = $shape(function_exists('team_name') ? team_name($t2) : $t2);
-                    imagettftext($im, 23, 0, $lEdge, $mid - 1, $navyText, $fontAr, $n2);
-                    imagettftext($im, 13, 0, $lEdge, $mid + 21, $enBlue, $font, strtoupper($t2));
+                    imagettftext($im, 23, 0, $lEdge, $mid - 1, $white, $fontAr, $n2);
+                    imagettftext($im, 13, 0, $lEdge, $mid + 21, $dim, $font, strtoupper($t2));
 
                     $y += 95;
                 }

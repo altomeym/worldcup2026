@@ -14,5 +14,10 @@ if ($cmd === 'map') {
     echo json_encode(FifaReports::reports(), JSON_UNESCAPED_UNICODE);
     exit;
 }
+if ($cmd === 'pending') {   // فقط التقارير غير المستخرَجة بعد (للتشغيل التلقائي الكفء)
+    // (object) ليطبع {} للفارغ بدل [] (حتى يقرأه PowerShell ككائن لا كمصفوفة)
+    echo json_encode((object)FifaStats::pendingReports(FifaReports::reports()), JSON_UNESCAPED_UNICODE);
+    exit;
+}
 $dir = $argv[2] ?? (__DIR__ . '/_fifatxt');
 echo 'built ' . FifaStats::build($dir) . " matches\n";

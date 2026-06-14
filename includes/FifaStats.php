@@ -500,6 +500,31 @@ class FifaStats
     }
 
     /**
+     * pendingReports() — من خريطة {رقم: رابط}: يعيد فقط التقارير غير المستخرَجة بعد
+     * (ملفّها assets/fifa/*.json غير موجود). للتشغيل التلقائي المتكرّر بكفاءة
+     * (لا يُعاد تنزيل ما اكتمل). الربط زمني (FIFA M(n) = nته مباراة بالوقت).
+     */
+    public static function pendingReports(array $reportsMap): array
+    {
+        if (!class_exists('DataService')) return $reportsMap;
+        $list = [];
+        foreach (DataService::allMatches() as $mm) {
+            $list[] = ['ts' => DataService::matchTimestamp($mm) ?? PHP_INT_MAX, 'm' => $mm];
+        }
+        usort($list, fn($a, $b) => $a['ts'] <=> $b['ts']);
+        $dir = self::dataDir();
+        $out = [];
+        foreach ($reportsMap as $n => $url) {
+            $i = (int)$n - 1;
+            if (!isset($list[$i])) { $out[$n] = $url; continue; }   // ربط غير معروف → جرّبه
+            $m   = $list[$i]['m'];
+            $key = self::key((string)($m['team1'] ?? ''), (string)($m['team2'] ?? ''), (string)($m['date'] ?? ''));
+            if (!is_file($dir . '/' . $key . '.json')) $out[$n] = $url;
+        }
+        return $out;
+    }
+
+    /**
      * تجميع بدني لكل لاعب عبر كل المباريات (للمستكشف بأسلوب FifaPhy).
      * يعيد مصفوفة: [name, team(En), m(عدد المباريات), dist(م إجمالي), sprints, hsr, top(أقصى)].
      * مرتّبة بالمسافة تنازليّاً. (المعدّل لكل مباراة يُحسب في الواجهة: ÷ m.)

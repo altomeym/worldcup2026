@@ -208,15 +208,20 @@ class FifaStats
     private static function playersHtml(array $row, bool $ar, string $n1, string $n2): string
     {
         if (empty($row['players'])) return '';
-        $hint = $ar ? ' · اضغط لاعباً لكل إحصائيّاته' : ' · tap a player for full stats';
-        $out = '';
+        // عمودان متجاوران: كل منتخب ولاعبوه تحت اسمه (ينطوي لعمود واحد على الجوّال)
+        $cols = '';
         foreach (['t1' => $n1, 't2' => $n2] as $tk => $name) {
             $ps = $row['players'][$tk] ?? [];
             if (!$ps) continue;
-            $out .= '<h4 class="fstat-sub">👥 ' . e(($ar ? 'لاعبو ' : '') . $name) . e($hint) . '</h4>';
-            foreach ($ps as $p) $out .= self::playerCard($p, $ar);
+            $col = '<h4 class="fstat-sub">👥 ' . e(($ar ? 'لاعبو ' : '') . $name) . '</h4>';
+            foreach ($ps as $p) $col .= self::playerCard($p, $ar);
+            $cols .= '<div class="fstat-pcol">' . $col . '</div>';
         }
-        return $out;
+        if ($cols === '') return '';
+        $hint = $ar ? '👥 لاعبو الفريقين · اضغط لاعباً لكل إحصائيّاته'
+                    : '👥 Both squads · tap a player for full stats';
+        return '<p class="fstat-phint">' . e($hint) . '</p>'
+             . '<div class="fstat-players2">' . $cols . '</div>';
     }
 
     private static function playerCard(array $p, bool $ar): string
@@ -272,6 +277,11 @@ class FifaStats
             . '.fifa-stats .fstat-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin:6px 0;color:var(--accent,#fff)}'
             . '.fifa-stats .fstat-form{font-size:.8em;font-weight:700;opacity:.85;color:#ffc846}'
             . '.fifa-stats .fstat-sub{margin:18px 0 4px;font-size:.95em;opacity:.9;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:6px}'
+            . '.fifa-stats .fstat-phint{margin:18px 0 8px;font-size:.9em;opacity:.85;color:#ffc846}'
+            . '.fifa-stats .fstat-players2{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;align-items:start}'
+            . '.fifa-stats .fstat-pcol{min-width:0}'
+            . '.fifa-stats .fstat-pcol .fstat-sub{margin-top:0}'
+            . '@media(max-width:560px){.fifa-stats .fstat-players2{grid-template-columns:1fr}}'
             . '.fifa-stats .fstat-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:9px 0}'
             . '.fifa-stats .fstat-v{font-weight:800;font-variant-numeric:tabular-nums}'
             . '.fifa-stats .fstat-v:first-child{text-align:right}.fifa-stats .fstat-v:nth-child(3){text-align:left}'

@@ -165,7 +165,9 @@ class TweetComposer
             $lines[] = self::matchLine($m, $ar, withTime: false);
         }
         $foot = $ar ? "كيف توقّعتها؟ تحقّق من ترتيبك 👇" : "How did your picks fare? Check your rank 👇";
-        return self::sign($headline . "\n" . implode("\n", $lines) . "\n" . $foot, $link, 'evening');
+        // 🆕 وسوم فرق أبرز نتيجة (عربي + إنجليزي)
+        return self::sign($headline . "\n" . implode("\n", $lines) . "\n" . $foot, $link, 'evening',
+                          self::teamTags($done, 1));
     }
 
     /** stats — هدّافون + بطاقات + إجمالي أهداف (يُلغى إذا 0 مباريات منتهية). */
@@ -218,29 +220,30 @@ class TweetComposer
         return self::sign($body, self::link("stats.php?lang={$lang}"), 'stats');
     }
 
-    /** news — تذكير يوميّ بصفحة الأخبار (CTA يجلب الجمهور للموقع بدل بثّ كل خبر). */
+    /**
+     * news — تذكير يوميّ بصفحة الأخبار (CTA يجلب الجمهور للموقع بدل بثّ كل خبر).
+     * ثنائيّة اللغة في تغريدة واحدة: عربي فوق، إنجليزي تحت (مضغوطة لتفادي القصّ).
+     */
     private static function newsCTA(bool $ar, string $lang): string
     {
         $link = self::link("news.php?lang={$lang}");
-        if ($ar) {
-            $variants = [
-                "📰 آخر أخبار المونديال 🇨🇦 🇲🇽 🇺🇸 — تحديث لحظيّ من كل المصادر العربيّة والعالميّة 🌍 👇",
-                "🚨 أهم عناوين كأس العالم 2026 اليوم — لا يفوتك خبر 🏆⚽ 👇",
-                "📰 كل ما يحدث في طريق المونديال 🌎 · تحديثات يوميّة من العالم 👇",
-                "🔥 نبض كأس العالم 🌍⚽ — كل الأخبار في مكان واحد 👇",
-                "📰 من كندا إلى المكسيك إلى أمريكا 🇨🇦🇲🇽🇺🇸 — تحديثات مستمرّة 🌟 👇",
-            ];
-        } else {
-            $variants = [
-                "📰 All World Cup 2026 news 🇨🇦 🇲🇽 🇺🇸 — live updates from across the globe 🌍 👇",
-                "🚨 Today's biggest tournament headlines 🏆⚽ — don't miss anything 👇",
-                "📰 The road to the World Cup 🌎 · daily global updates 👇",
-                "🔥 Heart of the tournament 🌍⚽ — every story, all in one place 👇",
-                "📰 From Canada to Mexico to USA 🇨🇦🇲🇽🇺🇸 — continuous updates 🌟 👇",
-            ];
-        }
-        $idx = (int)date('z') % count($variants);
-        return self::sign($variants[$idx], $link, 'news');
+        $arV = [
+            "📰 آخر أخبار المونديال — تحديث لحظيّ من كل العالم 🌍",
+            "🚨 أهم عناوين كأس العالم 2026 اليوم — لا يفوتك خبر 🏆",
+            "📰 كل ما يحدث في طريق المونديال — تحديثات يوميّة 🌎",
+            "🔥 نبض كأس العالم ⚽ — كل الأخبار في مكان واحد",
+            "📰 من كندا والمكسيك وأمريكا 🇨🇦🇲🇽🇺🇸 — تغطية مستمرّة",
+        ];
+        $enV = [
+            "📰 Latest World Cup news — live updates from around the globe 🌍",
+            "🚨 Today's biggest World Cup 2026 headlines — don't miss a thing 🏆",
+            "📰 The road to the World Cup — daily global updates 🌎",
+            "🔥 Heart of the tournament ⚽ — every story in one place",
+            "📰 From Canada, Mexico & USA 🇨🇦🇲🇽🇺🇸 — nonstop coverage",
+        ];
+        $idx = (int)date('z') % count($arV);
+        $msg = $arV[$idx] . "\n" . $enV[$idx] . " 👇";
+        return self::sign($msg, $link, 'news');
     }
 
     /** recap — صباحاً 09:00: نتائج آخر 24 ساعة (تشمل مباريات الليل في النطاق الأمريكي). */
@@ -263,7 +266,9 @@ class TweetComposer
         $foot = $ar
             ? "كيف توقّعتها؟ ابدأ يومك بالترتيب 👇"
             : "How did your picks fare? Start your day with the standings 👇";
-        return self::sign($head . "\n" . implode("\n", $lines) . "\n" . $foot, self::link('leaderboard.php'), 'recap');
+        // 🆕 وسوم فرق أبرز نتيجة (عربي + إنجليزي) — للوصول الدولي
+        return self::sign($head . "\n" . implode("\n", $lines) . "\n" . $foot, self::link('leaderboard.php'), 'recap',
+                          self::teamTags($results, 1));
     }
 
     /** trivia — سؤال اليوم + رابط trivia.php (يستخدم الكاش اليومي للذكاء). */

@@ -53,7 +53,7 @@ class TweetCardImage
 
         // كاش: نفس المحتوى = نفس الملف (لا إعادة توليد لكل تشغيل cron)
         $key = sha1('v2|' . $title . '|' . $subtitle . '|' . $subEn . '|' . $mode . '|' . json_encode(array_map(
-            fn($m) => [$m['team1'] ?? '', $m['team2'] ?? '', $m['date'] ?? '', $m['time'] ?? '', $m['score']['ft'] ?? null],
+            fn($m) => [$m['team1'] ?? '', $m['team2'] ?? '', $m['date'] ?? '', $m['time'] ?? '', $m['score']['ft'] ?? null, count($m['stats'] ?? []), count($m['cards'] ?? [])],
             $matches
         ), JSON_UNESCAPED_UNICODE));
         $dir  = rtrim(CACHE_DIR, '/') . '/cards';
@@ -67,7 +67,26 @@ class TweetCardImage
             if ($subEn !== '') $headH += 42;
             $rowH  = 262;   // +27 لسطر أسماء الفريقين بالإنجليزية تحت كل شريط
             $footH = 130;
-            $H = max(780, $headH + $n * $rowH + $footH);
+            // 🆕 شريط إحصائيات لبطاقة نتيجة مباراة واحدة (إحصائيات حيّة + الإنذارات/الطرد)
+            $statsRows = [];
+            if ($n === 1 && $mode === 'result') {
+                $m0 = $matches[0];
+                if (!empty($m0['stats']) && is_array($m0['stats'])) {
+                    $statsRows = array_slice(array_values($m0['stats']), 0, 4);
+                }
+                if (isset($m0['cards']) && is_array($m0['cards'])) {
+                    $yc = [0, 0]; $rc = [0, 0];
+                    foreach ($m0['cards'] as $cc) {
+                        if (!is_array($cc)) continue;
+                        $ix = ((int)($cc['team'] ?? 0) === 2) ? 1 : 0;
+                        if (($cc['type'] ?? '') === 'red') $rc[$ix]++; else $yc[$ix]++;
+                    }
+                    $statsRows[] = ['k' => 'البطاقات الصفراء', 'v' => [$yc[0], $yc[1]], 'unit' => ''];
+                    $statsRows[] = ['k' => 'البطاقات الحمراء', 'v' => [$rc[0], $rc[1]], 'unit' => ''];
+                }
+            }
+            $statsH = $statsRows ? (84 + count($statsRows) * 54) : 0;
+            $H = max(780, $headH + $n * $rowH + $statsH + $footH);
 
             $im = imagecreatetruecolor($W, $H);
 
@@ -122,6 +141,40 @@ class TweetCardImage
                 $y += $rowH;
             }
 
+            // ── 🆕 شريط إحصائيات المباراة (بطاقة نتيجة مفردة) ──
+            if ($statsRows) {
+                $m0  = $matches[0];
+                $t1n = function_exists('team_name') ? team_name((string)($m0['team1'] ?? '')) : (string)($m0['team1'] ?? '');
+                $t2n = function_exists('team_name') ? team_name((string)($m0['team2'] ?? '')) : (string)($m0['team2'] ?? '');
+                $sy  = $headH + $n * $rowH + 6;
+                self::centerText($im, $fontAr, 30, $W / 2, $sy + 22, $gold, ArabicText::shape('إحصائيات المباراة'));
+                $sy += 56;
+                // أسماء الفريقين فوق العمودين (الأول يمين، الثاني يسار)
+                $sh1 = ArabicText::shape($t1n); $bb = imagettfbbox(20, 0, $fontAr, $sh1);
+                imagettftext($im, 20, 0, (int)($W - 70 - ($bb[2] - $bb[0])), $sy, $light, $fontAr, $sh1);
+                imagettftext($im, 20, 0, 70, $sy, $light, $fontAr, ArabicText::shape($t2n));
+                $sy += 30;
+                $barBg = imagecolorallocatealpha($im, 255, 255, 255, 116);
+                foreach ($statsRows as $s) {
+                    $v1 = $s['v'][0] ?? 0; $v2 = $s['v'][1] ?? 0;
+                    $unit = (string)($s['unit'] ?? '');
+                    $v1s = (string)$v1 . $unit; $v2s = (string)$v2 . $unit;
+                    $bb = imagettfbbox(24, 0, $fontEn, $v1s);
+                    imagettftext($im, 24, 0, (int)($W - 70 - ($bb[2] - $bb[0])), $sy, $white, $fontEn, $v1s);
+                    imagettftext($im, 24, 0, 70, $sy, $white, $fontEn, $v2s);
+                    self::centerText($im, $fontAr, 19, $W / 2, $sy - 4, $light, ArabicText::shape((string)($s['k'] ?? '')));
+                    // شريط مقارنة: فريق1 (ذهبي، يمين) · فريق2 (سماوي، يسار)
+                    $sum = ((float)$v1 + (float)$v2) ?: 1; $p1 = (float)$v1 / $sum;
+                    $bx = 70; $barW = $W - 140; $byb = $sy + 13; $bhh = 9;
+                    self::roundedRect($im, $bx, $byb, $bx + $barW, $byb + $bhh, 4, $barBg);
+                    $w1 = (int)round($barW * $p1);
+                    $w2 = $barW - $w1;
+                    if ($w2 > 2) self::roundedRect($im, $bx, $byb, $bx + $w2, $byb + $bhh, 4, $light);
+                    if ($w1 > 2) self::roundedRect($im, $bx + $barW - $w1, $byb, $bx + $barW, $byb + $bhh, 4, $gold);
+                    $sy += 54;
+                }
+            }
+
             // ── التذييل ──
             imageline($im, 120, $H - 95, $W - 120, $H - 95, $dimW);
             self::centerText($im, $fontAr, 24, $W/2, $H - 52, $light,
@@ -146,18 +199,26 @@ class TweetCardImage
         $t2 = trim((string)($m['team2'] ?? ''));
         $ts = class_exists('DataService') ? DataService::matchTimestamp($m) : null;
 
+        // 🆕 التاريخ فوق الصفّ (ذهبي) — انتقل من تحت الشريط للأعلى
+        $contentTop = $y;
+        if ($ts !== null) {
+            $dateAr = (self::DAYS[date('l', $ts)] ?? '') . ' ' . (int)date('j', $ts) . ' ' . (self::MONTHS[(int)date('n', $ts)] ?? '');
+            self::centerText($im, $fontAr, 20, $W/2, $y + 24, $c['gold'], ArabicText::shape(trim($dateAr)));
+            $contentTop = $y + 38;
+        }
+
         // شارة المجموعة/الجولة فوق الشريط
         $label = self::roundLabelAr($m);
         if ($label !== '') {
             $shaped = ArabicText::shape($label);
             $bb = imagettfbbox(19, 0, $fontAr, $shaped);
             $lw = $bb[2] - $bb[0];
-            self::roundedRect($im, (int)($W/2 - $lw/2 - 24), $y, (int)($W/2 + $lw/2 + 24), $y + 42, 21, $c['boxBg']);
-            self::centerText($im, $fontAr, 19, $W/2, $y + 30, $c['white'], $shaped);
+            self::roundedRect($im, (int)($W/2 - $lw/2 - 24), $contentTop, (int)($W/2 + $lw/2 + 24), $contentTop + 42, 21, $c['boxBg']);
+            self::centerText($im, $fontAr, 19, $W/2, $contentTop + 30, $c['white'], $shaped);
         }
 
         // الشريط الأبيض
-        $barY = $y + 54; $barH = 116;
+        $barY = $contentTop + 54; $barH = 116;
         self::roundedRect($im, 50, $barY, $W - 50, $barY + $barH, 26, $c['white']);
 
         // صندوق الوسط (التوقيت أو النتيجة)
@@ -181,31 +242,23 @@ class TweetCardImage
             self::centerText($im, $fontAr, 14, $W/2, $by1 + 82, $c['light'], ArabicText::shape('بتوقيت الإمارات'));
         }
 
-        // الفريقان: الأول يمين (RTL) والثاني يسار — علم + اسم عربي
+        // الفريقان: علم + اسم عربي (فوق) + إنجليزي (تحته مباشرةً) داخل الشريط الأبيض
         $name1 = function_exists('team_name') ? team_name($t1) : $t1;
         $name2 = function_exists('team_name') ? team_name($t2) : $t2;
         $fw = 86; $fh = 58;
         $fy = (int)($barY + ($barH - $fh)/2);
 
-        // يمين: علم الفريق الأول ثم اسمه (نحو الوسط)
+        // يمين: علم الفريق الأول ثم اسمه (عربي فوق · إنجليزي تحت)
         $f1x = $W - 50 - 26 - $fw;
         self::drawFlag($im, $t1, $f1x, $fy, $fw, $fh);
-        self::fitText($im, $fontAr, 27, 17, $bx1 + $boxW + 18, $f1x - 14, $barY + 72, $c['navy'],
-            ArabicText::shape($name1));
+        self::fitText($im, $fontAr, 26, 16, $bx1 + $boxW + 18, $f1x - 14, $barY + 50, $c['navy'], ArabicText::shape($name1));
+        self::fitText($im, $fontEn, 16, 11, $bx1 + $boxW + 18, $f1x - 14, $barY + 82, $c['navy'], strtoupper($t1));
 
-        // يسار: علم الفريق الثاني ثم اسمه
+        // يسار: علم الفريق الثاني ثم اسمه (عربي فوق · إنجليزي تحت)
         $f2x = 50 + 26;
         self::drawFlag($im, $t2, $f2x, $fy, $fw, $fh);
-        self::fitText($im, $fontAr, 27, 17, $f2x + $fw + 14, $bx1 - 18, $barY + 72, $c['navy'],
-            ArabicText::shape($name2));
-
-        // سطر التاريخ تحت الشريط + 🆕 الاسمان بالإنجليزية (بطاقة ثنائيّة اللغة)
-        if ($ts !== null) {
-            $dateAr = (self::DAYS[date('l', $ts)] ?? '') . ' ' . (int)date('j', $ts) . ' ' . (self::MONTHS[(int)date('n', $ts)] ?? '');
-            self::centerText($im, $fontAr, 21, $W/2, $barY + $barH + 40, $c['gold'], ArabicText::shape(trim($dateAr)));
-        }
-        self::centerText($im, $fontEn, 18, $W/2, $barY + $barH + ($ts !== null ? 72 : 40), $c['light'],
-            strtoupper($t1 . '  vs  ' . $t2));
+        self::fitText($im, $fontAr, 26, 16, $f2x + $fw + 14, $bx1 - 18, $barY + 50, $c['navy'], ArabicText::shape($name2));
+        self::fitText($im, $fontEn, 16, 11, $f2x + $fw + 14, $bx1 - 18, $barY + 82, $c['navy'], strtoupper($t2));
     }
 
     /** «Group A» → «المجموعة الأولى»، وإلا اسم الجولة بالعربية. */

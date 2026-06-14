@@ -57,8 +57,8 @@ try {
     $im = imagecreatetruecolor($W, $H);
     if (function_exists('imageantialias')) { @imageantialias($im, true); }
 
-    // خلفية متدرّجة (كحلي → أزرق) — مطابقة لهوية الموقع
-    $top = [10, 22, 38]; $bot = [27, 55, 96];
+    // خلفية متدرّجة (أزرق ملكي) — موحّدة مع بطاقات التغريدات (TweetCardImage)
+    $top = [45, 49, 175]; $bot = [25, 27, 115];
     for ($y = 0; $y < $H; $y++) {
         $tt = $y / $H;
         $c = imagecolorallocate($im,
@@ -68,27 +68,31 @@ try {
         imageline($im, 0, $y, $W, $y, $c);
     }
 
-    // ألوان الهوية
+    // أقواس زخرفيّة شفّافة (نفس روح بطاقة النتائج)
+    $arc = imagecolorallocatealpha($im, 150, 200, 245, 110);
+    imagefilledellipse($im, 0, 150, 360, 360, $arc);
+    imagefilledellipse($im, $W, (int)($H * 0.42), 320, 320, $arc);
+    imagefilledellipse($im, 90, $H - 30, 340, 340, $arc);
+
+    // ألوان الهوية (موحّدة)
     [$ar_, $ag_, $ab_] = card_hex_rgb($accent);
     $accentCol = imagecolorallocate($im, $ar_, $ag_, $ab_);
-    $gold  = imagecolorallocate($im, 255, 194, 51);
-    $white = imagecolorallocate($im, 238, 244, 255);
-    $dim   = imagecolorallocate($im, 159, 179, 209);
-    $navy  = imagecolorallocate($im, 10, 22, 38);
-
-    imagefilledrectangle($im, 0, 0, $W, 8, $white);          // شريط علوي أبيض
-    imagefilledrectangle($im, 0, $H-8, $W, $H, $accentCol);  // شريط سفلي بلون النوع
+    $gold  = imagecolorallocate($im, 255, 200, 70);
+    $white = imagecolorallocate($im, 255, 255, 255);
+    $dim   = imagecolorallocate($im, 168, 205, 245);
+    $navy  = imagecolorallocate($im, 26, 31, 100);
 
     $font  = __DIR__ . '/assets/fonts/Cairo-Black.ttf';
     $fontB = __DIR__ . '/assets/fonts/Cairo-Bold.ttf';
     $hasFont = is_file($font);
 
-    // شارة الهوية «26» أعلى اليسار
+    // علامة «26» مائيّة كبيرة + شارة الهوية أعلى اليسار (موحّدة مع بطاقات التغريدات)
     if ($hasFont) {
+        $wm = imagecolorallocatealpha($im, 255, 255, 255, 118);
+        imagettftext($im, 300, 0, (int)($W * 0.70), (int)($H * 0.95), $wm, $font, '26');
         $bx = 46; $by = 34; $bs = 64;
         imagefilledrectangle($im, $bx, $by, $bx + $bs, $by + $bs, $white);
-        $bb26 = imagettfbbox(32, 0, $font, '26');
-        $w26  = $bb26[2] - $bb26[0];
+        $bb26 = imagettfbbox(32, 0, $font, '26'); $w26 = $bb26[2] - $bb26[0];
         imagettftext($im, 32, 0, (int)($bx + ($bs - $w26) / 2), (int)($by + $bs / 2 + 15), $navy, $font, '26');
     }
 
@@ -124,35 +128,180 @@ try {
             return @imagecreatefromstring($raw);
         };
 
+        $fontAr = __DIR__ . '/assets/fonts/Amiri-Bold.ttf';
+        if (!is_file($fontAr)) $fontAr = $font;
+        $shape = fn(string $s): string => class_exists('ArabicText') ? ArabicText::shape($s) : $s;
         if ($hasFont && $rows) {
-            $centerText($im, 30, 92, $gold, $font, 'GROUP ' . $gL . '  .  STANDINGS  .  WORLD CUP 2026');
-            $y = 150;
+            $centerText($im, 44, 148, $white, $fontAr, $shape('المجموعة ' . $gL . ' — الترتيب'));
+            $centerText($im, 20, 184, $gold,  $font,   'GROUP ' . $gL . ' · STANDINGS · FIFA WORLD CUP 2026');
+
+            // أعمدة (مركز x) برؤوس عربيّة + إنجليزيّة تحتها
+            $colX  = ['pts' => 250, 'gd' => 350, 'l' => 440, 'd' => 520, 'w' => 600, 'p' => 680];
+            $colAr = ['pts' => 'نقاط', 'gd' => 'فارق', 'l' => 'خسر', 'd' => 'تعادل', 'w' => 'فوز', 'p' => 'لعب'];
+            $colEn = ['pts' => 'PTS', 'gd' => 'GD', 'l' => 'L', 'd' => 'D', 'w' => 'W', 'p' => 'PLD'];
+            $colHdr = function (int $x, string $ar, string $en) use ($im, $fontAr, $font, $dim, $shape) {
+                $a = $shape($ar); $bb = imagettfbbox(17, 0, $fontAr, $a);
+                imagettftext($im, 17, 0, (int)($x - ($bb[2] - $bb[0]) / 2), 222, $dim, $fontAr, $a);
+                $bb = imagettfbbox(13, 0, $font, $en);
+                imagettftext($im, 13, 0, (int)($x - ($bb[2] - $bb[0]) / 2), 242, $dim, $font, $en);
+            };
+            foreach ($colX as $k => $x) $colHdr($x, $colAr[$k], $colEn[$k]);
+            $colHdr(885, 'المنتخب', 'TEAM');
+
+            $y = 270;
             foreach (array_slice($rows, 0, 4) as $i => $r) {
                 $teamEn = (string)$r['team'];
-                $rowBg = imagecolorallocatealpha($im, 255, 255, 255, 118);
-                imagefilledrectangle($im, 80, $y, $W - 80, $y + 84, $rowBg);
-                imagettftext($im, 34, 0, 104, $y + 58, $gold, $font, (string)($i + 1));
+                imagefilledrectangle($im, 60, $y, $W - 60, $y + 68, imagecolorallocatealpha($im, 255, 255, 255, 120));
+                $mid = $y + 34;
+                imagettftext($im, 28, 0, 1092, $mid + 10, $gold, $font, (string)($i + 1));
                 $fl = $fetch(flag_url($teamEn, 'w160'));
                 if ($fl) {
-                    imagecopyresampled($im, $fl, 165, $y + 12, 0, 0, 90, 60, imagesx($fl), imagesy($fl));
+                    imagecopyresampled($im, $fl, 1000, $y + 20, 0, 0, 66, 44, imagesx($fl), imagesy($fl));
                     imagedestroy($fl);
-                    imagerectangle($im, 165, $y + 12, 255, $y + 72, imagecolorallocate($im, 36, 66, 104));
+                    imagerectangle($im, 1000, $y + 20, 1066, $y + 64, imagecolorallocate($im, 36, 66, 104));
                 }
-                imagettftext($im, 30, 0, 290, $y + 56, $white, $font, strtoupper($teamEn));
-                $pts = (int)$r['pts']; $gd = (int)$r['gd'];
-                $ptStr = $pts . ' PTS';
-                $bb = imagettfbbox(30, 0, $font, $ptStr); $w = $bb[2] - $bb[0];
-                imagettftext($im, 30, 0, (int)($W - 270 - $w), $y + 56, $white, $font, $ptStr);
-                $gdStr = ($gd > 0 ? '+' : '') . $gd;
-                $bb = imagettfbbox(26, 0, $font, $gdStr); $w = $bb[2] - $bb[0];
-                imagettftext($im, 26, 0, (int)($W - 110 - $w), $y + 54, $dim, $font, $gdStr);
-                $y += 102;
+                // الاسم: عربي (فوق) + إنجليزي (تحت) — كلاهما محاذى يميناً لـ982 فلا يدخل العلم
+                $nameAr = $shape(function_exists('team_name') ? team_name($teamEn) : $teamEn);
+                $bb = imagettfbbox(27, 0, $fontAr, $nameAr);
+                imagettftext($im, 27, 0, (int)(982 - ($bb[2] - $bb[0])), $mid - 1, $white, $fontAr, $nameAr);
+                $en = strtoupper($teamEn); $bb = imagettfbbox(15, 0, $font, $en);
+                imagettftext($im, 15, 0, (int)(982 - ($bb[2] - $bb[0])), $mid + 27, $dim, $font, $en);
+                $vals = ['pts' => (int)$r['pts'], 'gd' => (int)$r['gd'], 'l' => (int)$r['l'], 'd' => (int)$r['d'], 'w' => (int)$r['w'], 'p' => (int)$r['p']];
+                foreach ($vals as $k => $v) {
+                    $vs = ($k === 'gd') ? (($v > 0 ? '+' : '') . $v) : (string)$v;
+                    $size = ($k === 'pts') ? 30 : 24;
+                    $col  = ($k === 'pts') ? $gold : $white;
+                    $bb = imagettfbbox($size, 0, $font, $vs);
+                    imagettftext($im, $size, 0, (int)($colX[$k] - ($bb[2] - $bb[0]) / 2), $mid + 9, $col, $font, $vs);
+                }
+                $y += 78;
             }
             $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
-            $centerText($im, 24, $H - 42, $white, $font, $domain . '  .  LIVE STANDINGS');
+            $centerText($im, 22, $H - 22, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 280, $white, 'GROUP ' . $gL . ' STANDINGS');
             $centerBuiltin($im, 4, 330, $dim, 'wcup2026.org');
+        }
+        imagepng($im); imagedestroy($im); exit;
+    }
+
+    // 🆕 بطاقة كل المجموعات (?mode=groups) — 4 جداول مصغّرة بهويّة الموقع
+    if (($_GET['mode'] ?? '') === 'groups') {
+        $all = class_exists('Standings') ? Standings::all() : [];
+        $fontAr = __DIR__ . '/assets/fonts/Amiri-Bold.ttf';
+        if (!is_file($fontAr)) $fontAr = $font;
+        $shape = fn(string $s): string => class_exists('ArabicText') ? ArabicText::shape($s) : $s;
+        $fetch = function (string $url) {
+            if ($url === '') return false;
+            $cf = rtrim(CACHE_DIR, '/') . '/flag_' . md5($url) . '.png';
+            if (is_file($cf)) { $r = @file_get_contents($cf); if ($r !== false) { $i = @imagecreatefromstring($r); if ($i) return $i; } }
+            $raw = http_get($url, ['timeout' => 8]);
+            if (!$raw) return false;
+            @file_put_contents($cf, $raw);
+            return @imagecreatefromstring($raw);
+        };
+        if ($hasFont && $all) {
+            $gold2 = imagecolorallocate($im, 255, 194, 51);
+            $centerText($im, 44, 156, $white, $fontAr, $shape('ترتيب المجموعات'));
+            $centerText($im, 24, 196, $dim,   $fontAr, $shape('كأس العالم 2026'));
+
+            $cellW = 540; $cellH = 176;
+            $colX  = [640, 60];     // RTL: يمين ثم يسار
+            $rowY  = [222, 408];
+            $order = ['Group A', 'Group B', 'Group C', 'Group D'];
+            $i = 0;
+            foreach ($order as $gk) {
+                if (!isset($all[$gk])) { $i++; continue; }
+                $cx = $colX[$i % 2]; $cy = $rowY[intdiv($i, 2)];
+                imagefilledrectangle($im, $cx, $cy, $cx + $cellW, $cy + $cellH, imagecolorallocatealpha($im, 255, 255, 255, 122));
+                $gl = $shape('المجموعة ' . substr($gk, -1));
+                $bb = imagettfbbox(22, 0, $fontAr, $gl);
+                imagettftext($im, 22, 0, (int)($cx + $cellW - 16 - ($bb[2] - $bb[0])), $cy + 32, $gold2, $fontAr, $gl);
+                $ry = $cy + 64;
+                foreach (array_slice($all[$gk], 0, 4) as $ri => $r) {
+                    $teamEn = (string)($r['team'] ?? '');
+                    imagettftext($im, 17, 0, $cx + $cellW - 38, $ry + 4, $dim,   $font, (string)($ri + 1));
+                    $fl = $fetch(flag_url($teamEn, 'w160'));
+                    if ($fl) { imagecopyresampled($im, $fl, $cx + $cellW - 104, $ry - 13, 0, 0, 42, 28, imagesx($fl), imagesy($fl)); imagedestroy($fl); }
+                    imagettftext($im, 19, 0, $cx + 64, $ry + 5, $white, $fontAr, $shape(function_exists('team_name') ? team_name($teamEn) : $teamEn));
+                    imagettftext($im, 20, 0, $cx + 20, $ry + 6, $gold2, $font, (string)($r['pts'] ?? 0));
+                    $ry += 30;
+                }
+                $i++;
+            }
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $centerText($im, 22, $H - 24, $white, $font, strtoupper($domain));
+        } else {
+            $centerBuiltin($im, 5, 280, $white, 'GROUP STANDINGS - WORLD CUP 2026');
+        }
+        imagepng($im); imagedestroy($im); exit;
+    }
+
+    // 🆕 بطاقة ملخّص البطاقات (?mode=cards) — مجاميع البطولة + الأكثر بطاقات لكل منتخب
+    if (($_GET['mode'] ?? '') === 'cards') {
+        $agg = [];
+        foreach (DataService::allMatches() as $mm) {
+            if (empty($mm['cards']) || !is_array($mm['cards'])) continue;
+            foreach ($mm['cards'] as $cc) {
+                if (!is_array($cc)) continue;
+                $teamEn = ((int)($cc['team'] ?? 0) === 2) ? (string)($mm['team2'] ?? '') : (string)($mm['team1'] ?? '');
+                if ($teamEn === '') continue;
+                if (!isset($agg[$teamEn])) $agg[$teamEn] = ['y' => 0, 'r' => 0];
+                if (($cc['type'] ?? '') === 'red') $agg[$teamEn]['r']++; else $agg[$teamEn]['y']++;
+            }
+        }
+        $totY = array_sum(array_column($agg, 'y'));
+        $totR = array_sum(array_column($agg, 'r'));
+        uasort($agg, fn($a, $b) => ($b['r'] * 100 + $b['y']) <=> ($a['r'] * 100 + $a['y']));
+
+        $yel   = imagecolorallocate($im, 255, 194, 51);
+        $redc  = imagecolorallocate($im, 235, 70, 90);
+        $shape = fn(string $s): string => class_exists('ArabicText') ? ArabicText::shape($s) : $s;
+        $fetch = function (string $url) {
+            if ($url === '') return false;
+            $cf = rtrim(CACHE_DIR, '/') . '/flag_' . md5($url) . '.png';
+            if (is_file($cf)) { $r = @file_get_contents($cf); if ($r !== false) { $i = @imagecreatefromstring($r); if ($i) return $i; } }
+            $raw = http_get($url, ['timeout' => 8]);
+            if (!$raw) return false;
+            @file_put_contents($cf, $raw);
+            return @imagecreatefromstring($raw);
+        };
+
+        // Cairo-Black ينقص بعض حروف العربية → استخدم Amiri-Bold للنصّ العربي
+        $fontAr = __DIR__ . '/assets/fonts/Amiri-Bold.ttf';
+        if (!is_file($fontAr)) $fontAr = $font;
+        if ($hasFont && $agg) {
+            $centerText($im, 48, 182, $white, $fontAr, $shape('البطاقات'));
+            $centerText($im, 26, 226, $dim,   $fontAr, $shape('كأس العالم 2026'));
+
+            // مجاميع البطولة: مستطيل أصفر (إنذارات) + أحمر (طرد)
+            $byY = 258; $bh = 58;
+            imagefilledrectangle($im, (int)($W / 2 - 250), $byY, (int)($W / 2 - 20), $byY + $bh, $yel);
+            imagefilledrectangle($im, (int)($W / 2 + 20), $byY, (int)($W / 2 + 250), $byY + $bh, $redc);
+            $tY = $shape('إنذارات ' . $totY); $bb = imagettfbbox(26, 0, $fontAr, $tY);
+            imagettftext($im, 26, 0, (int)($W / 2 - 135 - ($bb[2] - $bb[0]) / 2), $byY + 39, $navy,  $fontAr, $tY);
+            $tR = $shape('طرد ' . $totR);     $bb = imagettfbbox(26, 0, $fontAr, $tR);
+            imagettftext($im, 26, 0, (int)($W / 2 + 135 - ($bb[2] - $bb[0]) / 2), $byY + 39, $white, $fontAr, $tR);
+
+            // الأكثر حصولاً على البطاقات (مجموع كل منتخب)
+            $centerText($im, 24, 360, $gold, $fontAr, $shape('الأكثر حصولاً على البطاقات'));
+            $y = 390; $rank = 0;
+            foreach ($agg as $teamEn => $cc) {
+                if ($rank >= 4) break;
+                imagefilledrectangle($im, 130, $y, $W - 130, $y + 50, imagecolorallocatealpha($im, 255, 255, 255, 119));
+                $fl = $fetch(flag_url($teamEn, 'w160'));
+                if ($fl) { imagecopyresampled($im, $fl, 150, $y + 12, 0, 0, 39, 26, imagesx($fl), imagesy($fl)); imagedestroy($fl); }
+                imagettftext($im, 26, 0, 210, $y + 36, $white, $fontAr, $shape(function_exists('team_name') ? team_name($teamEn) : $teamEn));
+                imagefilledrectangle($im, $W - 250, $y + 14, $W - 228, $y + 36, $yel);
+                imagettftext($im, 24, 0, $W - 222, $y + 35, $white, $font, (string)$cc['y']);
+                imagefilledrectangle($im, $W - 165, $y + 14, $W - 143, $y + 36, $redc);
+                imagettftext($im, 24, 0, $W - 137, $y + 35, $white, $font, (string)$cc['r']);
+                $y += 58; $rank++;
+            }
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $centerText($im, 24, $H - 46, $white, $font, $domain);
+        } else {
+            $centerBuiltin($im, 5, 280, $white, 'CARDS - WORLD CUP 2026');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -170,11 +319,43 @@ try {
     // لا مباراة صالحة وليست بطاقة ملصق → بطاقة هوية الموقع (الواجهة الافتراضية للمشاركة)
     if ($m === null && $type !== 'sticker') {
         if ($hasFont) {
-            $centerText($im, 64, 290, $white, $font, 'FIFA WORLD CUP 2026');
-            $centerText($im, 32, 360, $gold,  $font, 'CANADA  .  MEXICO  .  USA');
-            $centerText($im, 24, 440, $dim,   $font, '104 MATCHES  .  48 TEAMS  .  16 CITIES');
+            // علامة «26» مائيّة كبيرة (عمق بصري بهوية البانر الجديدة)
+            $wm = imagecolorallocatealpha($im, 150, 200, 245, 116);
+            imagettftext($im, 300, 0, (int)($W * 0.66), (int)($H * 0.98), $wm, $font, '26');
+
+            $centerText($im, 58, 158, $white, $font, 'FIFA WORLD CUP 2026');
+
+            // أعلام الدول الثلاث المستضيفة (كندا · المكسيك · أمريكا)
+            $fetchFlag = function (string $url) {
+                if ($url === '') return false;
+                $cf = rtrim(CACHE_DIR, '/') . '/flag_' . md5($url) . '.png';
+                if (is_file($cf)) { $r = @file_get_contents($cf); if ($r !== false) { $i = @imagecreatefromstring($r); if ($i) return $i; } }
+                $raw = http_get($url, ['timeout' => 8]);
+                if (!$raw) return false;
+                if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+                @file_put_contents($cf, $raw);
+                return @imagecreatefromstring($raw);
+            };
+            $hosts  = [['Canada', 'CANADA'], ['Mexico', 'MEXICO'], ['USA', 'USA']];
+            $fwf = 160; $fhf = 106; $gap = 60; $fyf = 220;
+            $rowW   = count($hosts) * $fwf + (count($hosts) - 1) * $gap;
+            $startX = (int)(($W - $rowW) / 2);
+            $border = imagecolorallocate($im, 90, 130, 180);
+            foreach ($hosts as $i => [$teamEn, $label]) {
+                $fx = $startX + $i * ($fwf + $gap);
+                $fl = $fetchFlag(flag_url($teamEn, 'w320'));
+                if ($fl) {
+                    imagecopyresampled($im, $fl, $fx, $fyf, 0, 0, $fwf, $fhf, imagesx($fl), imagesy($fl));
+                    imagedestroy($fl);
+                    imagerectangle($im, $fx, $fyf, $fx + $fwf, $fyf + $fhf, $border);
+                }
+                $bb = imagettfbbox(26, 0, $font, $label); $lw = $bb[2] - $bb[0];
+                imagettftext($im, 26, 0, (int)($fx + ($fwf - $lw) / 2), $fyf + $fhf + 42, $gold, $font, $label);
+            }
+
+            $centerText($im, 26, 458, $dim, $font, '104 MATCHES  .  48 TEAMS  .  16 CITIES');
             $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
-            $centerText($im, 26, $H-50, $white, $font, $domain);
+            $centerText($im, 28, $H - 44, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 280, $white, 'FIFA WORLD CUP 2026');
             $centerBuiltin($im, 4, 330, $dim,   'CANADA - MEXICO - USA');

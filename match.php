@@ -241,6 +241,17 @@ seo_sportsevent($m);
     </section>
   <?php endif; ?>
 
+  <!-- ============ إحصائيات FIFA الرسميّة + رابط التقرير الكامل ============ -->
+  <?php
+  $fifaStatsHtml = ($hasScore && class_exists('FifaStats'))  ? FifaStats::render($m, $ar) : '';
+  $fifaUrl       = ($hasScore && class_exists('FifaReports')) ? FifaReports::forMatch($m) : null;
+  echo $fifaStatsHtml;
+  if ($fifaUrl): ?>
+    <p style="margin:-4px 0 10px;text-align:center">
+      <a class="section-link" href="<?= e($fifaUrl) ?>" target="_blank" rel="noopener">📄 <?= e($L('التقرير الرسمي الكامل من FIFA (PDF) ↗','Full official FIFA report (PDF) ↗')) ?></a>
+    </p>
+  <?php endif; ?>
+
   <!-- ============ الأحداث (خط زمني موحّد) ============ -->
   <?php if (!empty($events)): ?>
     <section class="md-section">
@@ -274,7 +285,8 @@ seo_sportsevent($m);
     </section>
   <?php endif; ?>
 
-  <!-- ============ الإحصائيات ============ -->
+  <!-- ============ الإحصائيات (ESPN) — تُخفى عند توفّر إحصائيات FIFA الرسميّة ============ -->
+  <?php if ($fifaStatsHtml === ''): ?>
   <?php if (!empty($m['stats']) && is_array($m['stats'])): ?>
     <section class="md-section">
       <h3 class="section-head">📊 <?= e($L('الإحصائيات','Statistics')) ?></h3>
@@ -312,6 +324,7 @@ seo_sportsevent($m);
       </p>
     </section>
   <?php endif; ?>
+  <?php endif; /* fifaStatsHtml === '' */ ?>
 
   <!-- ============ التشكيلة ============ -->
   <?php

@@ -9,11 +9,11 @@ $page_title = t('groups');
 $tables     = Standings::all();
 $thirds     = Standings::thirdPlaceRanking();
 
-// ?g=A → معاينة الرابط (تويتر/واتساب) تعرض بطاقة ترتيب هذه المجموعة ببيانات حقيقيّة
+// معاينة الرابط (تويتر/واتساب): ?g=A → بطاقة تلك المجموعة · بلا ?g → كل المجموعات
 $gParam = strtoupper(preg_replace('/[^A-La-l]/', '', (string)($_GET['g'] ?? '')));
-if ($gParam !== '') {
-    $page_image = url('card_img.php', ['mode' => 'group', 'g' => $gParam[0], 'd' => date('Ymd')]);
-}
+$page_image = ($gParam !== '')
+    ? url('card_img.php', ['mode' => 'group',  'g' => $gParam[0], 'd' => date('Ymd')])
+    : url('card_img.php', ['mode' => 'groups', 'd' => date('Ymd')]);
 
 tpl('header');
 ?>
@@ -45,6 +45,9 @@ tpl('header');
       <?php render_third_place_table($thirds); ?>
     </div>
   <?php endif; ?>
+
+  <!-- ============ مشاركة الجدول ============ -->
+  <?php render_share(canonical_url(), t('groups') . ' — ' . t('standings') . ' — ' . SITE_NAME_AR); ?>
 <?php endif; ?>
 
 <?php tpl('footer'); ?>

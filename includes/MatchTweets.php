@@ -66,10 +66,12 @@ class MatchTweets
             if (!isset($m['score']['ft']) || !is_array($m['score']['ft'])) continue;
 
             $idx = (int)$m['_index'];
-            $need = [];
-            if (!self::wasSent($idx, 'post', 'ar')) $need[] = 'ar';
-            if (!self::wasSent($idx, 'post', 'en')) $need[] = 'en';
-            foreach ($need as $lang) $out[] = ['match' => $m, 'lang' => $lang];
+            // تغريدة نتيجة واحدة ثنائيّة اللغة (bi). تُعتبر مُرسَلة أيضاً لو نُشرت
+            // سابقاً بالنظام القديم (ar/en منفصلتين) فلا تتكرّر بعد التحديث.
+            if (self::wasSent($idx, 'post', 'bi')
+                || self::wasSent($idx, 'post', 'ar')
+                || self::wasSent($idx, 'post', 'en')) continue;
+            $out[] = ['match' => $m, 'lang' => 'bi'];
         }
         return $out;
     }
@@ -137,49 +139,40 @@ class MatchTweets
         return self::fitWithin($msg, 280, $url, $tags);
     }
 
-    /** تغريدة بعد المباراة (AR/EN) — تضمّ النتيجة + أوّل جملة من تقرير الذكاء. */
-    public static function buildPost(array $m, string $lang): string
+    /**
+     * تغريدة نتيجة المباراة — ثنائيّة اللغة في تغريدة واحدة (عربي فوق، إنجليزي تحت).
+     * مبسّطة: «نهاية المباراة» + الفريقان والنتيجة + رابط التفاصيل (بلا تقرير ذكاء).
+     */
+    public static function buildPost(array $m, string $lang = 'bi'): string
     {
-        $ar  = ($lang === 'ar');
         $t1  = (string)($m['team1'] ?? '');
         $t2  = (string)($m['team2'] ?? '');
-        $n1  = self::nameInLang($t1, $lang);
-        $n2  = self::nameInLang($t2, $lang);
         $f1  = self::flagEmoji($t1);
         $f2  = self::flagEmoji($t2);
         $g1  = (int)$m['score']['ft'][0];
         $g2  = (int)$m['score']['ft'][1];
-        $url = self::link('match.php?id=' . (int)$m['_index'] . '&lang=' . $lang);
+        $url = self::link('match.php?id=' . (int)$m['_index'] . '&lang=ar');
         // هاشتاكات ذكيّة: #الفريق1 #الفريق2 #المضيف + الأساس القصير
         $tags = class_exists('Hashtags') ? Hashtags::forMatch($m)
               : (defined('X_HASHTAGS') ? X_HASHTAGS : '#FIFAWorldCup26');
 
-        // النتيجة الأولى — السطر الأهم
-        $score = "{$f1} {$n1} {$g1} - {$g2} {$n2} {$f2}";
-        $head  = $ar ? "⏱️ نهاية المباراة" : "⏱️ Full time";
-        $cta   = $ar ? "اقرأ التقرير الكامل 👇" : "Read the full report 👇";
+        $ar1 = self::nameInLang($t1, 'ar'); $ar2 = self::nameInLang($t2, 'ar');
+        $en1 = self::nameInLang($t1, 'en'); $en2 = self::nameInLang($t2, 'en');
 
         // ركلات الترجيح إن وُجدت
-        $pen = '';
+        $penAr = $penEn = '';
         if (isset($m['score']['p']) && is_array($m['score']['p'])) {
             $p1 = (int)$m['score']['p'][0]; $p2 = (int)$m['score']['p'][1];
-            $pen = $ar ? "(ركلات الترجيح {$p1}–{$p2})" : "(penalties {$p1}–{$p2})";
+            $penAr = " (ركلات الترجيح {$p1}–{$p2})";
+            $penEn = " (penalties {$p1}–{$p2})";
         }
 
-        // أوّل جملة من تقرير الذكاء (اختياري — يُولَّد لو لم يكن مخزَّناً)
-        $sentence = '';
-        if (class_exists('AiContent') && AiContent::enabled()) {
-            $report = AiContent::forMatch($m, 'summary', $lang);
-            if (is_string($report) && trim($report) !== '') {
-                $first = self::firstSentence($report);
-                if ($first !== '') $sentence = $first;
-            }
-        }
+        // عربي فوق ثم إنجليزي تحت — كل كتلة: «نهاية المباراة» + الفريقان والنتيجة
+        $arBlock = "🏁 نهاية المباراة\n{$f1} {$ar1} {$g1} - {$g2} {$ar2} {$f2}{$penAr}";
+        $enBlock = "🏁 Full time\n{$f1} {$en1} {$g1} - {$g2} {$en2} {$f2}{$penEn}";
+        $cta     = "👇 للتفاصيل اضغط هنا · Tap for details";
 
-        $msg = $head . "\n" . $score;
-        if ($pen !== '') $msg .= ' ' . $pen;
-        if ($sentence !== '') $msg .= "\n" . $sentence;
-        $msg .= "\n" . $cta . "\n" . $url . "\n" . $tags;
+        $msg = $arBlock . "\n\n" . $enBlock . "\n\n" . $cta . "\n" . $url . "\n" . $tags;
         return self::fitWithin($msg, 280, $url, $tags);
     }
 

@@ -53,6 +53,16 @@ function render_group_table(string $group, array $rows): void {
           </tbody>
         </table>
       </div>
+      <?php
+        // مشاركة هذه المجموعة: الرابط يحمل ?g=الحرف → معاينة بطاقة المجموعة،
+        // والهاشتاكات تضمّ منتخبات المجموعة (AR + EN).
+        $gL = preg_replace('/[^A-L]/i', '', $group);
+        render_share(
+            url('groups.php', ['g' => $gL]),
+            group_label($group) . ' — ' . t('standings') . ' — ' . SITE_NAME_AR,
+            ['teams' => array_map(fn($r) => (string)$r['team'], $rows)]
+        );
+      ?>
     </div>
     <?php
 }

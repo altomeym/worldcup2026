@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // بطاقة مصوّرة مرافقة لفترات المباريات/النتائج (نفس منطق الكرون)
             $img = null;
             if (class_exists('TweetCardImage')) {
-                if ($slot === 'morning') {
+                if ($slot === 'morning' || $slot === 'news') {
                     $list = DataService::matchesOnDate();
                     if ($list) $img = TweetCardImage::generate($list, ['title' => 'مباريات اليوم', 'subtitle' => 'كأس العالم 2026']);
                 } elseif ($slot === 'evening' || $slot === 'recap') {

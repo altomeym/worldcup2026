@@ -219,6 +219,13 @@ if (!$skipDaily) {
                         'title' => 'المباريات القادمة', 'subtitle' => 'كأس العالم 2026',
                         'subtitle_en' => "UPCOMING MATCHES — FIFA WORLD CUP 2026",
                     ]);
+                } elseif ($dailySlot === 'news') {
+                    // 🆕 بطاقة «مباريات اليوم» لإثراء تغريدة الأخبار (نفس البطاقة المرئيّة في فترة morning)
+                    $list = DataService::matchesOnDate();
+                    if ($list) $img = TweetCardImage::generate($list, [
+                        'title' => 'مباريات اليوم', 'subtitle' => 'كأس العالم 2026',
+                        'subtitle_en' => "TODAY'S MATCHES — FIFA WORLD CUP 2026",
+                    ]);
                 } elseif ($dailySlot === 'evening' || $dailySlot === 'recap') {
                     $list = DataService::latestResults(3);
                     if ($list) $img = TweetCardImage::generate($list, [

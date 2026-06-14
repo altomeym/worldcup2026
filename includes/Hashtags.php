@@ -122,8 +122,11 @@ class Hashtags
     public static function forMatch(array $m): string
     {
         $tags = [];
-        if ($t1 = self::team((string)($m['team1'] ?? '')))         $tags[] = $t1;
-        if ($t2 = self::team((string)($m['team2'] ?? '')))         $tags[] = $t2;
+        $t1En = trim((string)($m['team1'] ?? ''));
+        $t2En = trim((string)($m['team2'] ?? ''));
+        // اسم المنتخب: عربي + 🆕 إنجليزي (للوصول الدولي) لكل فريق
+        if ($t1 = self::team($t1En)) { $tags[] = $t1; $tags[] = '#' . preg_replace('/\s+/', '', $t1En); }
+        if ($t2 = self::team($t2En)) { $tags[] = $t2; $tags[] = '#' . preg_replace('/\s+/', '', $t2En); }
         if ($host = self::hostCountry((string)($m['ground'] ?? ''))) {
             // تجنّب التكرار: لو المضيف هو نفسه أحد الفريقَين، تخطّه
             if (!in_array($host, $tags, true)) $tags[] = $host;

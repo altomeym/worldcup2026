@@ -333,8 +333,18 @@ seo_sportsevent($m);
   $lineupSample = false;
   if (!$lineup) { $lineup = pitch_sample_lineup(); $lineupSample = true; }
   ?>
+  <?php
+    // عند توفّر تقرير FIFA (إحصائيات غنيّة) نطوي التشكيلة في <details> — لا تُفقَد أي بيانات،
+    // فقط تُفتح بضغطة. وإلا فقسم عادي ظاهر.
+    $foldLineup = ($fifaStatsHtml !== '');
+  ?>
+  <?php if ($foldLineup): ?>
+  <details class="lineup-box md-section lineup-fold">
+    <summary class="section-head">👕 <?= e(t('lineup')) ?> <span class="fold-hint">· <?= e($ar ? 'اضغط للعرض' : 'tap to view') ?></span></summary>
+  <?php else: ?>
   <section class="lineup-box md-section">
     <h3 class="section-head">👕 <?= e(t('lineup')) ?></h3>
+  <?php endif; ?>
     <?php
     // تشكيلة يدوية متوقعة (قبل الإعلان الرسمي) → وسم توضيحي فوق اللوحة
     $lineupTag = (!$lineupSample && !empty($lineup['probable']))
@@ -376,7 +386,7 @@ seo_sportsevent($m);
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
-  </section>
+  <?php echo $foldLineup ? '</details>' : '</section>'; ?>
 
   <!-- ============ تفاصيل الحكام والمعلومات الموسّعة ============ -->
   <?php

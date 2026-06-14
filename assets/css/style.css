@@ -2667,3 +2667,16 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
   /* عند فتح قائمة الهامبرغر: أخفِ الشريط (انزلاق لأسفل) كي لا يحجب آخر عناصرها */
   body:has(.main-nav.open) .bottom-nav { transform: translateY(110%); }
 }
+
+/* ============================================================
+   التشكيلة المطويّة (تظهر مطويّة عند توفّر تقرير FIFA — لا تُفقد بياناتها)
+   ============================================================ */
+.lineup-fold > summary { cursor: pointer; list-style: none; display: flex; align-items: center; }
+.lineup-fold > summary::-webkit-details-marker { display: none; }
+.lineup-fold > summary::after {
+  content: '▾'; margin-inline-start: auto; padding-inline-start: 10px;
+  font-size: .85em; opacity: .7; transition: transform .2s; display: inline-block;
+}
+.lineup-fold[open] > summary::after { transform: rotate(180deg); }
+.lineup-fold > summary .fold-hint { font-size: .82rem; color: var(--text-dim); font-weight: 400; margin-inline-start: 8px; }
+.lineup-fold[open] > summary .fold-hint { display: none; }

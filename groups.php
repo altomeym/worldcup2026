@@ -15,6 +15,15 @@ $page_image = ($gParam !== '')
     ? url('card_img.php', ['mode' => 'group',  'g' => $gParam[0], 'd' => date('Ymd')])
     : url('card_img.php', ['mode' => 'groups', 'd' => date('Ymd')]);
 
+// عند ?g → عنوان/وصف خاصّان بالمجموعة فتظهر بطاقة المشاركة ذات معنى (لا «المجموعات» العامّة)
+if ($gParam !== '') {
+    $gL = $gParam[0];
+    $page_title = t('group') . ' ' . $gL . ' — ' . t('standings');
+    $page_desc  = current_lang() === 'ar'
+        ? ('ترتيب المجموعة ' . $gL . ' في كأس العالم 2026 — النقاط والفارق والنتائج محدّثة.')
+        : ('Group ' . $gL . ' standings at the FIFA World Cup 2026 — live points, goal difference and results.');
+}
+
 tpl('header');
 ?>
 

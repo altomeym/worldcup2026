@@ -112,4 +112,12 @@ tpl('header');
   <?php endforeach; ?>
 <?php endif; ?>
 
+<!-- ============ مشاركة المباريات (نفس شريط بقيّة الصفحات) — المعاينة = بطاقة الـ24 ساعة ============ -->
+<?php render_share(
+  url('matches.php', ['d' => card_rev()]),
+  current_lang() === 'ar'
+    ? 'المباريات القادمة خلال 24 ساعة — كأس العالم 2026'
+    : 'Upcoming matches in the next 24h — FIFA World Cup 2026'
+); ?>
+
 <?php tpl('footer'); ?>

@@ -172,3 +172,27 @@ function flag_url(string $raw, string $size = 'w80'): string {
 function is_real_team(string $raw): bool {
     return team_flag(trim($raw)) !== '';
 }
+
+/**
+ * fifa_iso() — رمز FIFA الثلاثي (MEX, RSA, SUI…) → رمز العلم ISO المستعمل في الموقع.
+ * يُستخدم لربط تقارير FIFA (اسم ملفها يحمل رموز الفرق) بالمباراة الصحيحة بدل
+ * الترتيب الزمني (الذي يخلط مباريات نفس اليوم). يعيد '' لرمز غير معروف.
+ */
+function fifa_iso(string $code3): string {
+    static $m = [
+        'MEX'=>'mx','USA'=>'us','CAN'=>'ca',
+        'ESP'=>'es','FRA'=>'fr','ENG'=>'gb-eng','GER'=>'de','POR'=>'pt','NED'=>'nl','BEL'=>'be',
+        'CRO'=>'hr','ITA'=>'it','SUI'=>'ch','AUT'=>'at','NOR'=>'no','SCO'=>'gb-sct','CZE'=>'cz',
+        'DEN'=>'dk','POL'=>'pl','TUR'=>'tr','SWE'=>'se','UKR'=>'ua','SRB'=>'rs','WAL'=>'gb-wls',
+        'SVK'=>'sk','HUN'=>'hu','BIH'=>'ba','IRL'=>'ie',
+        'BRA'=>'br','ARG'=>'ar','URU'=>'uy','COL'=>'co','ECU'=>'ec','PAR'=>'py','PER'=>'pe',
+        'CHI'=>'cl','VEN'=>'ve','BOL'=>'bo',
+        'MAR'=>'ma','SEN'=>'sn','EGY'=>'eg','TUN'=>'tn','ALG'=>'dz','GHA'=>'gh','NGA'=>'ng',
+        'CMR'=>'cm','CIV'=>'ci','RSA'=>'za','CPV'=>'cv','MLI'=>'ml','COD'=>'cd',
+        'JPN'=>'jp','KOR'=>'kr','IRN'=>'ir','KSA'=>'sa','AUS'=>'au','QAT'=>'qa','IRQ'=>'iq',
+        'JOR'=>'jo','UZB'=>'uz','UAE'=>'ae',
+        'PAN'=>'pa','CRC'=>'cr','HON'=>'hn','JAM'=>'jm','HAI'=>'ht','CUW'=>'cw',
+        'NZL'=>'nz',
+    ];
+    return $m[strtoupper(trim($code3))] ?? '';
+}

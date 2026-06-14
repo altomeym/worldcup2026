@@ -476,22 +476,26 @@ class FifaStats
     public static function build(string $txtDir): int
     {
         if (!class_exists('DataService')) return 0;
-        $list = [];
-        foreach (DataService::allMatches() as $mm) {
-            $list[] = ['ts' => DataService::matchTimestamp($mm) ?? PHP_INT_MAX, 'm' => $mm];
-        }
-        usort($list, fn($a, $b) => $a['ts'] <=> $b['ts']);
+        $codeMap = class_exists('FifaReports') ? FifaReports::codeMap() : [];
+        $byPair  = self::matchesByPair();
 
         $dir = self::dataDir();
         if (!is_dir($dir)) @mkdir($dir, 0755, true);
         $count = 0;
         foreach (glob(rtrim($txtDir, '/') . '/*.txt') as $f) {
-            $n = (int)pathinfo($f, PATHINFO_FILENAME);
-            if ($n <= 0 || !isset($list[$n - 1])) continue;
+            $n     = (int)pathinfo($f, PATHINFO_FILENAME);
+            $codes = $codeMap[(string)$n] ?? null;
+            if (!$codes) continue;                                   // رقم بلا رموز معروفة → تخطٍّ آمن
+            $k = implode('|', self::sortPair($codes[0], $codes[1]));
+            if (!isset($byPair[$k])) continue;                       // لا مباراة مطابقة → تخطٍّ
+            $m = $byPair[$k];
             $parsed = self::parseTable((string)@file_get_contents($f));
             if (empty($parsed['stats'])) continue;
-            $m  = $list[$n - 1]['m'];
             $t1 = (string)($m['team1'] ?? ''); $t2 = (string)($m['team2'] ?? ''); $dt = (string)($m['date'] ?? '');
+            // محاذاة home/away: إن كان «home» التقرير = الفريق الثاني للمباراة → اقلب الفريقين
+            if (function_exists('team_flag') && strtolower((string)$codes[0]) === strtolower((string)team_flag($t2))) {
+                $parsed = self::flipTeams($parsed);
+            }
             $rec = ['n' => $n, 'team1' => $t1, 'team2' => $t2, 'date' => $dt] + $parsed;
             @file_put_contents($dir . '/' . self::key($t1, $t2, $dt) . '.json', json_encode($rec, JSON_UNESCAPED_UNICODE));
             $count++;
@@ -499,25 +503,67 @@ class FifaStats
         return $count;
     }
 
+    /** فهرسة كل المباريات بزوج رموز الأعلام (غير مرتّب) → المباراة. */
+    private static function matchesByPair(): array
+    {
+        $byPair = [];
+        if (!class_exists('DataService')) return $byPair;
+        foreach (DataService::allMatches() as $mm) {
+            $a = function_exists('team_flag') ? team_flag((string)($mm['team1'] ?? '')) : '';
+            $b = function_exists('team_flag') ? team_flag((string)($mm['team2'] ?? '')) : '';
+            if ($a === '' || $b === '') continue;
+            $k = implode('|', self::sortPair($a, $b));
+            if (!isset($byPair[$k])) $byPair[$k] = $mm;               // دور المجموعات: كل زوج فريد
+        }
+        return $byPair;
+    }
+
+    /** زوج رموز مُرتّب (للمقارنة غير المرتّبة). */
+    private static function sortPair(string $a, string $b): array
+    {
+        $p = [strtolower($a), strtolower($b)]; sort($p); return $p;
+    }
+
+    /** قلب بيانات الفريقين (home↔away) حين يختلف ترتيب التقرير عن ترتيب المباراة. */
+    private static function flipTeams(array $p): array
+    {
+        foreach (['stats', 'phases_in', 'phases_out'] as $sec) {
+            if (empty($p[$sec]) || !is_array($p[$sec])) continue;
+            foreach ($p[$sec] as $k => $v) {
+                if (is_array($v) && array_key_exists(0, $v) && array_key_exists(1, $v)) {
+                    $t = $v[0]; $p[$sec][$k][0] = $v[1]; $p[$sec][$k][1] = $t;
+                }
+            }
+        }
+        if (!empty($p['formation']) && is_array($p['formation'])
+            && array_key_exists(0, $p['formation']) && array_key_exists(1, $p['formation'])) {
+            $t = $p['formation'][0]; $p['formation'][0] = $p['formation'][1]; $p['formation'][1] = $t;
+        }
+        foreach (['players', 'physical'] as $sec) {
+            if (isset($p[$sec]) && is_array($p[$sec]) && (isset($p[$sec]['t1']) || isset($p[$sec]['t2']))) {
+                $t = $p[$sec]['t1'] ?? null; $p[$sec]['t1'] = $p[$sec]['t2'] ?? null; $p[$sec]['t2'] = $t;
+            }
+        }
+        return $p;
+    }
+
     /**
      * pendingReports() — من خريطة {رقم: رابط}: يعيد فقط التقارير غير المستخرَجة بعد
-     * (ملفّها assets/fifa/*.json غير موجود). للتشغيل التلقائي المتكرّر بكفاءة
-     * (لا يُعاد تنزيل ما اكتمل). الربط زمني (FIFA M(n) = nته مباراة بالوقت).
+     * (ملفّها assets/fifa/*.json غير موجود). للتشغيل التلقائي المتكرّر بكفاءة.
+     * الربط برموز الفرق (اسم ملف التقرير) لا بالترتيب الزمني.
      */
     public static function pendingReports(array $reportsMap): array
     {
-        if (!class_exists('DataService')) return $reportsMap;
-        $list = [];
-        foreach (DataService::allMatches() as $mm) {
-            $list[] = ['ts' => DataService::matchTimestamp($mm) ?? PHP_INT_MAX, 'm' => $mm];
-        }
-        usort($list, fn($a, $b) => $a['ts'] <=> $b['ts']);
+        $codeMap = class_exists('FifaReports') ? FifaReports::codeMap() : [];
+        $byPair  = self::matchesByPair();
         $dir = self::dataDir();
         $out = [];
         foreach ($reportsMap as $n => $url) {
-            $i = (int)$n - 1;
-            if (!isset($list[$i])) { $out[$n] = $url; continue; }   // ربط غير معروف → جرّبه
-            $m   = $list[$i]['m'];
+            $codes = $codeMap[(string)$n] ?? null;
+            if (!$codes) continue;                          // رموز غير معروفة → لا يمكن وضعه
+            $k = implode('|', self::sortPair($codes[0], $codes[1]));
+            if (!isset($byPair[$k])) continue;              // لا مباراة مطابقة بعد
+            $m   = $byPair[$k];
             $key = self::key((string)($m['team1'] ?? ''), (string)($m['team2'] ?? ''), (string)($m['date'] ?? ''));
             if (!is_file($dir . '/' . $key . '.json')) $out[$n] = $url;
         }

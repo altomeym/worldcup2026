@@ -33,8 +33,8 @@ class FifaReports
                   || (isset($m['score']['ft']) && is_array($m['score']['ft']));
         if (!$finished) return null;
 
-        // FIFA M(n) = الترتيب الزمني للمباراة (لا فهرس openfootball الذي ليس زمنيّاً)
-        $n = self::matchNumber($m);
+        // الربط برموز الفرق من اسم ملف التقرير (الترتيب الزمني يخلط مباريات نفس اليوم)
+        $n = self::numberForTeams((string)($m['team1'] ?? ''), (string)($m['team2'] ?? ''));
         if ($n <= 0) return null;
 
         // أرشيف دائم لكل مباراة بمفتاح ثابت من الفريقين (يثبت فور إيجاده)
@@ -80,6 +80,38 @@ class FifaReports
         $md  = (string)($m['date'] ?? '');
         foreach ($list as $i => $r) {
             if ($r['t1'] === $mt1 && $r['t2'] === $mt2 && $r['date'] === $md) return $i + 1;
+        }
+        return -1;
+    }
+
+    /**
+     * codeMap() — [رقم التقرير → [iso1, iso2]] مستخرجة من اسم ملف الـPDF
+     * (مثل «PMSR-M07-BRA-V-MAR» → [br, ma]). هذا الربط الصحيح بالفرق بدل الترتيب.
+     */
+    public static function codeMap(): array
+    {
+        $out = [];
+        foreach (self::reports() as $n => $url) {
+            $name = urldecode(basename((string)$url));
+            if (preg_match('/PMSR-M\d+[\s_\-]+([A-Za-z]{3})[\s_\-]+V[\s_\-]+([A-Za-z]{3})/', $name, $mm)) {
+                $i1 = function_exists('fifa_iso') ? fifa_iso($mm[1]) : '';
+                $i2 = function_exists('fifa_iso') ? fifa_iso($mm[2]) : '';
+                if ($i1 !== '' && $i2 !== '') $out[(string)$n] = [$i1, $i2];
+            }
+        }
+        return $out;
+    }
+
+    /** رقم التقرير المطابق لفريقَي المباراة (مقارنة رموز غير مرتّبة)، أو -1. */
+    public static function numberForTeams(string $t1, string $t2): int
+    {
+        $a = function_exists('team_flag') ? team_flag($t1) : '';
+        $b = function_exists('team_flag') ? team_flag($t2) : '';
+        if ($a === '' || $b === '') return -1;
+        $want = [strtolower($a), strtolower($b)]; sort($want);
+        foreach (self::codeMap() as $n => $pair) {
+            $have = [strtolower($pair[0]), strtolower($pair[1])]; sort($have);
+            if ($have === $want) return (int)$n;
         }
         return -1;
     }

@@ -52,7 +52,7 @@ class TweetCardImage
         $mode     = (($opt['mode'] ?? 'fixture') === 'result') ? 'result' : 'fixture';
 
         // كاش: نفس المحتوى = نفس الملف (لا إعادة توليد لكل تشغيل cron)
-        $key = sha1('v2|' . $title . '|' . $subtitle . '|' . $subEn . '|' . $mode . '|' . json_encode(array_map(
+        $key = sha1('v3|' . $title . '|' . $subtitle . '|' . $subEn . '|' . $mode . '|' . json_encode(array_map(
             fn($m) => [$m['team1'] ?? '', $m['team2'] ?? '', $m['date'] ?? '', $m['time'] ?? '', $m['score']['ft'] ?? null, count($m['stats'] ?? []), count($m['cards'] ?? [])],
             $matches
         ), JSON_UNESCAPED_UNICODE));
@@ -227,7 +227,10 @@ class TweetCardImage
         self::roundedRect($im, $bx1, $by1, $bx1 + $boxW, $by1 + $boxH, 18, $c['boxBg']);
 
         $hasScore = isset($m['score']['ft']) && is_array($m['score']['ft']);
-        if ($mode === 'result' && $hasScore) {
+        // أظهر النتيجة لأي مباراة منتهية — لا في وضع «result» فقط. بطاقة «مباريات اليوم»
+        // قد تضمّ مباريات لُعبت فعلاً، فعرض توقيت انطلاقها بدل نتيجتها يُفقد المصداقيّة.
+        $showScore = $hasScore && ($mode === 'result' || ($m['_status'] ?? '') === 'finished');
+        if ($showScore) {
             // النتيجة قطعاً منفصلة (رقم - شرطة - رقم): ترتيب حتمي لا تعبث به أي
             // معالجة BiDi داخلية في libgd، وبعرض RTL صحيح — أهداف فريق اليمين يمينه.
             $gTeam1 = (string)(int)$m['score']['ft'][0];   // الفريق الأول = جهة اليمين

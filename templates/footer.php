@@ -336,5 +336,27 @@ $lang       = current_lang();
     .catch(function () {});
 })();
 </script>
+
+<?php
+  // ====== شريط تنقّل سفلي (هاتف فقط) — كأنه تطبيق. لا يغيّر قائمة الهامبرغر ======
+  $bnCur = basename($_SERVER['SCRIPT_NAME'] ?? '');
+  $bnOn  = fn(array $files): string => in_array($bnCur, $files, true) ? ' active' : '';
+  $bnL   = current_lang();
+  $bnItems = [
+    ['index.php',   ['index.php'], '🏠', ($bnL==='ar'?'الرئيسية':($bnL==='fr'?'Accueil':'Home'))],
+    ['matches.php', ['matches.php','match.php','today.php'], '⚽', ($bnL==='ar'?'المباريات':($bnL==='fr'?'Matchs':'Matches'))],
+    ['predict.php', ['predict.php','bracket.php','leaderboard.php','leagues.php','league.php','stickers.php','trivia.php'], '🎯', ($bnL==='ar'?'التوقعات':($bnL==='fr'?'Pronostics':'Predictions'))],
+    ['news.php',    ['news.php'], '📰', ($bnL==='ar'?'الأخبار':($bnL==='fr'?'Actus':'News'))],
+    ['stats.php',   ['stats.php','topscorers.php','bookings.php','referees.php','physical.php'], '📊', ($bnL==='ar'?'الإحصائيات':($bnL==='fr'?'Stats':'Stats'))],
+  ];
+?>
+<nav class="bottom-nav" aria-label="<?= e($bnL==='ar'?'تنقّل سريع':'Quick navigation') ?>">
+  <?php foreach ($bnItems as [$bnPage, $bnSet, $bnIco, $bnLabel]): ?>
+    <a class="bn-link<?= $bnOn($bnSet) ?>" href="<?= e(url($bnPage)) ?>">
+      <span class="bn-ico" aria-hidden="true"><?= $bnIco ?></span>
+      <span class="bn-label"><?= e($bnLabel) ?></span>
+    </a>
+  <?php endforeach; ?>
+</nav>
 </body>
 </html>

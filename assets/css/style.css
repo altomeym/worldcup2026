@@ -2628,3 +2628,39 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 /* مصادر تحكيميّة (referees.php) */
 .ref-sources { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
 .ref-src-ico { font-size:1.5rem; width:42px; text-align:center; }
+
+/* ============================================================
+   شريط التنقّل السفلي (هاتف فقط) — تجربة شبيهة بالتطبيق.
+   لا يغيّر قائمة الهامبرغر؛ يظهر فقط عند ظهورها (≤760px).
+   ============================================================ */
+.bottom-nav { display: none; }
+@media (max-width: 760px) {
+  /* مساحة أسفل المحتوى حتى لا يختبئ خلف الشريط (+ منطقة آمنة iPhone) */
+  body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
+
+  .bottom-nav {
+    display: flex;
+    position: fixed; inset-inline: 0; bottom: 0; z-index: 80;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -6px 22px rgba(0,0,0,.42);
+    transition: transform .28s;
+  }
+  .bottom-nav .bn-link {
+    flex: 1 1 0; min-width: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; padding: 7px 2px 6px; min-height: 56px;
+    color: #8aa2c6; font-size: .66rem; font-weight: 700; line-height: 1.1;
+    text-decoration: none; text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .15s, box-shadow .15s;
+  }
+  .bottom-nav .bn-ico { font-size: 1.32rem; line-height: 1; filter: grayscale(.2) opacity(.85); }
+  .bottom-nav .bn-label { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bottom-nav .bn-link.active { color: var(--accent); box-shadow: inset 0 2px 0 var(--accent); }
+  .bottom-nav .bn-link.active .bn-ico { filter: none; transform: translateY(-1px); }
+
+  /* عند فتح قائمة الهامبرغر: أخفِ الشريط (انزلاق لأسفل) كي لا يحجب آخر عناصرها */
+  body:has(.main-nav.open) .bottom-nav { transform: translateY(110%); }
+}

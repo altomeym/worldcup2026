@@ -188,6 +188,25 @@ try {
 
     // 🆕 بطاقة «المباريات القادمة خلال 24 ساعة» (?mode=upcoming) — لزر مشاركة صفحة المباريات
     if (($_GET['mode'] ?? '') === 'upcoming') {
+        // التصميم المعتمد: البطاقة الطوليّة الغنيّة (TweetCardImage) — تاريخ + مجموعة + أعلام + AR/EN
+        if (class_exists('TweetCardImage') && class_exists('TweetComposer')) {
+            $u24 = TweetComposer::next24Matches(4);
+            if ($u24) {
+                $png = TweetCardImage::generate($u24, [
+                    'title'       => 'المباريات القادمة',
+                    'subtitle'    => 'كأس العالم 2026',
+                    'subtitle_en' => 'UPCOMING MATCHES — FIFA WORLD CUP 2026',
+                ]);
+                if ($png && is_file($png)) {
+                    imagedestroy($im);
+                    header('Content-Type: image/png');
+                    header('Cache-Control: public, max-age=3600');
+                    readfile($png);
+                    exit;
+                }
+            }
+        }
+        // احتياطي: تصميم أفقي مدمج (إن تعذّر توليد البطاقة الطوليّة)
         $now  = time();
         $list = [];
         if (class_exists('TweetComposer')) $list = TweetComposer::next24Matches(4);

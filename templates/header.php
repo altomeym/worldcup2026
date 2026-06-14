@@ -60,6 +60,8 @@ seo_head([
     'type'        => $seo_type ?? 'website',
     // إن لم تُحدّد الصفحة صورة → null، فيستخدم seo.php البطاقة الديناميكية (card_img.php) بالهوية الحالية.
     'image'       => (isset($page_image) && $page_image !== '') ? $page_image : null,
+    'image_w'     => $page_image_w ?? null,
+    'image_h'     => $page_image_h ?? null,
 ]);
 ?>
 <?php if (defined('ADSENSE_CLIENT') && ADSENSE_CLIENT !== ''): ?>

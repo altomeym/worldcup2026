@@ -73,7 +73,7 @@ require __DIR__ . '/PageCache.php';
 function tpl(string $name): void {
     // متغيّرات الصفحة (تُضبَط في الصفحة قبل tpl) يجب أن تكون مرئية داخل القالب.
     // الصفحة هي نقطة الدخول → متغيّراتها عامّة، فنستوردها هنا صراحةً.
-    global $page_title, $page_desc, $seo_type, $page_image;
+    global $page_title, $page_desc, $seo_type, $page_image, $page_image_w, $page_image_h;
     $f = __DIR__ . '/../templates/' . $name . '.php';
     if (is_file($f)) require $f;
 }

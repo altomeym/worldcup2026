@@ -66,9 +66,11 @@ function seo_head(array $opts = []): void {
     echo '<meta property="og:title" content="' . e($title) . '">' . "\n";
     echo '<meta property="og:description" content="' . e($desc) . '">' . "\n";
     echo '<meta property="og:url" content="' . e($canon) . '">' . "\n";
+    $imgW = !empty($opts['image_w']) ? (int)$opts['image_w'] : 1200;
+    $imgH = !empty($opts['image_h']) ? (int)$opts['image_h'] : 630;
     echo '<meta property="og:image" content="' . e($image) . '">' . "\n";
-    echo '<meta property="og:image:width" content="1200">' . "\n";
-    echo '<meta property="og:image:height" content="630">' . "\n";
+    echo '<meta property="og:image:width" content="' . $imgW . '">' . "\n";
+    echo '<meta property="og:image:height" content="' . $imgH . '">' . "\n";
 
     // Twitter
     echo '<meta name="twitter:card" content="summary_large_image">' . "\n";

@@ -47,18 +47,18 @@ function stat_match_row(array $m, int $metric): void {
 <?php if ($s['played'] === 0): ?>
   <p class="empty-note"><?= e(t('stats_empty')) ?></p>
   <div class="scoring-card">
-    <span class="sc-pill"><?= e(t('matches_count')) ?></span>
-    <span class="sc-pill"><?= e(t('teams_count')) ?></span>
-    <span class="sc-pill"><?= e(t('cities_count')) ?></span>
+    <span class="sc-pill sc-info"><?= e(t('matches_count')) ?></span>
+    <span class="sc-pill sc-info"><?= e(t('teams_count')) ?></span>
+    <span class="sc-pill sc-info"><?= e(t('cities_count')) ?></span>
   </div>
 <?php else: ?>
 
   <div class="scoring-card">
-    <span class="sc-pill"><?= e(t('matches_played')) ?>: <strong><?= (int)$s['played'] ?></strong></span>
-    <span class="sc-pill">⚽ <?= e(t('total_goals')) ?>: <strong><?= (int)$s['goals'] ?></strong></span>
-    <span class="sc-pill"><?= e(t('avg_goals')) ?>: <strong><?= e((string)$s['avg']) ?></strong></span>
-    <span class="sc-pill sc-yellow">🟨 <?= (int)$s['yellows'] ?></span>
-    <span class="sc-pill sc-red">🟥 <?= (int)$s['reds'] ?></span>
+    <span class="sc-pill sc-info"><?= e(t('matches_played')) ?>: <strong><?= (int)$s['played'] ?></strong></span>
+    <span class="sc-pill sc-info">⚽ <?= e(t('total_goals')) ?>: <strong><?= (int)$s['goals'] ?></strong></span>
+    <span class="sc-pill sc-info"><?= e(t('avg_goals')) ?>: <strong><?= e((string)$s['avg']) ?></strong></span>
+    <span class="sc-pill sc-yellow">🟨 <?= e(t('yellow_cards')) ?>: <strong><?= (int)$s['yellows'] ?></strong></span>
+    <span class="sc-pill sc-red">🟥 <?= e(t('red_cards')) ?>: <strong><?= (int)$s['reds'] ?></strong></span>
   </div>
 
   <div class="groups-grid">

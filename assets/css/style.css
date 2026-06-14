@@ -1070,6 +1070,9 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .sc-red    { background: var(--accent-3); color: #fff; }
 .sc-on     { background: var(--accent); color: #0a1626; }
 .sc-off    { background: var(--surface-2); color: var(--text); }
+/* شارة معلومات (نص أبيض على البطاقة الغامقة) — أرقام عامّة بلا لون دلالي */
+.sc-info   { background: rgba(255,255,255,.10); color: var(--text); }
+.sc-info strong { color: #fff; }
 
 /* أعمدة الأهداف حسب المدينة (صفحة الإحصائيات) */
 .stat-bars { display: flex; flex-direction: column; gap: 10px; }

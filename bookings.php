@@ -91,7 +91,7 @@ $renderCardTable = function (array $list): void {
 
 // صورة المشاركة (OG) = بطاقة البطاقات بهويّة الموقع (مجاميع + الأكثر بطاقات)
 if (!empty($cards)) {
-    $page_image = url('card_img.php', ['mode' => 'cards', 'd' => date('Ymd')]);
+    $page_image = url('card_img.php', ['mode' => 'cards', 'd' => card_rev()]);
 }
 $page_title = t('bookings');
 $page_desc  = t('bookings_intro');

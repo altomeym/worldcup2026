@@ -370,37 +370,61 @@ try {
         $fontAr = __DIR__ . '/assets/fonts/Amiri-Bold.ttf';
         if (!is_file($fontAr)) $fontAr = $font;
         if ($hasFont && $agg) {
-            $centerText($im, 48, 182, $white, $fontAr, $shape('البطاقات'));
-            $centerText($im, 26, 226, $dim,   $fontAr, $shape('كأس العالم 2026'));
+            $centerText($im, 44, 108, $white, $fontAr, $shape('البطاقات'));
+            $centerText($im, 18, 142, $gold,  $font,   'BOOKINGS · DISCIPLINE · FIFA WORLD CUP 2026');
 
-            // مجاميع البطولة: مستطيل أصفر (إنذارات) + أحمر (طرد)
-            $byY = 258; $bh = 58;
-            imagefilledrectangle($im, (int)($W / 2 - 250), $byY, (int)($W / 2 - 20), $byY + $bh, $yel);
-            imagefilledrectangle($im, (int)($W / 2 + 20), $byY, (int)($W / 2 + 250), $byY + $bh, $redc);
-            $tY = $shape('إنذارات ' . $totY); $bb = imagettfbbox(26, 0, $fontAr, $tY);
-            imagettftext($im, 26, 0, (int)($W / 2 - 135 - ($bb[2] - $bb[0]) / 2), $byY + 39, $navy,  $fontAr, $tY);
-            $tR = $shape('طرد ' . $totR);     $bb = imagettfbbox(26, 0, $fontAr, $tR);
-            imagettftext($im, 26, 0, (int)($W / 2 + 135 - ($bb[2] - $bb[0]) / 2), $byY + 39, $white, $fontAr, $tR);
+            // مجاميع البطولة: شارة صفراء (إنذارات) + حمراء (طرد)
+            $pY = 168; $pH = 44;
+            imagefilledrectangle($im, (int)($W/2 - 232), $pY, (int)($W/2 - 18), $pY + $pH, $yel);
+            imagefilledrectangle($im, (int)($W/2 + 18), $pY, (int)($W/2 + 232), $pY + $pH, $redc);
+            $tY = $shape('إنذارات: ' . $totY); $bb = imagettfbbox(24, 0, $fontAr, $tY);
+            imagettftext($im, 24, 0, (int)($W/2 - 125 - ($bb[2]-$bb[0])/2), $pY + 31, $navy,  $fontAr, $tY);
+            $tR = $shape('طرد: ' . $totR);     $bb = imagettfbbox(24, 0, $fontAr, $tR);
+            imagettftext($im, 24, 0, (int)($W/2 + 125 - ($bb[2]-$bb[0])/2), $pY + 31, $white, $fontAr, $tR);
 
-            // الأكثر حصولاً على البطاقات (مجموع كل منتخب)
-            $centerText($im, 24, 360, $gold, $fontAr, $shape('الأكثر حصولاً على البطاقات'));
-            $y = 390; $rank = 0;
+            // رؤوس الأعمدة (عربي + إنجليزي) — مطابقة لبطاقة الترتيب
+            $colHdr = function (int $x, string $ar, string $en) use ($im, $fontAr, $font, $dim, $shape) {
+                $a = $shape($ar); $bb = imagettfbbox(17, 0, $fontAr, $a);
+                imagettftext($im, 17, 0, (int)($x - ($bb[2]-$bb[0])/2), 250, $dim, $fontAr, $a);
+                $bb = imagettfbbox(13, 0, $font, $en);
+                imagettftext($im, 13, 0, (int)($x - ($bb[2]-$bb[0])/2), 270, $dim, $font, $en);
+            };
+            $colHdr(300, 'طرد',   'RED');
+            $colHdr(470, 'إنذار', 'YELLOW');
+            $colHdr(885, 'المنتخب', 'TEAM');
+
+            $y = 290; $rank = 0;
             foreach ($agg as $teamEn => $cc) {
                 if ($rank >= 4) break;
-                imagefilledrectangle($im, 130, $y, $W - 130, $y + 50, imagecolorallocatealpha($im, 255, 255, 255, 119));
-                $fl = $fetch(flag_url($teamEn, 'w160'));
-                if ($fl) { imagecopyresampled($im, $fl, 150, $y + 12, 0, 0, 39, 26, imagesx($fl), imagesy($fl)); imagedestroy($fl); }
-                imagettftext($im, 26, 0, 210, $y + 36, $white, $fontAr, $shape(function_exists('team_name') ? team_name($teamEn) : $teamEn));
-                imagefilledrectangle($im, $W - 250, $y + 14, $W - 228, $y + 36, $yel);
-                imagettftext($im, 24, 0, $W - 222, $y + 35, $white, $font, (string)$cc['y']);
-                imagefilledrectangle($im, $W - 165, $y + 14, $W - 143, $y + 36, $redc);
-                imagettftext($im, 24, 0, $W - 137, $y + 35, $white, $font, (string)$cc['r']);
-                $y += 58; $rank++;
+                imagefilledrectangle($im, 60, $y, $W - 60, $y + 66, imagecolorallocatealpha($im, 255, 255, 255, 120));
+                $mid = $y + 33;
+                imagettftext($im, 26, 0, 1096, $mid + 9, $gold, $font, (string)($rank + 1));
+                if ($fl = $fetch(flag_url($teamEn, 'w160'))) {
+                    imagecopyresampled($im, $fl, 1000, $y + 18, 0, 0, 66, 44, imagesx($fl), imagesy($fl));
+                    imagedestroy($fl); imagerectangle($im, 1000, $y + 18, 1066, $y + 62, imagecolorallocate($im, 36, 66, 104));
+                }
+                $nameAr = $shape(function_exists('team_name') ? team_name($teamEn) : $teamEn);
+                $bb = imagettfbbox(26, 0, $fontAr, $nameAr);
+                imagettftext($im, 26, 0, (int)(982 - ($bb[2]-$bb[0])), $mid - 1, $navy, $fontAr, $nameAr);
+                $en = strtoupper($teamEn); $bb = imagettfbbox(14, 0, $font, $en);
+                imagettftext($im, 14, 0, (int)(982 - ($bb[2]-$bb[0])), $mid + 24, imagecolorallocate($im, 70, 90, 140), $font, $en);
+
+                // خانة صفراء (إنذارات) برقم كحلي + خانة حمراء (طرد) برقم أبيض
+                $sq = 40;
+                imagefilledrectangle($im, (int)(470 - $sq/2), $mid - 20, (int)(470 + $sq/2), $mid + 20, $yel);
+                $vs = (string)$cc['y']; $bb = imagettfbbox(24, 0, $font, $vs);
+                imagettftext($im, 24, 0, (int)(470 - ($bb[2]-$bb[0])/2), $mid + 9, $navy, $font, $vs);
+                imagefilledrectangle($im, (int)(300 - $sq/2), $mid - 20, (int)(300 + $sq/2), $mid + 20, $redc);
+                $vs = (string)$cc['r']; $bb = imagettfbbox(24, 0, $font, $vs);
+                imagettftext($im, 24, 0, (int)(300 - ($bb[2]-$bb[0])/2), $mid + 9, $white, $font, $vs);
+
+                $y += 74; $rank++;
             }
             $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
-            $centerText($im, 24, $H - 46, $white, $font, $domain);
+            $centerText($im, 22, $H - 22, $white, $font, strtoupper($domain));
         } else {
-            $centerBuiltin($im, 5, 280, $white, 'CARDS - WORLD CUP 2026');
+            $centerBuiltin($im, 5, 300, $white, 'CARDS - WORLD CUP 2026');
+            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
         }
         imagepng($im); imagedestroy($im); exit;
     }

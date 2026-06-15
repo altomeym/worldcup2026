@@ -10,6 +10,10 @@ $proj = 'C:/xampp/htdocs/worldcup2026'
 $sync = 'C:/xampp/htdocs/sync-worldcup-to-oss.ps1'
 if (-not (Test-Path $pt)) { Write-Output 'pdftotext missing'; exit 1 }
 
+# Force a fresh scrape of FIFA's report hub so newly-published reports are seen
+# THIS hour (the 6h reports() cache would otherwise blind us for up to 6 hours).
+Remove-Item "$proj/cache/fifa-reports.json","$proj/cache/fifa-reports.json.fail" -Force -ErrorAction SilentlyContinue
+
 # Only the reports that are NOT yet on the site (NoteProperty = real JSON keys only).
 $pending = & $php "$proj/tools/fifa-build.php" pending | ConvertFrom-Json
 $names = @($pending.PSObject.Properties | Where-Object { $_.MemberType -eq 'NoteProperty' } | Select-Object -ExpandProperty Name)

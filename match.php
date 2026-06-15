@@ -247,9 +247,27 @@ seo_sportsevent($m);
   $fifaUrl       = ($hasScore && class_exists('FifaReports')) ? FifaReports::forMatch($m) : null;
   echo $fifaStatsHtml;
   if ($fifaUrl): ?>
-    <p style="margin:-4px 0 10px;text-align:center">
-      <a class="section-link" href="<?= e($fifaUrl) ?>" target="_blank" rel="noopener">📄 <?= e($L('التقرير الرسمي الكامل من FIFA (PDF) ↗','Full official FIFA report (PDF) ↗')) ?></a>
-    </p>
+    <a class="fifa-rep" href="<?= e($fifaUrl) ?>" target="_blank" rel="noopener">
+      <span class="fifa-rep-ic">📄</span>
+      <span class="fifa-rep-t">
+        <b><?= e($L('التقرير الرسمي من FIFA', 'Official FIFA report')) ?></b>
+        <small><?= e($fifaStatsHtml === ''
+          ? $L('إحصائيّات ما بعد المباراة الكاملة (PDF) ↗', 'Full post-match statistics (PDF) ↗')
+          : $L('افتح التقرير الكامل (PDF) ↗', 'Open the full report (PDF) ↗')) ?></small>
+      </span>
+      <span class="fifa-rep-go" aria-hidden="true">›</span>
+    </a>
+    <style>
+    .fifa-rep{display:flex;align-items:center;gap:13px;margin:6px 0 14px;padding:13px 16px;
+      background:linear-gradient(135deg,rgba(255,200,70,.14),rgba(255,200,70,.05));
+      border:1px solid rgba(255,200,70,.34);border-radius:14px;text-decoration:none;color:inherit;transition:.15s}
+    .fifa-rep:hover{background:linear-gradient(135deg,rgba(255,200,70,.22),rgba(255,200,70,.08));border-color:rgba(255,200,70,.55)}
+    .fifa-rep-ic{font-size:1.7rem;flex:0 0 auto}
+    .fifa-rep-t{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+    .fifa-rep-t b{font-size:1rem}
+    .fifa-rep-t small{font-size:.8rem;opacity:.75}
+    .fifa-rep-go{margin-inline-start:auto;font-size:1.5rem;color:#ffc846;font-weight:800}
+    </style>
   <?php endif; ?>
 
   <!-- ============ الأحداث (خط زمني موحّد) ============ -->

@@ -48,22 +48,18 @@ foreach ($files as $f) {
 }
 echo "fifa sync — added/updated: $added, up-to-date: $skip\n";
 
-// خريطة صور اللاعبين الرسميّة (assets/fifa-photos.json) — ملفّ مفرد خارج مجلّد
-// assets/fifa، فنجلبه على حدة من GitHub raw (لا يدخل في حلقة المجلّد أعلاه).
-$photoRaw = http_get('https://raw.githubusercontent.com/salah23222/worldcup2026/main/assets/fifa-photos.json',
-                     ['timeout' => 20, 'ua' => 'wcup2026-deploy', 'redirects' => true]);
-if ($photoRaw !== null && json_decode($photoRaw) !== null) {
-    $pf = __DIR__ . '/../assets/fifa-photos.json';
-    clearstatcache(true, $pf);
-    if (!is_file($pf) || (int)@filesize($pf) !== strlen($photoRaw)) {
-        if (@file_put_contents($pf . '.tmp', $photoRaw) !== false && @rename($pf . '.tmp', $pf)) {
-            echo "fifa-photos.json — updated (" . strlen($photoRaw) . " bytes)\n";
-        } else {
-            echo "fifa-photos.json — write failed\n";
-        }
+// ملفّات مفردة خارج مجلّد assets/fifa (صور اللاعبين + المقاييس الفنّيّة) — نجلب
+// كلّاً من GitHub raw على حدة (لا تدخل في حلقة المجلّد أعلاه).
+$RAW = 'https://raw.githubusercontent.com/salah23222/worldcup2026/main/assets/';
+foreach (['fifa-photos.json', 'fifa-metrics.json'] as $single) {
+    $raw = http_get($RAW . $single, ['timeout' => 25, 'ua' => 'wcup2026-deploy', 'redirects' => true]);
+    if ($raw === null || json_decode($raw) === null) { echo "$single — fetch failed\n"; continue; }
+    $target = __DIR__ . '/../assets/' . $single;
+    clearstatcache(true, $target);
+    if (is_file($target) && (int)@filesize($target) === strlen($raw)) { echo "$single — up-to-date\n"; continue; }
+    if (@file_put_contents($target . '.tmp', $raw) !== false && @rename($target . '.tmp', $target)) {
+        echo "$single — updated (" . strlen($raw) . " bytes)\n";
     } else {
-        echo "fifa-photos.json — up-to-date\n";
+        echo "$single — write failed\n";
     }
-} else {
-    echo "fifa-photos.json — fetch failed\n";
 }

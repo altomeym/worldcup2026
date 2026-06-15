@@ -86,6 +86,7 @@ tpl('header');
 .ph-radar-wrap{text-align:center}
 .ph-cap{font-size:.72rem;opacity:.7;margin:2px auto 0;max-width:230px}
 .ph-detail>td .ph-block{margin:14px auto 0;max-width:560px}
+.ph-profile{display:block;width:max-content;margin:16px auto 0;background:#ffc846;color:#0a1626;font-weight:800;border-radius:22px;padding:8px 20px;text-decoration:none}
 .ph-blk-t{font-size:.85rem;color:#ffc846;margin-bottom:6px;font-weight:700;text-align:center}
 .ph-zones{display:flex;height:13px;border-radius:7px;overflow:hidden}
 .ph-zones i{display:block;height:100%}
@@ -120,8 +121,10 @@ tpl('header');
     crossesT:<?= json_encode($L('العرضيّات', 'Crosses'), JSON_UNESCAPED_UNICODE) ?>,
     total:   <?= json_encode($L('إجمالي', 'Total'), JSON_UNESCAPED_UNICODE) ?>,
     dir:     <?= json_encode([$L('عبر','Through'), $L('حول','Around'), $L('فوق','Over')], JSON_UNESCAPED_UNICODE) ?>,
-    typ:     <?= json_encode([$L('تمريرة','Pass'), $L('عرضيّة','Cross'), $L('تقدّم','Prog')], JSON_UNESCAPED_UNICODE) ?>
+    typ:     <?= json_encode([$L('تمريرة','Pass'), $L('عرضيّة','Cross'), $L('تقدّم','Prog')], JSON_UNESCAPED_UNICODE) ?>,
+    profile: <?= json_encode($L('📋 الملفّ الفنّي الكامل', '📋 Full technical profile'), JSON_UNESCAPED_UNICODE) ?>
   };
+  var LANG = <?= json_encode(current_lang()) ?>;
 
   function val(r, k){ return parseFloat(r.getAttribute('data-' + k)) || 0; }
   function metric(r, k){ var v = val(r, k); if (mode === 'avg' && k !== 'top' && k !== 'm') v = v / (val(r, 'm') || 1); return v; }
@@ -264,6 +267,11 @@ tpl('header');
     var td = document.createElement('td'); td.colSpan = 7;
     td.innerHTML = '<div class="ph-detail-grid"><div class="ph-radar-wrap">' + radarSvg(f, vals)
       + '<p class="ph-cap">' + LBL.share + '</p></div><div class="ph-chips">' + chips + '</div></div>' + rich;
+    var prof = document.createElement('a');
+    prof.className = 'btn btn-sm ph-profile';
+    prof.href = 'player.php?name=' + encodeURIComponent(p.name || '') + '&team=' + encodeURIComponent(p.team || '') + '&lang=' + encodeURIComponent(LANG);
+    prof.textContent = LBL.profile;
+    td.appendChild(prof);
     det.appendChild(td);
     tr.parentNode.insertBefore(det, tr.nextSibling);
   }

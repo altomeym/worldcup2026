@@ -253,6 +253,20 @@ if (!$skipDaily) {
     }
 }
 
+// ═══ تغريدة لوحة الإحصائيّات (إنجليزيّة، مرّة يوميّاً 21:00 بتوقيت دبي) ═══
+if (!$skipDaily && !$blocked && class_exists('TweetComposer')) {
+    $wantDash = ($slot === 'dashboard') || ((int)date('G') === 21);
+    if ($wantDash && ($force || $dry || XPublisher::claimSlot('dashboard_en'))) {
+        $text = TweetComposer::dashboardTweet('en');
+        $log('[dashboard] chars=' . mb_strlen($text, 'UTF-8'));
+        if ($dry) { $log('[dashboard] dry-run:'); $log('---'); $log($text); $log('---'); }
+        else {
+            $r = $send('dashboard', 'dashboard_en', fn() => XPublisher::tweet($text));
+            if (empty($r['ok'])) { XPublisher::releaseSlot('dashboard_en'); }
+        }
+    }
+}
+
 // ═══════════════════ B) قَبل المباراة ═══════════════════
 if (!$skipMatches) {
     $pre = MatchTweets::pendingPre();

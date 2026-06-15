@@ -368,6 +368,37 @@ class TweetComposer
         return mb_chr($cp, 'UTF-8');
     }
 
+    /**
+     * dashboardTweet — تغريدة لوحة الإحصائيّات من تقارير FIFA (افتراضياً إنجليزيّة).
+     * أرقام البطولة (مسافة/أسرع لاعب/أعلى xG) + رابط اللوحة + هاشتاكات. المعاينة =
+     * بطاقة اللوحة (og:image لـdashboard.php).
+     */
+    public static function dashboardTweet(string $lang = 'en'): string
+    {
+        $ar = ($lang === 'ar');
+        $k  = class_exists('FifaStats') ? (FifaStats::teamDashboard()['kpi'] ?? []) : [];
+        $link = self::link('dashboard.php?lang=' . ($ar ? 'ar' : 'en'));
+        if (empty($k) || (int)($k['matches'] ?? 0) === 0) {
+            $msg = $ar
+                ? "📊 لوحة إحصائيّات كأس العالم 2026 — أرقام رسميّة من FIFA لحظة بلحظة 👇"
+                : "📊 World Cup 2026 stats dashboard — official FIFA numbers, live 👇";
+            return self::sign($msg, $link, 'stats');
+        }
+        $fast = $k['fastest'] ?? []; $tx = $k['topXg'] ?? [];
+        $fastN = trim((string)($fast['name'] ?? ''));
+        $fastV = rtrim(rtrim(number_format((float)($fast['v'] ?? 0), 1, '.', ''), '0'), '.');
+        $distKm = number_format((float)($k['distance'] ?? 0), 0);
+        $xg = number_format((float)($tx['v'] ?? 0), 2);
+        $head = $ar ? "📊 كأس العالم 2026 بالأرقام — بيانات FIFA الرسميّة:" : "📊 World Cup 2026 by the numbers — official FIFA data:";
+        $line = $ar
+            ? "🏃 {$distKm} كم مقطوعة · ⚡ الأسرع {$fastN} {$fastV} كم/س · 🎯 أعلى xG {$xg}"
+            : "🏃 {$distKm} km covered · ⚡ Fastest {$fastN} {$fastV} km/h · 🎯 Top xG {$xg}";
+        $cta  = $ar ? "اللوحة الكاملة 👇" : "Full dashboard 👇";
+        $tags = $ar ? "#كأس_العالم_2026 #المونديال #إحصائيات_المونديال"
+                    : "#FIFAWorldCup2026 #WorldCup2026 #WorldCupStats #wcup2026";
+        return $head . "\n" . $line . "\n" . $cta . "\n" . $link . "\n" . $tags;
+    }
+
     private static function sign(string $msg, string $link, ?string $slot = null, string $extraTags = ''): string
     {
         // هاشتاكات ذكيّة حسب الفترة: مرحلة + slot + أساس قصير

@@ -50,3 +50,6 @@ Thumbs.db
 # ===== سكربت الرفع الشخصي (لا يُرفع) / personal push helper =====
 /رفع-التعديلات.bat
 /data/_visits.json
+
+# Raw screenshots dropped in docs/ (use docs/screenshots/ for curated, cropped images)
+docs/Screenshot*

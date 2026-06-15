@@ -88,14 +88,27 @@ class Highlights
         $needles2 = self::needles($t2);
         if (!$needles1 || !$needles2) return null;
 
+        $cands = [];
         foreach (self::videos() as $v) {
             $title = self::normalize((string)($v['title'] ?? ''));
             if ($title === '') continue;
-            if (self::containsAny($title, $needles1) && self::containsAny($title, $needles2)) {
+            $h1 = self::containsAny($title, $needles1);
+            $h2 = self::containsAny($title, $needles2);
+            if ($h1 && $h2) {                                  // مطابقة الاسمين — الأوثق
                 $hit = ['id' => (string)$v['id'], 'title' => (string)$v['title']];
                 @file_put_contents($archive, json_encode($hit, JSON_UNESCAPED_UNICODE));
                 return $hit;
             }
+            if ($h1 || $h2) $cands[(string)$v['id']] = $v;     // مرشّح لاحتياط الاسم الواحد
+        }
+
+        // (3) احتياط: لو فشلت مطابقة الاسمين، واسم أحد الفريقين موجود في فيديو واحد فقط
+        //     بالقائمة → هو مباراتهم (آمن: لا لبس مع وجود فيديو وحيد يخصّهما). تعدّد ⇒ نتجنّب.
+        if (count($cands) === 1) {
+            $v   = reset($cands);
+            $hit = ['id' => (string)$v['id'], 'title' => (string)$v['title']];
+            @file_put_contents($archive, json_encode($hit, JSON_UNESCAPED_UNICODE));
+            return $hit;
         }
         return null;
     }

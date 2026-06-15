@@ -64,8 +64,13 @@ tpl('header');
 .phys-table th.ph-sort.is-sort{color:#ffc846}
 .phys-table .ph-v{font-variant-numeric:tabular-nums;font-weight:700}
 .phys-table .ph-rank{font-weight:800;color:#ffc846}
-.phys-table .ph-photo{width:30px;height:30px;border-radius:50%;object-fit:cover;object-position:top center;background:#0e1b34;border:1.5px solid rgba(255,255,255,.18);vertical-align:middle;margin-inline-end:6px}
-.phys-table .ph-team{display:block;font-size:.78em;opacity:.7}
+.phys-table td.ph-namecell{display:flex;align-items:center;gap:11px}
+.phys-table .ph-photo{width:54px;height:54px;flex:0 0 auto;border-radius:50%;object-fit:cover;object-position:top center;background:#0e1b34;border:2px solid rgba(255,255,255,.22)}
+.phys-table .ph-photo.is-off{display:none}
+.phys-table .ph-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.phys-table .ph-line1{display:flex;align-items:center;gap:6px;font-weight:700}
+.phys-table td.ph-namecell .flag{width:22px!important;height:15px!important;border-radius:2px;flex:0 0 auto}
+.phys-table .ph-team{font-size:.78em;opacity:.7}
 .phys-team{flex:0 0 auto;cursor:pointer;max-width:220px}
 .phys-team option{color:#0a1626;background:#fff}
 .phys-table tbody tr.ph-row{cursor:pointer}
@@ -137,20 +142,25 @@ tpl('header');
         + '<td class="ph-v" data-c="dist"></td><td class="ph-v" data-c="sprints"></td>'
         + '<td class="ph-v" data-c="hsr"></td><td class="ph-v" data-c="top"></td>';
       var nameTd = tr.children[1];
+      nameTd.classList.add('ph-namecell');
       if (p.photo) {
         var pho = document.createElement('img');
         pho.className = 'ph-photo'; pho.src = p.photo; pho.loading = 'lazy'; pho.alt = '';
-        pho.onerror = function(){ this.remove(); };
+        pho.onerror = function(){ this.classList.add('is-off'); };
         nameTd.appendChild(pho);
       }
+      var info = document.createElement('span'); info.className = 'ph-info';
+      var line1 = document.createElement('span'); line1.className = 'ph-line1';
       if (p.flag) {
         var img = document.createElement('img');
-        img.className = 'flag'; img.src = p.flag; img.width = 32; img.height = 24; img.loading = 'lazy'; img.alt = '';
-        nameTd.appendChild(img); nameTd.appendChild(document.createTextNode(' '));
+        img.className = 'flag'; img.src = p.flag; img.loading = 'lazy'; img.alt = '';
+        line1.appendChild(img);
       }
-      nameTd.appendChild(document.createTextNode(String(p.name || '') + ' '));
+      line1.appendChild(document.createTextNode(String(p.name || '')));
+      info.appendChild(line1);
       var sp = document.createElement('span'); sp.className = 'muted ph-team'; sp.textContent = String(p.teamAr || '');
-      nameTd.appendChild(sp);
+      info.appendChild(sp);
+      nameTd.appendChild(info);
       tr.children[2].textContent = (p.m | 0);
       tr.children[6].textContent = (Math.round((+p.top) * 10) / 10);
       rows.push(tr); frag.appendChild(tr);

@@ -303,26 +303,27 @@ try {
             imagettftext($im, $size, 0, (int)($cx - ($bb[2] - $bb[0]) / 2), $y, $color, $fnt, $text);
         };
         if ($hasFont && !empty($k)) {
-            $centerText($im, 46, 110, $white, $fontAr, $shape('لوحة الإحصائيّات'));
-            $centerText($im, 20, 146, $gold,  $font,   'FIFA STATS DASHBOARD · WORLD CUP 2026');
+            $centerText($im, 44, 100, $white, $fontAr, $shape('لوحة الإحصائيّات'));
+            $centerText($im, 19, 134, $gold,  $font,   'FIFA STATS DASHBOARD · WORLD CUP 2026');
             $fast = $k['fastest'] ?? []; $td = $k['topDist'] ?? []; $ts = $k['topSprint'] ?? []; $tx = $k['topXg'] ?? [];
             $tiles = [
-                ['v' => (string)(int)($k['matches'] ?? 0),                                         'l' => 'مباريات محلَّلة',       's' => '',                          'sa' => false],
-                ['v' => number_format((float)($k['distance'] ?? 0), 0),                            'l' => 'إجمالي المسافة · كم',  's' => '',                          'sa' => false],
-                ['v' => rtrim(rtrim(number_format((float)($fast['v'] ?? 0), 1, '.', ''), '0'), '.'),'l' => 'أسرع لاعب · كم/س',     's' => (string)($fast['name'] ?? ''),'sa' => false],
-                ['v' => number_format((float)($td['v'] ?? 0) / 1000, 1),                           'l' => 'أكثر مسافة · كم',      's' => (string)($td['name'] ?? ''),  'sa' => false],
-                ['v' => number_format((float)($ts['v'] ?? 0), 0),                                  'l' => 'أكثر عَدْوات/مباراة',  's' => (string)($ts['name'] ?? ''),  'sa' => false],
-                ['v' => number_format((float)($tx['v'] ?? 0), 2),                                  'l' => 'أعلى xG لمباراة',      's' => $tn($tx['team'] ?? ''),       'sa' => true],
+                ['v' => (string)(int)($k['matches'] ?? 0),                                         'la' => 'مباريات محلَّلة',     'le' => 'Matches analysed',   's' => '',                           'sa' => false],
+                ['v' => number_format((float)($k['distance'] ?? 0), 0),                            'la' => 'إجمالي المسافة · كم', 'le' => 'Total distance · km','s' => '',                           'sa' => false],
+                ['v' => rtrim(rtrim(number_format((float)($fast['v'] ?? 0), 1, '.', ''), '0'), '.'),'la' => 'أسرع لاعب · كم/س',    'le' => 'Fastest · km/h',     's' => (string)($fast['name'] ?? ''),'sa' => false],
+                ['v' => number_format((float)($td['v'] ?? 0) / 1000, 1),                           'la' => 'أكثر مسافة · كم',     'le' => 'Most distance · km', 's' => (string)($td['name'] ?? ''),  'sa' => false],
+                ['v' => number_format((float)($ts['v'] ?? 0), 0),                                  'la' => 'أكثر عَدْوات/مباراة', 'le' => 'Most sprints/match', 's' => (string)($ts['name'] ?? ''),  'sa' => false],
+                ['v' => number_format((float)($tx['v'] ?? 0), 2),                                  'la' => 'أعلى xG لمباراة',     'le' => 'Highest match xG',   's' => $tn($tx['team'] ?? ''),       'sa' => true],
             ];
-            $cols = [240, 600, 960]; $tops = [195, 363]; $hw = 178; $th = 150;
+            $cols = [240, 600, 960]; $tops = [166, 360]; $hw = 178; $th = 176;
             foreach ($tiles as $i => $t) {
                 $cx = $cols[$i % 3]; $top = $tops[intdiv($i, 3)];
                 imagefilledrectangle($im, $cx - $hw, $top, $cx + $hw, $top + $th, imagecolorallocatealpha($im, 255, 255, 255, 118));
-                $ctile($im, 42, $cx, $top + 60, $gold,  $font,   $t['v']);
-                $ctile($im, 17, $cx, $top + 95, $white, $fontAr, $shape($t['l']));
-                if ($t['s'] !== '') $ctile($im, 15, $cx, $top + 124, $dim, $t['sa'] ? $fontAr : $font, $t['sa'] ? $shape($t['s']) : $t['s']);
+                $ctile($im, 40, $cx, $top + 54, $gold,  $font,   $t['v']);
+                $ctile($im, 16, $cx, $top + 86, $white, $fontAr, $shape($t['la']));
+                $ctile($im, 12, $cx, $top + 106, $dim, $font, $t['le']);
+                if ($t['s'] !== '') $ctile($im, 14, $cx, $top + 136, $dim, $t['sa'] ? $fontAr : $font, $t['sa'] ? $shape($t['s']) : $t['s']);
             }
-            $centerText($im, 22, $H - 26, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org'));
+            $centerText($im, 22, $H - 22, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org'));
         } else {
             $centerBuiltin($im, 5, 300, $white, 'FIFA STATS DASHBOARD');
             $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');

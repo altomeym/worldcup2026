@@ -21,6 +21,13 @@
 
 The platform now goes well beyond scores — **official data, rich media, and full automation**:
 
+<p align="center">
+  <img src="https://wcup2026.org/card_img.php?mode=player&id=433872" alt="FIFA technical player profile card — official photo, rating and category scores" width="680">
+  <br><em>Every player now has a full technical profile — official photo, rating &amp; percentile breakdowns.</em>
+</p>
+
+- 👤 **Full player technical profiles** — every player has a profile with their **official FIFA photo**, a tournament rating, an overall radar (Attacking · Creation · Line‑breaking · Defending) and per‑category breakdowns (passing options, pressing, set pieces…) — each metric shown **per‑90 with percentile bars vs same‑position players**. Bilingual AR/EN. *(See [player.php](https://wcup2026.org/player.php?id=433872&lang=en).)*
+- 🖼️ **Official FIFA player photos** — real player photos from FIFA's Digital Hub across every squad, shown on match player cards, the physical explorer, and the new profiles — refreshed automatically as new players and substitutes appear.
 - 📊 **Official FIFA match stats (PMSR)** — every finished match shows FIFA's official
   post‑match data in the site's own identity: possession, shots, passing, **phases of
   play** (build‑up, press, blocks), team **physical** output, and a **tap‑to‑expand card
@@ -70,6 +77,14 @@ The platform now goes well beyond scores — **official data, rich media, and fu
 ### Prediction Game
 ![Predict match scores, earn points, and climb the global leaderboard](docs/screenshots/predict.png)
 
+### Player technical profiles & stat cards
+*Live, auto‑generated from official FIFA data (these render straight from the live site):*
+
+<p align="center">
+  <img src="https://wcup2026.org/card_img.php?mode=player&id=433872" alt="Player technical profile card" width="420">
+  <img src="https://wcup2026.org/card_img.php?mode=dashboard" alt="Tournament stats dashboard card" width="420">
+</p>
+
 ---
 
 ## ✨ Features
@@ -80,6 +95,9 @@ The platform now goes well beyond scores — **official data, rich media, and fu
 - **Official FIFA match stats (PMSR)** — possession, shots, passing, **phases of play**,
   team **physical** output, and a **per‑player card** (distance, sprints, top speed,
   line‑breaks, crosses) — pulled from FIFA's official reports, auto‑extracted.
+- **Player technical profiles** — official FIFA photo + rating + radar & percentile
+  breakdowns (attacking, creation, line‑breaking, passing options, pressing, defending) —
+  per‑90, vs same‑position players, bilingual AR/EN.
 - **Physical data explorer** — sortable, searchable per‑player running leaderboard across
   all matches (total or per‑match average).
 - **Automatic match highlights** — official broadcast clips matched to each match via the

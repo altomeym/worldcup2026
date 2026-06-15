@@ -290,6 +290,46 @@ try {
         imagepng($im); imagedestroy($im); exit;
     }
 
+    // 🆕 بطاقة لوحة الإحصائيّات (?mode=dashboard) — مؤشّرات البطولة من تقارير FIFA
+    if (($_GET['mode'] ?? '') === 'dashboard') {
+        $k = class_exists('FifaStats') ? (FifaStats::teamDashboard()['kpi'] ?? []) : [];
+        $fontAr = __DIR__ . '/assets/fonts/Amiri-Bold.ttf';
+        if (!is_file($fontAr)) $fontAr = $font;
+        $shape = fn(string $s): string => class_exists('ArabicText') ? ArabicText::shape($s) : $s;
+        $tn = fn($en) => function_exists('team_name') ? team_name((string)$en) : (string)$en;
+        $ctile = function ($im, $size, $cx, $y, $color, $fnt, $text) {
+            if ($text === '') return;
+            $bb = imagettfbbox($size, 0, $fnt, $text);
+            imagettftext($im, $size, 0, (int)($cx - ($bb[2] - $bb[0]) / 2), $y, $color, $fnt, $text);
+        };
+        if ($hasFont && !empty($k)) {
+            $centerText($im, 46, 110, $white, $fontAr, $shape('لوحة الإحصائيّات'));
+            $centerText($im, 20, 146, $gold,  $font,   'FIFA STATS DASHBOARD · WORLD CUP 2026');
+            $fast = $k['fastest'] ?? []; $td = $k['topDist'] ?? []; $ts = $k['topSprint'] ?? []; $tx = $k['topXg'] ?? [];
+            $tiles = [
+                ['v' => (string)(int)($k['matches'] ?? 0),                                         'l' => 'مباريات محلَّلة',       's' => '',                          'sa' => false],
+                ['v' => number_format((float)($k['distance'] ?? 0), 0),                            'l' => 'إجمالي المسافة · كم',  's' => '',                          'sa' => false],
+                ['v' => rtrim(rtrim(number_format((float)($fast['v'] ?? 0), 1, '.', ''), '0'), '.'),'l' => 'أسرع لاعب · كم/س',     's' => (string)($fast['name'] ?? ''),'sa' => false],
+                ['v' => number_format((float)($td['v'] ?? 0) / 1000, 1),                           'l' => 'أكثر مسافة · كم',      's' => (string)($td['name'] ?? ''),  'sa' => false],
+                ['v' => number_format((float)($ts['v'] ?? 0), 0),                                  'l' => 'أكثر عَدْوات/مباراة',  's' => (string)($ts['name'] ?? ''),  'sa' => false],
+                ['v' => number_format((float)($tx['v'] ?? 0), 2),                                  'l' => 'أعلى xG لمباراة',      's' => $tn($tx['team'] ?? ''),       'sa' => true],
+            ];
+            $cols = [240, 600, 960]; $tops = [195, 363]; $hw = 178; $th = 150;
+            foreach ($tiles as $i => $t) {
+                $cx = $cols[$i % 3]; $top = $tops[intdiv($i, 3)];
+                imagefilledrectangle($im, $cx - $hw, $top, $cx + $hw, $top + $th, imagecolorallocatealpha($im, 255, 255, 255, 118));
+                $ctile($im, 42, $cx, $top + 60, $gold,  $font,   $t['v']);
+                $ctile($im, 17, $cx, $top + 95, $white, $fontAr, $shape($t['l']));
+                if ($t['s'] !== '') $ctile($im, 15, $cx, $top + 124, $dim, $t['sa'] ? $fontAr : $font, $t['sa'] ? $shape($t['s']) : $t['s']);
+            }
+            $centerText($im, 22, $H - 26, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org'));
+        } else {
+            $centerBuiltin($im, 5, 300, $white, 'FIFA STATS DASHBOARD');
+            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
+        }
+        imagepng($im); imagedestroy($im); exit;
+    }
+
     // 🆕 بطاقة كل المجموعات (?mode=groups) — 4 جداول مصغّرة بهويّة الموقع
     if (($_GET['mode'] ?? '') === 'groups') {
         $all = class_exists('Standings') ? Standings::all() : [];

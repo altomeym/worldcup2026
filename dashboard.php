@@ -15,6 +15,8 @@ $kpi   = $D['kpi'] ?? [];
 $page_title = $L('لوحة الإحصائيّات', 'Stats Dashboard');
 $page_desc  = $L('لوحة إحصائيّة شاملة من تقارير FIFA الرسميّة — مقارنات المنتخبات، المتوسّطات، ومؤشّرات البطولة.',
                  'Full stats dashboard from official FIFA reports — team comparisons, averages and tournament leaders.');
+// معاينة المشاركة: بطاقة مؤشّرات اللوحة بهويّة الموقع
+$page_image = url('card_img.php', ['mode' => 'dashboard', 'd' => card_rev()]);
 tpl('header');
 
 /** بطاقة مؤشّر */
@@ -132,5 +134,10 @@ function kpi_card(string $icon, string $big, string $label, string $sub = ''): v
 })();
 </script>
 <?php endif; ?>
+
+<?php render_share(
+  url('dashboard.php', ['d' => card_rev()]),
+  $L('لوحة إحصائيّات كأس العالم 2026 — من تقارير FIFA الرسميّة', 'FIFA World Cup 2026 stats dashboard — from official FIFA reports')
+); ?>
 
 <?php tpl('footer'); ?>

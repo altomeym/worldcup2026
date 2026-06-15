@@ -33,25 +33,27 @@ class FifaReports
                   || (isset($m['score']['ft']) && is_array($m['score']['ft']));
         if (!$finished) return null;
 
-        // الربط برموز الفرق من اسم ملف التقرير (الترتيب الزمني يخلط مباريات نفس اليوم)
-        $n = self::numberForTeams((string)($m['team1'] ?? ''), (string)($m['team2'] ?? ''));
-        if ($n <= 0) return null;
-
-        // أرشيف دائم لكل مباراة بمفتاح ثابت من الفريقين (يثبت فور إيجاده)
         $key = md5(trim((string)($m['team1'] ?? '')) . '|' . trim((string)($m['team2'] ?? '')) . '|' . (string)($m['date'] ?? ''));
         $archive = rtrim(CACHE_DIR, '/') . '/fifa-report-' . $key . '.txt';
+
+        // المصدر الموثوق أولاً: الربط برموز الفرق من اسم ملف التقرير (حتمي وصحيح).
+        // يكتب النتيجة في الأرشيف فيُداوي أي رابط قديم خاطئ مثبَّت من زمن الترتيب الزمني.
+        $n = self::numberForTeams((string)($m['team1'] ?? ''), (string)($m['team2'] ?? ''));
+        if ($n > 0) {
+            $url = self::reports()[(string)$n] ?? '';
+            if ($url !== '') {
+                if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
+                @file_put_contents($archive, $url);
+                return $url;
+            }
+        }
+
+        // احتياطي فقط عند فشل الربط/الكشط: أرشيف سابق
         if (is_file($archive)) {
             $u = trim((string)@file_get_contents($archive));
             if ($u !== '') return $u;
         }
-
-        $reports = self::reports();
-        $url = $reports[(string)$n] ?? null;
-        if ($url === null || $url === '') return null;
-
-        if (!is_dir(CACHE_DIR)) @mkdir(CACHE_DIR, 0755, true);
-        @file_put_contents($archive, $url);
-        return $url;
+        return null;
     }
 
     /**

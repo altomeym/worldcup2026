@@ -43,6 +43,14 @@ $drain       = isset($args['drain']);
 $capPerRun   = $drain ? 999 : (defined('MAX_PER_RUN') ? MAX_PER_RUN : MatchTweets::MAX_PER_RUN);
 $capNews     = $drain ? 999 : NewsTweets::MAX_PER_RUN;
 
+// ── قفل تشغيل: يمنع تداخل تشغيلَين (مهمّ مع كرون كل دقيقتين) → لا تكرار لنفس البطاقة.
+//    لو تشغيل آخر يحمل القفل الآن، اخرج فوراً بهدوء. (يُحرَّر تلقائياً عند انتهاء السكربت.)
+$lockFp = @fopen(rtrim(CACHE_DIR, '/') . '/cron-tweet.lock', 'c');
+if ($lockFp && !flock($lockFp, LOCK_EX | LOCK_NB)) {
+    echo "locked: another run in progress — skipping (prevents duplicate posts)\n";
+    exit;
+}
+
 $log  = function (string $m) { echo $m . "\n"; @flush(); };
 $pace = max(1, (defined('X_MIN_SPACING') ? (int)X_MIN_SPACING : 15) + 2);
 

@@ -52,7 +52,7 @@ class TweetCardImage
         $mode     = (($opt['mode'] ?? 'fixture') === 'result') ? 'result' : 'fixture';
 
         // كاش: نفس المحتوى = نفس الملف (لا إعادة توليد لكل تشغيل cron)
-        $key = sha1('v3|' . $title . '|' . $subtitle . '|' . $subEn . '|' . $mode . '|' . json_encode(array_map(
+        $key = sha1('v4|' . $title . '|' . $subtitle . '|' . $subEn . '|' . $mode . '|' . json_encode(array_map(
             fn($m) => [$m['team1'] ?? '', $m['team2'] ?? '', $m['date'] ?? '', $m['time'] ?? '', $m['score']['ft'] ?? null, count($m['stats'] ?? []), count($m['cards'] ?? [])],
             $matches
         ), JSON_UNESCAPED_UNICODE));
@@ -81,11 +81,11 @@ class TweetCardImage
                         $ix = ((int)($cc['team'] ?? 0) === 2) ? 1 : 0;
                         if (($cc['type'] ?? '') === 'red') $rc[$ix]++; else $yc[$ix]++;
                     }
-                    $statsRows[] = ['k' => 'البطاقات الصفراء', 'v' => [$yc[0], $yc[1]], 'unit' => ''];
-                    $statsRows[] = ['k' => 'البطاقات الحمراء', 'v' => [$rc[0], $rc[1]], 'unit' => ''];
+                    $statsRows[] = ['k' => 'البطاقات الصفراء', 'k_en' => 'Yellow cards', 'v' => [$yc[0], $yc[1]], 'unit' => ''];
+                    $statsRows[] = ['k' => 'البطاقات الحمراء', 'k_en' => 'Red cards', 'v' => [$rc[0], $rc[1]], 'unit' => ''];
                 }
             }
-            $statsH = $statsRows ? (84 + count($statsRows) * 54) : 0;
+            $statsH = $statsRows ? (84 + count($statsRows) * 62) : 0;
             $H = max(780, $headH + $n * $rowH + $statsH + $footH);
 
             $im = imagecreatetruecolor($W, $H);
@@ -162,16 +162,18 @@ class TweetCardImage
                     $bb = imagettfbbox(24, 0, $fontEn, $v1s);
                     imagettftext($im, 24, 0, (int)($W - 70 - ($bb[2] - $bb[0])), $sy, $white, $fontEn, $v1s);
                     imagettftext($im, 24, 0, 70, $sy, $white, $fontEn, $v2s);
-                    self::centerText($im, $fontAr, 19, $W / 2, $sy - 4, $light, ArabicText::shape((string)($s['k'] ?? '')));
+                    self::centerText($im, $fontAr, 18, $W / 2, $sy - 5, $light, ArabicText::shape((string)($s['k'] ?? '')));
+                    $ken = (string)($s['k_en'] ?? '');
+                    if ($ken !== '') self::centerText($im, $fontEn, 12, $W / 2, $sy + 11, $light, $ken);
                     // شريط مقارنة: فريق1 (ذهبي، يمين) · فريق2 (سماوي، يسار)
                     $sum = ((float)$v1 + (float)$v2) ?: 1; $p1 = (float)$v1 / $sum;
-                    $bx = 70; $barW = $W - 140; $byb = $sy + 13; $bhh = 9;
+                    $bx = 70; $barW = $W - 140; $byb = $sy + 21; $bhh = 9;
                     self::roundedRect($im, $bx, $byb, $bx + $barW, $byb + $bhh, 4, $barBg);
                     $w1 = (int)round($barW * $p1);
                     $w2 = $barW - $w1;
                     if ($w2 > 2) self::roundedRect($im, $bx, $byb, $bx + $w2, $byb + $bhh, 4, $light);
                     if ($w1 > 2) self::roundedRect($im, $bx + $barW - $w1, $byb, $bx + $barW, $byb + $bhh, 4, $gold);
-                    $sy += 54;
+                    $sy += 62;
                 }
             }
 

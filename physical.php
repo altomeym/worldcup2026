@@ -76,6 +76,13 @@ tpl('header');
 .ph-chip{background:rgba(255,255,255,.06);border-radius:10px;padding:8px 14px;text-align:center;min-width:88px}
 .ph-chip b{display:block;font-size:1.15rem;color:#ffc846;font-variant-numeric:tabular-nums}
 .ph-chip span{font-size:.72rem;opacity:.75}
+.ph-radar-wrap{text-align:center}
+.ph-cap{font-size:.72rem;opacity:.7;margin:2px auto 0;max-width:230px}
+.ph-detail>td .ph-block{margin:14px auto 0;max-width:560px}
+.ph-blk-t{font-size:.85rem;color:#ffc846;margin-bottom:6px;font-weight:700;text-align:center}
+.ph-zones{display:flex;height:13px;border-radius:7px;overflow:hidden}
+.ph-zones i{display:block;height:100%}
+.ph-line{font-size:.8rem;opacity:.85;margin:6px 0 0;text-align:center}
 </style>
 <script>
 (function(){
@@ -96,7 +103,17 @@ tpl('header');
     top:     <?= json_encode($L('سرعة قصوى', 'Top speed'), JSON_UNESCAPED_UNICODE) ?>,
     km:      <?= json_encode($L('كم', 'km'), JSON_UNESCAPED_UNICODE) ?>,
     kmh:     <?= json_encode($L('كم/س', 'km/h'), JSON_UNESCAPED_UNICODE) ?>,
-    perM:    <?= json_encode($L('لكل مباراة', 'per match'), JSON_UNESCAPED_UNICODE) ?>
+    perM:    <?= json_encode($L('لكل مباراة', 'per match'), JSON_UNESCAPED_UNICODE) ?>,
+    share:   <?= json_encode($L('النسبة مقارنةً بأفضل لاعب في البطولة', 'share of the tournament-best player'), JSON_UNESCAPED_UNICODE) ?>,
+    zonesT:  <?= json_encode($L('مناطق السرعة (1→5)', 'Speed zones (1→5)'), JSON_UNESCAPED_UNICODE) ?>,
+    lbT:     <?= json_encode($L('اختراق الخطوط', 'Line breaks'), JSON_UNESCAPED_UNICODE) ?>,
+    att:     <?= json_encode($L('محاولات', 'Att'), JSON_UNESCAPED_UNICODE) ?>,
+    comp:    <?= json_encode($L('مكتملة', 'Comp'), JSON_UNESCAPED_UNICODE) ?>,
+    acc:     <?= json_encode($L('دقّة', 'Acc'), JSON_UNESCAPED_UNICODE) ?>,
+    crossesT:<?= json_encode($L('العرضيّات', 'Crosses'), JSON_UNESCAPED_UNICODE) ?>,
+    total:   <?= json_encode($L('إجمالي', 'Total'), JSON_UNESCAPED_UNICODE) ?>,
+    dir:     <?= json_encode([$L('عبر','Through'), $L('حول','Around'), $L('فوق','Over')], JSON_UNESCAPED_UNICODE) ?>,
+    typ:     <?= json_encode([$L('تمريرة','Pass'), $L('عرضيّة','Cross'), $L('تقدّم','Prog')], JSON_UNESCAPED_UNICODE) ?>
   };
 
   function val(r, k){ return parseFloat(r.getAttribute('data-' + k)) || 0; }
@@ -109,6 +126,7 @@ tpl('header');
     players.forEach(function(p){
       var tr = document.createElement('tr');
       tr.className = 'ph-row';
+      tr._p = p;                                    // بيانات اللاعب الكاملة (للتفاصيل عند النقر)
       tr.setAttribute('data-name', String(p.name || '').toLowerCase());
       tr.setAttribute('data-team', (String(p.teamAr || '') + ' ' + String(p.team || '')).toLowerCase());
       tr.setAttribute('data-m', p.m); tr.setAttribute('data-dist', p.dist);
@@ -171,9 +189,9 @@ tpl('header');
       r.style.display = hit ? '' : 'none';
     });
   }
-  // شبكة عنكبوتيّة (4 محاور) — كل القيم رقميّة، لا بيانات مستخدم → آمنة.
-  function radarSvg(f){
-    var cx = 112, cy = 96, R = 66, ang = [-Math.PI/2, 0, Math.PI/2, Math.PI];
+  // شبكة عنكبوتيّة (4 محاور) باسم المعيار + قيمته — كل القيم رقميّة/مسمّيات ثابتة (آمنة).
+  function radarSvg(f, vals){
+    var cx = 112, cy = 96, R = 62, ang = [-Math.PI/2, 0, Math.PI/2, Math.PI];
     function pt(fr, i){ return [(cx + fr*R*Math.cos(ang[i])).toFixed(1), (cy + fr*R*Math.sin(ang[i])).toFixed(1)]; }
     var grid = '';
     [0.25, 0.5, 0.75, 1].forEach(function(g){
@@ -182,25 +200,52 @@ tpl('header');
     var axes = '';
     [0,1,2,3].forEach(function(i){ var p = pt(1, i); axes += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="rgba(255,255,255,.13)"/>'; });
     var poly = [0,1,2,3].map(function(i){ return pt(Math.max(0.04, f[i] || 0), i).join(','); }).join(' ');
-    var labels = [LBL.dist, LBL.sprints, LBL.hsr, LBL.top], anc = ['middle','start','middle','end'], dy = [-6, 4, 16, 4], labs = '';
-    [0,1,2,3].forEach(function(i){ var p = pt(1.2, i); labs += '<text x="'+p[0]+'" y="'+(parseFloat(p[1]) + dy[i])+'" text-anchor="'+anc[i]+'" fill="#cfe0f5" font-size="11">' + labels[i] + '</text>'; });
-    return '<svg viewBox="0 0 224 192" width="224" height="192" class="ph-radar" role="img">' + grid + axes
+    var labels = [LBL.dist, LBL.sprints, LBL.hsr, LBL.top], anc = ['middle','start','middle','end'], dy = [-10, 0, 22, 0], labs = '';
+    [0,1,2,3].forEach(function(i){
+      var p = pt(1.24, i), x = p[0], y = parseFloat(p[1]) + dy[i];
+      labs += '<text x="'+x+'" y="'+y+'" text-anchor="'+anc[i]+'" fill="#cfe0f5" font-size="11">' + labels[i]
+            + '<tspan x="'+x+'" dy="13" fill="#ffc846" font-size="11">' + vals[i] + '</tspan></text>';
+    });
+    return '<svg viewBox="0 0 224 200" width="232" height="200" class="ph-radar" role="img">' + grid + axes
       + '<polygon points="' + poly + '" fill="rgba(255,200,70,.35)" stroke="#ffc846" stroke-width="2"/>' + labs + '</svg>';
   }
   function chip(v, label){ return '<div class="ph-chip"><b>' + v + '</b><span>' + label + '</span></div>'; }
+  function bar(zones){
+    var sh = ['#26408b','#3a5bbf','#a8cdf5','#ffc846','#ff7a45'], tot = 0, i;
+    for (i = 0; i < 5; i++) tot += (+zones[i] || 0);
+    if (tot <= 0) return '';
+    var seg = '';
+    for (i = 0; i < 5; i++) seg += '<i style="width:' + ((+zones[i]||0)/tot*100).toFixed(1) + '%;background:' + sh[i] + '"></i>';
+    return '<div class="ph-block"><div class="ph-blk-t">' + LBL.zonesT + '</div><div class="ph-zones">' + seg + '</div></div>';
+  }
+  function lbBlock(lb, lbv){
+    var att = +lb[0] || 0; if (att <= 0) return '';
+    var comp = +lb[1] || 0, pct = Math.round(comp / att * 100);
+    var line = LBL.dir[0] + ' ' + (+lbv[0]||0) + ' · ' + LBL.dir[1] + ' ' + (+lbv[1]||0) + ' · ' + LBL.dir[2] + ' ' + (+lbv[2]||0)
+             + '  —  ' + LBL.typ[0] + ' ' + (+lbv[3]||0) + ' · ' + LBL.typ[1] + ' ' + (+lbv[4]||0) + ' · ' + LBL.typ[2] + ' ' + (+lbv[5]||0);
+    return '<div class="ph-block"><div class="ph-blk-t">' + LBL.lbT + '</div><div class="ph-chips">'
+      + chip(att, LBL.att) + chip(comp, LBL.comp) + chip(pct + '%', LBL.acc) + '</div><p class="ph-line">' + line + '</p></div>';
+  }
+  function crossBlock(cross){
+    var total = +cross[6] || 0; if (total <= 0) return '';
+    return '<div class="ph-block"><div class="ph-blk-t">' + LBL.crossesT + '</div><div class="ph-chips">' + chip(total, LBL.total) + '</div></div>';
+  }
   function toggleDetail(tr){
     if (tr.classList.contains('is-open')) { closeDetails(); return; }
     closeDetails();
     tr.classList.add('is-open');
-    var m = val(tr, 'm') || 1;
+    var p = tr._p || {}, m = val(tr, 'm') || 1;
     var f = [ (val(tr,'dist')/m)/(MAX.dist||1), (val(tr,'sprints')/m)/(MAX.sprints||1), (val(tr,'hsr')/m)/(MAX.hsr||1), val(tr,'top')/(MAX.top||1) ];
+    var vals = [ (val(tr,'dist')/1000/m).toFixed(1) + ' ' + LBL.km, (val(tr,'sprints')/m).toFixed(1), (val(tr,'hsr')/m).toFixed(1), (Math.round(val(tr,'top')*10)/10) + ' ' + LBL.kmh ];
     var chips = chip((val(tr,'dist')/1000/m).toFixed(1), LBL.dist + ' ' + LBL.km + ' /' + LBL.perM)
       + chip((val(tr,'sprints')/m).toFixed(1), LBL.sprints + ' /' + LBL.perM)
       + chip((val(tr,'hsr')/m).toFixed(1), LBL.hsr + ' /' + LBL.perM)
       + chip((Math.round(val(tr,'top')*10)/10) + ' ' + LBL.kmh, LBL.top);
+    var rich = bar(p.zones || []) + lbBlock(p.lb || [0, 0], p.lbv || []) + crossBlock(p.cross || []);
     var det = document.createElement('tr'); det.className = 'ph-detail';
     var td = document.createElement('td'); td.colSpan = 7;
-    td.innerHTML = '<div class="ph-detail-grid">' + radarSvg(f) + '<div class="ph-chips">' + chips + '</div></div>';
+    td.innerHTML = '<div class="ph-detail-grid"><div class="ph-radar-wrap">' + radarSvg(f, vals)
+      + '<p class="ph-cap">' + LBL.share + '</p></div><div class="ph-chips">' + chips + '</div></div>' + rich;
     det.appendChild(td);
     tr.parentNode.insertBefore(det, tr.nextSibling);
   }

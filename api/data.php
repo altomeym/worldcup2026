@@ -114,11 +114,16 @@ switch ($action) {
                 'team'   => $en,
                 'teamAr' => function_exists('team_name') ? team_name($en) : $en,
                 'flag'   => function_exists('flag_url') ? flag_url($en, 'w40') : '',
+                'num'    => (int)($r['num'] ?? 0),
                 'm'      => (int)($r['m'] ?? 0),
                 'dist'   => (float)($r['dist'] ?? 0),
                 'sprints'=> (int)($r['sprints'] ?? 0),
                 'hsr'    => (int)($r['hsr'] ?? 0),
                 'top'    => (float)($r['top'] ?? 0),
+                'zones'  => array_map('floatval', (array)($r['zones'] ?? [])),
+                'lb'     => array_map('intval', (array)($r['lb'] ?? [])),
+                'lbv'    => array_map('intval', (array)($r['lbv'] ?? [])),
+                'cross'  => array_map('intval', (array)($r['cross'] ?? [])),
             ];
         }
         $response['players'] = $out;

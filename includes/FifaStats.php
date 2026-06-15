@@ -607,14 +607,27 @@ class FifaStats
                     if (!is_array($v) || count($v) < 9) continue;
                     $key = $teamEn . '|' . ($p['num'] ?? '') . '|' . ($p['name'] ?? '');
                     if (!isset($players[$key])) {
-                        $players[$key] = ['name' => (string)($p['name'] ?? ''), 'team' => $teamEn,
-                            'm' => 0, 'dist' => 0.0, 'sprints' => 0, 'hsr' => 0, 'top' => 0.0];
+                        $players[$key] = ['name' => (string)($p['name'] ?? ''), 'team' => $teamEn, 'num' => (int)($p['num'] ?? 0),
+                            'm' => 0, 'dist' => 0.0, 'sprints' => 0, 'hsr' => 0, 'top' => 0.0,
+                            'zones' => [0, 0, 0, 0, 0], 'lb' => [0, 0], 'lbv' => [0, 0, 0, 0, 0, 0], 'cross' => [0, 0, 0, 0, 0, 0, 0]];
                     }
-                    $players[$key]['m']++;
-                    $players[$key]['dist']    += (float)$v[0];
-                    $players[$key]['sprints'] += (int)$v[7];
-                    $players[$key]['hsr']     += (int)$v[6];
-                    if ((float)$v[8] > $players[$key]['top']) $players[$key]['top'] = (float)$v[8];
+                    $pr = &$players[$key];
+                    $pr['m']++;
+                    $pr['dist']    += (float)$v[0];
+                    $pr['sprints'] += (int)$v[7];
+                    $pr['hsr']     += (int)$v[6];
+                    if ((float)$v[8] > $pr['top']) $pr['top'] = (float)$v[8];
+                    for ($z = 0; $z < 5; $z++) $pr['zones'][$z] += (float)($v[$z + 1] ?? 0);   // مناطق السرعة 1→5
+                    if (isset($p['lb']) && is_array($p['lb'])) {                                 // اختراق الخطوط
+                        $pr['lb'][0] += (int)($p['lb']['att'] ?? 0);
+                        $pr['lb'][1] += (int)($p['lb']['comp'] ?? 0);
+                        $lv = $p['lb']['v'] ?? [];
+                        for ($z = 0; $z < 6; $z++) $pr['lbv'][$z] += (int)($lv[9 + $z] ?? 0);     // اتجاه(3)+نوع(3)
+                    }
+                    if (isset($p['cross']) && is_array($p['cross'])) {                           // العرضيّات
+                        for ($z = 0; $z < 7; $z++) $pr['cross'][$z] += (int)($p['cross'][$z] ?? 0);
+                    }
+                    unset($pr);
                 }
             }
         }

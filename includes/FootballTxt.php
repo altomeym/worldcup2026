@@ -63,12 +63,14 @@ class FootballTxt
                 $list = array_values(array_filter($list, [self::class, 'isFinished']));
                 if (!$list) continue;
             }
-            $out .= $round . "\n\n";
+            // ترويسة الجولة تبدأ بعلامة مربّع صغير (▪) حسب صيغة openfootball الحديثة
+            $out .= "▪ " . $round . "\n";
             $curDay = '';
             foreach ($list as $m) {
                 $day = self::dayLabel($m);
                 if ($day !== '' && $day !== $curDay) {
-                    $out .= "[{$day}]\n";
+                    // تاريخ بلا أقواس ولا شرطة (الصيغة الحديثة): «Fri Jun 12»
+                    $out .= $day . "\n";
                     $curDay = $day;
                 }
                 $out .= self::matchLine($m);
@@ -94,13 +96,13 @@ class FootballTxt
         }
         ksort($groups, SORT_NATURAL);
 
+        // تعريف المجموعة سطر واحد: «Group A:  Team1   Team2   Team3   Team4»
+        // (مسافتان فأكثر بين الأسماء حتى تُقسَّم — أسماء مثل «Bosnia & Herzegovina» تبقى موحَّدة)
         $out = '';
         foreach ($groups as $g => $teams) {
-            $out .= $g . "\n";
-            foreach (array_keys($teams) as $t) $out .= '  ' . $t . "\n";
-            $out .= "\n";
+            $out .= $g . ':  ' . implode('   ', array_keys($teams)) . "\n";
         }
-        return $out;
+        return $out . "\n";
     }
 
     /** [الجولة → مباريات]، الجولات مرتّبة بأبكر وقت انطلاق فيها. */
@@ -184,13 +186,13 @@ class FootballTxt
         return implode(', ', $parts);
     }
 
-    /** تسمية اليوم «Thu Jun/14» من حقل التاريخ (ظهراً UTC تفادياً لانزياح المنطقة). */
+    /** تسمية اليوم «Fri Jun 12» (الصيغة الحديثة: بلا أقواس ولا شرطة) من حقل التاريخ. */
     private static function dayLabel(array $m): string
     {
         $d = trim((string)($m['date'] ?? ''));
         if ($d === '') return '';
         $t = strtotime($d . ' 12:00:00 UTC');
-        return $t ? gmdate('D M/d', $t) : $d;
+        return $t ? gmdate('D M j', $t) : $d;
     }
 
     private static function ts(array $m): int

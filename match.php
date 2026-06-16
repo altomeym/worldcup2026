@@ -270,6 +270,45 @@ seo_sportsevent($m);
     </style>
   <?php endif; ?>
 
+  <!-- ============ رجل المباراة (أعلى تقييم) ============ -->
+  <?php
+  $motm = ($hasScore && class_exists('FifaMetrics'))
+        ? FifaMetrics::motmFor((string)($m['team1'] ?? ''), (string)($m['team2'] ?? '')) : null;
+  if ($motm):
+      $motmTeamEn = FifaMetrics::motmTeamEn($motm, (string)($m['team1'] ?? ''), (string)($m['team2'] ?? ''));
+      $motmPhoto  = (string)($motm['photo'] ?? '');
+      $motmUrl    = url('player.php', ['id' => (string)($motm['pid'] ?? '')]);   // pid دقيق (الاسم قد يختلف)
+  ?>
+    <a class="motm-card" href="<?= e($motmUrl) ?>">
+      <span class="motm-badge">🌟 <?= e($L('رجل المباراة', 'Player of the Match')) ?></span>
+      <?php if ($motmPhoto !== ''): ?>
+        <img class="motm-photo" src="<?= e($motmPhoto) ?>" alt="" loading="lazy" onerror="this.classList.add('off')">
+      <?php endif; ?>
+      <span class="motm-info">
+        <b class="motm-name"><?= e($motm['name'] ?? '') ?></b>
+        <span class="motm-team"><?= flag_img($motmTeamEn, 'w40') ?> <?= e(team_name($motmTeamEn)) ?></span>
+      </span>
+      <span class="motm-rating">★ <?= number_format((float)($motm['rating'] ?? 0), 1) ?></span>
+    </a>
+    <style>
+    .motm-card{display:flex;align-items:center;gap:14px;margin:6px 0 14px;padding:14px 18px;position:relative;
+      background:linear-gradient(135deg,rgba(255,200,70,.16),rgba(38,206,168,.06));
+      border:1px solid rgba(255,200,70,.40);border-radius:16px;text-decoration:none;color:inherit;transition:.15s}
+    .motm-card:hover{border-color:rgba(255,200,70,.7);background:linear-gradient(135deg,rgba(255,200,70,.24),rgba(38,206,168,.10))}
+    .motm-badge{position:absolute;top:-10px;inset-inline-start:16px;background:#ffc846;color:#0a1626;font-weight:800;
+      font-size:.74rem;padding:3px 11px;border-radius:20px}
+    .motm-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:top center;
+      background:#0e1b34;border:2px solid #ffc846;flex:0 0 auto;margin-top:4px}
+    .motm-photo.off{display:none}
+    .motm-info{display:flex;flex-direction:column;gap:4px;min-width:0;margin-top:4px}
+    .motm-name{font-size:1.15rem;line-height:1.1}
+    .motm-team{display:flex;align-items:center;gap:7px;opacity:.9;font-size:.9rem}
+    .motm-team .flag{width:24px;height:auto;border-radius:3px}
+    .motm-rating{margin-inline-start:auto;background:#ffc846;color:#0a1626;font-weight:800;font-size:1.15rem;
+      padding:6px 14px;border-radius:14px;margin-top:4px}
+    </style>
+  <?php endif; ?>
+
   <!-- ============ الأحداث (خط زمني موحّد) ============ -->
   <?php if (!empty($events)): ?>
     <section class="md-section">

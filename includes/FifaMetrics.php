@@ -105,6 +105,36 @@ class FifaMetrics
 
     public static function generated(): string { return (string)(self::load()['_generated'] ?? ''); }
 
+    private static ?array $motm = null;
+    /** خريطة رجل المباراة: «iso1|iso2» (مرتّب) → {name, team(code), rating, pid, photo, …}. */
+    public static function loadMotm(): array
+    {
+        if (self::$motm === null) {
+            $f = __DIR__ . '/../assets/fifa-motm.json';
+            $d = is_file($f) ? json_decode((string)@file_get_contents($f), true) : null;
+            self::$motm = (is_array($d) && isset($d['motm']) && is_array($d['motm'])) ? $d['motm'] : [];
+        }
+        return self::$motm;
+    }
+
+    /** رجل المباراة لمباراة بين فريقين (بالاسم الإنجليزي)، أو null. */
+    public static function motmFor(string $t1En, string $t2En): ?array
+    {
+        if (!function_exists('team_flag')) return null;
+        $a = strtolower(team_flag($t1En)); $b = strtolower(team_flag($t2En));
+        if ($a === '' || $b === '') return null;
+        $p = [$a, $b]; sort($p);
+        return self::loadMotm()[implode('|', $p)] ?? null;
+    }
+
+    /** الاسم الإنجليزي لفريق رجل المباراة (أيّ الفريقَين هو عليه). */
+    public static function motmTeamEn(array $rec, string $t1En, string $t2En): string
+    {
+        if (!function_exists('fifa_iso') || !function_exists('team_flag')) return $t1En;
+        $iso = strtolower(fifa_iso((string)($rec['team'] ?? '')));
+        return ($iso !== '' && $iso === strtolower(team_flag($t1En))) ? $t1En : $t2En;
+    }
+
     /** سجلّ لاعب بالمعرّف. */
     public static function player(string $pid): ?array
     {

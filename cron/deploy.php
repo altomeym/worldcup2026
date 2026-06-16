@@ -51,7 +51,7 @@ echo "fifa sync — added/updated: $added, up-to-date: $skip\n";
 // ملفّات مفردة خارج مجلّد assets/fifa (صور اللاعبين + المقاييس الفنّيّة) — نجلب
 // كلّاً من GitHub raw على حدة (لا تدخل في حلقة المجلّد أعلاه).
 $RAW = 'https://raw.githubusercontent.com/salah23222/worldcup2026/main/assets/';
-foreach (['fifa-photos.json', 'fifa-metrics.json'] as $single) {
+foreach (['fifa-photos.json', 'fifa-metrics.json', 'fifa-motm.json'] as $single) {
     $raw = http_get($RAW . $single, ['timeout' => 25, 'ua' => 'wcup2026-deploy', 'redirects' => true]);
     if ($raw === null || json_decode($raw) === null) { echo "$single — fetch failed\n"; continue; }
     $target = __DIR__ . '/../assets/' . $single;

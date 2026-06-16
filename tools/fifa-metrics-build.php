@@ -12,6 +12,8 @@
  * يُشغَّل محليّاً فقط (مثل fifa-build). per-90/المئويّات/الرادار تُحسب وقت العرض في FifaMetrics.
  */
 chdir(dirname(__DIR__));
+$_SERVER['HTTP_HOST'] = 'wcup2026.org';
+require __DIR__ . '/../includes/bootstrap.php';   // لإتاحة fifa_iso() لمطابقة رجل المباراة
 $dir = rtrim($argv[1] ?? (__DIR__ . '/_fp'), '/\\');
 
 $dataJs    = @file_get_contents("$dir/data.js");
@@ -22,16 +24,34 @@ if (!$ratingsJs) { fwrite(STDERR, "missing $dir/ratings.js\n"); exit(1); }
 
 // ── 1) التقييمات + الدقائق لكل لاعب (من ratings.js) ─────────────────────────
 //    RATINGS.matches[mid].players[pid] = {r, pos, min, name, team}
-$minSum = []; $rSum = []; $rCnt = []; $posStr = [];
+$minSum = []; $rSum = []; $rCnt = []; $posStr = []; $motm = [];
 if (preg_match('/const RATINGS\s*=\s*(\{.*\})\s*;?\s*$/s', trim($ratingsJs), $rm)) {
     $R = json_decode($rm[1], true);
     foreach (($R['matches'] ?? []) as $match) {
+        $best = null;
         foreach (($match['players'] ?? []) as $pid => $pr) {
             $min = (int)($pr['min'] ?? 0);
             $minSum[$pid] = ($minSum[$pid] ?? 0) + $min;
             if (isset($pr['r'])) { $rSum[$pid] = ($rSum[$pid] ?? 0) + (float)$pr['r']; $rCnt[$pid] = ($rCnt[$pid] ?? 0) + 1; }
             $p = (string)($pr['pos'] ?? '');
             if ($p !== '' && $p !== 'Substitute') $posStr[$pid] = $p;   // مركز فعلي لا «بديل»
+            // رجل المباراة: أعلى تقييم بين من لعب 45 دقيقة فأكثر
+            $r = (float)($pr['r'] ?? 0);
+            if ($min >= 45 && ($best === null || $r > $best['r'])) {
+                $best = ['pid' => (string)$pid, 'r' => $r, 'name' => (string)($pr['name'] ?? ''), 'team' => strtoupper((string)($pr['team'] ?? ''))];
+            }
+        }
+        // مفتاح المباراة = زوج iso مرتّب من رمزَي المضيف/الضيف
+        $hc = strtoupper((string)($match['home'] ?? '')); $ac = strtoupper((string)($match['away'] ?? ''));
+        $i1 = function_exists('fifa_iso') ? strtolower(fifa_iso($hc)) : '';
+        $i2 = function_exists('fifa_iso') ? strtolower(fifa_iso($ac)) : '';
+        if ($best !== null && $i1 !== '' && $i2 !== '') {
+            $pair = [$i1, $i2]; sort($pair); $key = implode('|', $pair);
+            $motm[$key] = [
+                'name' => $best['name'], 'team' => $best['team'], 'rating' => round($best['r'], 1), 'pid' => $best['pid'],
+                'homeN' => (string)($match['homeN'] ?? ''), 'awayN' => (string)($match['awayN'] ?? ''),
+                'sh' => (int)($match['sh'] ?? 0), 'sa' => (int)($match['sa'] ?? 0),
+            ];
         }
     }
 }
@@ -135,3 +155,18 @@ $photoJson = json_encode([
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 file_put_contents(__DIR__ . '/../assets/fifa-photos.json', $photoJson);
 echo 'photos ' . count($byName) . " players\n";
+
+// ── 6) رجل المباراة (assets/fifa-motm.json) — إثراء بالصورة واسم الفريق ──────────
+foreach ($motm as $k => &$mo) {
+    $pid = (string)($mo['pid'] ?? '');
+    $mo['photo']    = $players[$pid]['photo'] ?? '';
+    $mo['teamName'] = $players[$pid]['teamName'] ?? '';
+}
+unset($mo);
+file_put_contents(__DIR__ . '/../assets/fifa-motm.json', json_encode([
+    '_source'    => 'FIFA WC2026 — top-rated player per match (rating model, ≥45 min)',
+    '_generated' => gmdate('Y-m-d'),
+    '_count'     => count($motm),
+    'motm'       => $motm,
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+echo 'motm ' . count($motm) . " matches\n";

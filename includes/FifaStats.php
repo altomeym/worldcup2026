@@ -700,8 +700,12 @@ class FifaStats
                 if ($xg > $kpi['topXg']['v']) $kpi['topXg'] = ['v' => $xg, 'team' => $en];
             }
         }
+        // كل القيم لكل مباراة (متوسّط) — لا مجاميع، حتى تكون المقارنة عادلة مع تقدّم البطولة
         foreach ($teams as &$t) {
-            if ($t['m'] > 0) foreach ($avgKeys as $k) $t[$k] = $t[$k] / $t['m'];
+            if ($t['m'] > 0) {
+                foreach ($avgKeys as $k) $t[$k] = $t[$k] / $t['m'];
+                foreach ($sumKeys as $k) $t[$k] = $t[$k] / $t['m'];
+            }
         }
         unset($t);
         $teams = array_values($teams);

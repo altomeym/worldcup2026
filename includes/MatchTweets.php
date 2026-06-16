@@ -88,14 +88,14 @@ class MatchTweets
     }
 
     /** ينشر تغريدة قَبليّة (يبني → يرسل → يسجّل). يعيد مصفوفة XPublisher. */
-    public static function sendPre(array $m, string $lang): array
+    public static function sendPre(array $m, string $lang, bool $priority = false): array
     {
         // النصّ بلا رابط (الرابط يُنشَر في ردّ → يرفع وصول التغريدة الرئيسة)
         $text = self::buildPre($m, $lang, false);
         $img = class_exists('TweetCardImage')
              ? TweetCardImage::generate([$m], ['title' => 'مباراة قادمة', 'subtitle' => 'كأس العالم 2026'])
              : null;
-        $r = XPublisher::tweet($text, $img);
+        $r = XPublisher::tweet($text, $img, $priority);
         if ($r['ok']) {
             self::markSent((int)$m['_index'], 'pre', $lang, (string)$r['id']);
             self::replyWithLink((string)$r['id'], $m, $lang,
@@ -149,13 +149,14 @@ class MatchTweets
                 : (defined('X_HASHTAGS') ? X_HASHTAGS : '#FIFAWorldCup26');
         $vs     = $ar ? 'ضدّ' : 'vs';
 
+        $soon = ($ts !== null && ($ts - time()) <= 5400);   // ≤90 دقيقة → «بعد قليل»، وإلّا «اليوم»
         if ($ar) {
-            $head = "⚽ بعد قليل في كأس العالم 2026";
+            $head = $soon ? "⚽ بعد قليل في كأس العالم 2026" : "⚽ اليوم في كأس العالم 2026";
             $line = "{$f1} {$n1} {$vs} {$n2} {$f2}";
             $when = $hm !== '' ? "🕐 {$hm}" . ($ground !== '' ? " · 🏟️ {$ground}" : '') : ($ground !== '' ? "🏟️ {$ground}" : '');
             $cta  = "🔮 توقّعك للنتيجة؟ شاركنا 👇";
         } else {
-            $head = "⚽ Coming up at FIFA World Cup 2026";
+            $head = $soon ? "⚽ Coming up at FIFA World Cup 2026" : "⚽ Today at FIFA World Cup 2026";
             $line = "{$f1} {$n1} {$vs} {$n2} {$f2}";
             $when = $hm !== '' ? "🕐 {$hm}" . ($ground !== '' ? " · 🏟️ {$ground}" : '') : ($ground !== '' ? "🏟️ {$ground}" : '');
             $cta  = "🔮 Your score prediction? 👇";

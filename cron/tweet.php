@@ -57,6 +57,29 @@ $pace = max(1, (defined('X_MIN_SPACING') ? (int)X_MIN_SPACING : 15) + 2);
 // بصمة نسخة الكود — تساعد على التحقّق من أن النسخة الصحيحة فعلاً تُشغَّل
 $log('[version] tweet.php v2.3-test-schedule (' . date('Y-m-d H:i:s') . ' Asia/Dubai)');
 
+// ═══ مُشغّل يدويّ: انشر تغريدة مباراة محدّدة فوراً (للتجربة بعد النشر على الإنتاج) ═══
+//   ?token=...&matchtweet=ID        → ينشر (نتيجة إن انتهت، وإلّا قَبليّة) + الرابط في ردّ
+//   أضِف &dry=1 للمعاينة بلا نشر · &force لتكرار تغريدة سبق نشرها · يتجاوز السقف اليومي
+if (($mt = (int)($args['matchtweet'] ?? 0)) > 0 || isset($args['matchtweet'])) {
+    $target = null;
+    foreach (DataService::allMatches() as $mm) { if ((int)($mm['_index'] ?? -1) === $mt) { $target = $mm; break; } }
+    if (!$target) { $log("[matchtweet] match #$mt not found"); exit; }
+    $fin  = isset($target['score']['ft']) && is_array($target['score']['ft']);
+    $type = $fin ? 'post' : 'pre'; $lg2 = $fin ? 'bi' : 'ar';
+    $lbl  = '#' . $mt . ' ' . ($target['team1'] ?? '') . '-' . ($target['team2'] ?? '') . ' [' . $type . ']';
+    if (!$force && MatchTweets::wasSent($mt, $type, $lg2)) {
+        $log("[matchtweet] $lbl already posted — add &force to repeat"); exit;
+    }
+    if ($dry) {
+        $log("[matchtweet] DRY $lbl");
+        $log('---'); $log($fin ? MatchTweets::buildPost($target, 'bi', false) : MatchTweets::buildPre($target, 'ar', false)); $log('---');
+        exit;
+    }
+    $r = $fin ? MatchTweets::sendPost($target, 'bi') : MatchTweets::sendPre($target, 'ar', true);
+    $log(!empty($r['ok']) ? "[matchtweet] OK $lbl id=" . (string)$r['id'] : "[matchtweet] FAIL $lbl " . (string)($r['error'] ?? '?'));
+    exit;
+}
+
 // ═══════════════════ وضع التنظيف: مسح طوابير الحالة ═══════════════════
 // cron/tweet.php?token=...&clear-state=news       → يصمت كل أخبار الـ RSS الحاليّة
 // cron/tweet.php?token=...&clear-state=all        → ينظّف news + match + group state

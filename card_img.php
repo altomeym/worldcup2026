@@ -350,8 +350,8 @@ try {
         $pl = ($pid !== '' && class_exists('FifaMetrics')) ? FifaMetrics::player($pid) : null;
 
         if ($pl) {
-            // ── الصورة الدائريّة (يسار) مع إطار ذهبي ──
-            $AV = 312; $px = 96; $py = 168;
+            // ── الصورة الدائريّة (يمين) مع إطار ذهبي — والنصّ يساراً (مناسب للعربيّة) ──
+            $AV = 312; $px = $W - $AV - 96; $py = 168;
             imagefilledellipse($im, $px + $AV / 2, $py + $AV / 2, $AV + 14, $AV + 14, $gold);
             $av = imagecreatetruecolor($AV, $AV);
             imagesavealpha($av, true);
@@ -372,27 +372,28 @@ try {
             imagecopy($im, $av, $px, $py, 0, 0, $AV, $AV);
             imagedestroy($av);
 
-            // ── الاسم + الفريق + التقييم (يمين) ──
-            $tx = $px + $AV + 56;            // بداية عمود النصّ
+            // ── الاسم + الفريق + التقييم (يسار) ──
+            $tx = 80;                        // بداية عمود النصّ (يسار)
+            imagettftext($im, 18, 0, $tx, 188, $gold, $font, 'FIFA TECHNICAL PROFILE · WORLD CUP 2026');
             $name = strtoupper(trim((string)$pl['name']));
             $nsize = mb_strlen($name) > 18 ? 38 : (mb_strlen($name) > 13 ? 46 : 54);
-            imagettftext($im, $nsize, 0, $tx, 232, $white, $font, $name);
+            imagettftext($im, $nsize, 0, $tx, 240, $white, $font, $name);
 
             $teamLoc = function_exists('team_name') ? team_name((string)$pl['teamName']) : (string)$pl['teamName'];
             $tline = $shape($teamLoc . (($pl['pos'] ?? '') !== '' ? '  ·  ' . $pl['pos'] : ''));
-            imagettftext($im, 24, 0, $tx, 280, $dim, $fontAr, $tline);
+            imagettftext($im, 24, 0, $tx, 288, $dim, $fontAr, $tline);
 
             if ($pl['r'] !== null) {
                 $lblR = $shape('تقييم'); $rstr = number_format((float)$pl['r'], 1);
                 $rb = imagettfbbox(30, 0, $font, $rstr); $rw = $rb[2] - $rb[0];
-                imagefilledrectangle($im, $tx, 300, $tx + $rw + 34, 354, $gold);
-                imagettftext($im, 30, 0, $tx + 17, 339, $navy, $font, $rstr);
-                imagettftext($im, 18, 0, $tx + $rw + 50, 337, $dim, $fontAr, $lblR);
+                imagefilledrectangle($im, $tx, 310, $tx + $rw + 34, 364, $gold);
+                imagettftext($im, 30, 0, $tx + 17, 349, $navy, $font, $rstr);
+                imagettftext($im, 18, 0, $tx + $rw + 50, 347, $dim, $fontAr, $lblR);
             }
 
             // ── أشرطة نقاط الفئات الكبرى ──
             $macro = class_exists('FifaMetrics') ? FifaMetrics::macro($pl, 'ar') : [];
-            $by = 412; $bw = 372; $bh = 30; $gap = 50;
+            $by = 400; $bw = 372; $bh = 30; $gap = 48;
             $trkX = $tx + 222;
             foreach (array_slice($macro, 0, 4) as $mc) {
                 $lab = $shape((string)$mc['label']); $sc = (int)$mc['score'];
@@ -405,7 +406,6 @@ try {
                 $by += $gap;
             }
 
-            $centerText($im, 18, 168, $gold, $font, 'FIFA TECHNICAL PROFILE · WORLD CUP 2026');
             $centerText($im, 22, $H - 22, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org'));
         } else {
             $centerBuiltin($im, 5, 300, $white, 'PLAYER PROFILE');

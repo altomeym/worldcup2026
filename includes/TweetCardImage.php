@@ -68,11 +68,11 @@ class TweetCardImage
             $rowH  = 262;   // +27 لسطر أسماء الفريقين بالإنجليزية تحت كل شريط
             $footH = 130;
             // 🆕 شريط إحصائيات لبطاقة نتيجة مباراة واحدة (إحصائيات حيّة + الإنذارات/الطرد)
-            $statsRows = [];
+            $statsRows = []; $cardsLine = null;
             if ($n === 1 && $mode === 'result') {
                 $m0 = $matches[0];
                 if (!empty($m0['stats']) && is_array($m0['stats'])) {
-                    $statsRows = array_slice(array_values($m0['stats']), 0, 4);
+                    $statsRows = array_slice(array_values($m0['stats']), 0, 6);   // حتى 6 محاور للرادار
                 }
                 if (isset($m0['cards']) && is_array($m0['cards'])) {
                     $yc = [0, 0]; $rc = [0, 0];
@@ -81,11 +81,10 @@ class TweetCardImage
                         $ix = ((int)($cc['team'] ?? 0) === 2) ? 1 : 0;
                         if (($cc['type'] ?? '') === 'red') $rc[$ix]++; else $yc[$ix]++;
                     }
-                    $statsRows[] = ['k' => 'البطاقات الصفراء', 'k_en' => 'Yellow cards', 'v' => [$yc[0], $yc[1]], 'unit' => ''];
-                    $statsRows[] = ['k' => 'البطاقات الحمراء', 'k_en' => 'Red cards', 'v' => [$rc[0], $rc[1]], 'unit' => ''];
+                    $cardsLine = ['yc' => $yc, 'rc' => $rc];   // البطاقات سطرٌ منفصل (محاور رديئة للرادار)
                 }
             }
-            $statsH = $statsRows ? (84 + count($statsRows) * 62) : 0;
+            $statsH = $statsRows ? 520 : 0;   // منطقة ثابتة للرادار + العنوان + الإيضاح
             $H = max(780, $headH + $n * $rowH + $statsH + $footH);
 
             $im = imagecreatetruecolor($W, $H);
@@ -148,33 +147,50 @@ class TweetCardImage
                 $t2n = function_exists('team_name') ? team_name((string)($m0['team2'] ?? '')) : (string)($m0['team2'] ?? '');
                 $sy  = $headH + $n * $rowH + 6;
                 self::centerText($im, $fontAr, 30, $W / 2, $sy + 22, $gold, ArabicText::shape('إحصائيات المباراة'));
-                $sy += 56;
-                // أسماء الفريقين فوق العمودين (الأول يمين، الثاني يسار)
-                $sh1 = ArabicText::shape($t1n); $bb = imagettfbbox(20, 0, $fontAr, $sh1);
-                imagettftext($im, 20, 0, (int)($W - 70 - ($bb[2] - $bb[0])), $sy, $light, $fontAr, $sh1);
-                imagettftext($im, 20, 0, 70, $sy, $light, $fontAr, ArabicText::shape($t2n));
-                $sy += 30;
-                $barBg = imagecolorallocatealpha($im, 255, 255, 255, 116);
-                foreach ($statsRows as $s) {
-                    $v1 = $s['v'][0] ?? 0; $v2 = $s['v'][1] ?? 0;
-                    $unit = (string)($s['unit'] ?? '');
-                    $v1s = (string)$v1 . $unit; $v2s = (string)$v2 . $unit;
-                    $bb = imagettfbbox(24, 0, $fontEn, $v1s);
-                    imagettftext($im, 24, 0, (int)($W - 70 - ($bb[2] - $bb[0])), $sy, $white, $fontEn, $v1s);
-                    imagettftext($im, 24, 0, 70, $sy, $white, $fontEn, $v2s);
-                    self::centerText($im, $fontAr, 18, $W / 2, $sy - 5, $light, ArabicText::shape((string)($s['k'] ?? '')));
-                    $ken = (string)($s['k_en'] ?? '');
-                    if ($ken !== '') self::centerText($im, $fontEn, 12, $W / 2, $sy + 11, $light, $ken);
-                    // شريط مقارنة: فريق1 (ذهبي، يمين) · فريق2 (سماوي، يسار)
-                    $sum = ((float)$v1 + (float)$v2) ?: 1; $p1 = (float)$v1 / $sum;
-                    $bx = 70; $barW = $W - 140; $byb = $sy + 21; $bhh = 9;
-                    self::roundedRect($im, $bx, $byb, $bx + $barW, $byb + $bhh, 4, $barBg);
-                    $w1 = (int)round($barW * $p1);
-                    $w2 = $barW - $w1;
-                    if ($w2 > 2) self::roundedRect($im, $bx, $byb, $bx + $w2, $byb + $bhh, 4, $light);
-                    if ($w1 > 2) self::roundedRect($im, $bx + $barW - $w1, $byb, $bx + $barW, $byb + $bhh, 4, $gold);
-                    $sy += 62;
+
+                // ── الشبكة العنكبوتيّة (رادار) — تيل لفريق1 · سماوي لفريق2 (بلا أصفر) ──
+                $teal  = imagecolorallocate($im, 38, 206, 168);
+                $sky   = imagecolorallocate($im, 96, 165, 250);
+                $tealF = imagecolorallocatealpha($im, 38, 206, 168, 96);
+                $skyF  = imagecolorallocatealpha($im, 96, 165, 250, 112);
+                $grid  = imagecolorallocatealpha($im, 255, 255, 255, 114);
+                $axes  = array_slice($statsRows, 0, 6); $nA = count($axes);
+                $cx = (int)($W / 2); $R = 150; $cyR = $sy + 92 + $R;
+                imagealphablending($im, true);
+                $ptF = function (int $i, float $r) use ($cx, $cyR, $nA) {
+                    $a = deg2rad(-90 + $i * 360 / $nA);
+                    return [(int)round($cx + $r * cos($a)), (int)round($cyR + $r * sin($a))];
+                };
+                foreach ([0.34, 0.67, 1.0] as $ring) {
+                    $pts = []; for ($i = 0; $i < $nA; $i++) { [$x, $y] = $ptF($i, $R * $ring); $pts[] = $x; $pts[] = $y; }
+                    self::poly($im, $pts, $grid, false);
                 }
+                for ($i = 0; $i < $nA; $i++) {
+                    [$x, $y] = $ptF($i, $R); imageline($im, $cx, $cyR, $x, $y, $grid);
+                    [$lx, $ly] = $ptF($i, $R + 30); $s = $axes[$i];
+                    $nm = ArabicText::shape((string)($s['k'] ?? '')); $bb = imagettfbbox(15, 0, $fontAr, $nm); $tw = $bb[2] - $bb[0];
+                    $ax = abs($lx - $cx) < 8 ? (int)($lx - $tw / 2) : ($lx > $cx ? $lx : (int)($lx - $tw));
+                    imagettftext($im, 15, 0, $ax, $ly, $white, $fontAr, $nm);
+                    $vs = ((string)($s['v'][0] ?? 0)) . ' : ' . ((string)($s['v'][1] ?? 0));
+                    $bb2 = imagettfbbox(14, 0, $fontEn, $vs); $vw = $bb2[2] - $bb2[0];
+                    $vx = abs($lx - $cx) < 8 ? (int)($lx - $vw / 2) : ($lx > $cx ? $lx : (int)($lx - $vw));
+                    imagettftext($im, 14, 0, $vx, $ly + 19, $gold, $fontEn, $vs);
+                }
+                $p1 = []; $p2 = [];
+                for ($i = 0; $i < $nA; $i++) {
+                    $v1 = (float)($axes[$i]['v'][0] ?? 0); $v2 = (float)($axes[$i]['v'][1] ?? 0); $mx = max($v1, $v2, 1);
+                    [$x1, $y1] = $ptF($i, $R * max(0.05, $v1 / $mx)); $p1[] = $x1; $p1[] = $y1;
+                    [$x2, $y2] = $ptF($i, $R * max(0.05, $v2 / $mx)); $p2[] = $x2; $p2[] = $y2;
+                }
+                self::poly($im, $p2, $skyF, true);  self::poly($im, $p2, $sky, false);
+                self::poly($im, $p1, $tealF, true); self::poly($im, $p1, $teal, false);
+
+                // وسيلة إيضاح (أيّ لون لأيّ فريق) + سطر البطاقات
+                $ly2 = $cyR + $R + 56;
+                imagefilledellipse($im, (int)($W / 2 - 150), $ly2 - 6, 16, 16, $teal);
+                imagettftext($im, 18, 0, (int)($W / 2 - 132), $ly2, $white, $fontAr, ArabicText::shape($t1n));
+                imagefilledellipse($im, (int)($W / 2 + 60), $ly2 - 6, 16, 16, $sky);
+                imagettftext($im, 18, 0, (int)($W / 2 + 78), $ly2, $white, $fontAr, ArabicText::shape($t2n));
             }
 
             // ── التذييل ──
@@ -307,6 +323,18 @@ class TweetCardImage
     }
 
     /** مستطيل بزوايا دائرية. */
+    /** مضلّع (مملوء أو حدّ) — متوافق مع PHP 8.0 (4 وسائط) و8.1+ (3 وسائط). */
+    private static function poly($im, array $pts, $color, bool $fill): void
+    {
+        if (count($pts) < 6) return;
+        if (PHP_VERSION_ID >= 80100) {
+            $fill ? imagefilledpolygon($im, $pts, $color) : imagepolygon($im, $pts, $color);
+        } else {
+            $nn = intdiv(count($pts), 2);
+            $fill ? imagefilledpolygon($im, $pts, $nn, $color) : imagepolygon($im, $pts, $nn, $color);
+        }
+    }
+
     private static function roundedRect($im, int $x1, int $y1, int $x2, int $y2, int $r, $color): void
     {
         imagefilledrectangle($im, $x1 + $r, $y1, $x2 - $r, $y2, $color);

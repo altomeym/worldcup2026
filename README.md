@@ -59,6 +59,21 @@ The platform now goes well beyond scores — **official data, rich media, and fu
 
 ---
 
+## 🔌 Free Public API
+
+A free, **CORS‑enabled JSON API** (no key) — matches, live scores, match details
+(goals, cards, official FIFA stats), top scorers, standings and per‑player physical data.
+Use it straight from a browser, mobile app or backend:
+
+```
+https://wcup2026.org/api/data.php?action=scorers
+https://wcup2026.org/api/data.php?action=match&id=12
+```
+
+📖 **Full reference & all endpoints → [API.md](API.md)** · plain‑text [football.txt](https://wcup2026.org/football.php) export too.
+
+---
+
 ## 📸 Screenshots
 
 > Live demo: **[wcup2026.org](https://wcup2026.org/index.php?lang=en)**

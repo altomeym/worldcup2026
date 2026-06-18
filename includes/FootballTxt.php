@@ -150,22 +150,33 @@ class FootballTxt
     private static function reportLines(array $m): string
     {
         $out = '';
+        // الأهداف: صيغة openfootball القياسيّة — سطر بين قوسين بلا تسمية «Goals:»
+        // مثال:  (Julián Quiñones 9', Raúl Jiménez 67'  —  -)
         $g1 = self::goalStr($m['goals1'] ?? []);
         $g2 = self::goalStr($m['goals2'] ?? []);
         if ($g1 !== '' || $g2 !== '') {
-            $out .= '      Goals: ' . ($g1 !== '' ? $g1 : '-') . '  —  ' . ($g2 !== '' ? $g2 : '-') . "\n";
+            $out .= '      (' . ($g1 !== '' ? $g1 : '-') . '  —  ' . ($g2 !== '' ? $g2 : '-') . ")\n";
         }
 
-        $home = []; $away = [];
+        // البطاقات: خصائص مخصّصة منفصلة (Yellow Cards / Red Cards) — لا «Cards» موحّد بـ(Y)/(R)
+        $yH = []; $yA = []; $rH = []; $rA = [];
         foreach (($m['cards'] ?? []) as $c) {
             $name = trim((string)($c['name'] ?? ''));
             if ($name === '') continue;
-            $mark = (($c['type'] ?? '') === 'red') ? '(R)' : '(Y)';
-            $s = $name . ' ' . (int)($c['minute'] ?? 0) . "' " . $mark;
-            if ((int)($c['team'] ?? 1) === 2) $away[] = $s; else $home[] = $s;
+            $min  = (int)($c['minute'] ?? 0);
+            $s    = $name . ($min > 0 ? " {$min}'" : '');
+            $away = ((int)($c['team'] ?? 1) === 2);
+            if (($c['type'] ?? '') === 'red') {
+                if ($away) { $rA[] = $s; } else { $rH[] = $s; }
+            } else {
+                if ($away) { $yA[] = $s; } else { $yH[] = $s; }
+            }
         }
-        if ($home || $away) {
-            $out .= '      Cards: ' . (implode(', ', $home) ?: '-') . '  —  ' . (implode(', ', $away) ?: '-') . "\n";
+        if ($yH || $yA) {
+            $out .= '      Yellow Cards: ' . (implode(', ', $yH) ?: '-') . '  —  ' . (implode(', ', $yA) ?: '-') . "\n";
+        }
+        if ($rH || $rA) {
+            $out .= '      Red Cards: ' . (implode(', ', $rH) ?: '-') . '  —  ' . (implode(', ', $rA) ?: '-') . "\n";
         }
         return $out;
     }

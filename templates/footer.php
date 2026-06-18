@@ -95,6 +95,10 @@ $lang       = current_lang();
           <a href="<?= e(url('football.php')) ?>"><?= e($lang === 'ar' ? 'بيانات مفتوحة · football.txt' : ($lang === 'fr' ? 'Données ouvertes · football.txt' : 'Open data · football.txt')) ?></a>
         </li>
         <li>
+          <span class="li-ico">🔌</span>
+          <a href="<?= e(url('api.php')) ?>"><?= e($lang === 'ar' ? 'واجهة المطوّرين (API)' : ($lang === 'fr' ? 'API développeur' : 'Developer API')) ?></a>
+        </li>
+        <li>
           <span class="li-ico">💻</span>
           <a href="https://github.com/salah23222/worldcup2026" target="_blank" rel="noopener"><?= e($lang === 'ar' ? 'الكود المصدري (GitHub)' : ($lang === 'fr' ? 'Code source (GitHub)' : 'Source code (GitHub)')) ?></a>
         </li>

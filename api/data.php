@@ -74,7 +74,14 @@ switch ($action) {
     case 'match':
         $m = DataService::matchByIndex((int)($_GET['id'] ?? -1));
         if ($m) {
-            $response['match'] = slim_match($m);
+            $d = slim_match($m);
+            // تفاصيل أغنى للمباراة الواحدة: شوط أوّل + هدّافون + بطاقات + إحصائيات (إن وُجدت)
+            $d['ht']     = $m['score']['ht'] ?? null;
+            $d['goals1'] = array_values($m['goals1'] ?? []);
+            $d['goals2'] = array_values($m['goals2'] ?? []);
+            if (!empty($m['cards']) && is_array($m['cards'])) $d['cards'] = array_values($m['cards']);
+            if (!empty($m['stats']) && is_array($m['stats'])) $d['stats'] = $m['stats'];
+            $response['match'] = $d;
         } else {
             $response['ok'] = false;
             $response['error'] = 'not_found';
@@ -128,6 +135,10 @@ switch ($action) {
             ];
         }
         $response['players'] = $out;
+        break;
+
+    case 'scorers':   // 🆕 الهدّافون (سباق الحذاء الذهبي) — JSON للمطوّرين
+        $response['scorers'] = class_exists('Scorers') ? Scorers::current() : [];
         break;
 
     default:

@@ -181,6 +181,9 @@ $log('[guard] hourly=' . $gStats['hourly_used'] . '/' . $gStats['hourly_cap']
    . ' spacing=' . $pace . 's');
 
 $sent = 0; $failed = 0;
+// تغريدة واحدة «غير-أولويّة» لكل تشغيل (إلا في وضع drain) → لا تخرج تغريدتان «في نفس
+// الوقت»، وتتباعد طبيعياً عبر تشغيلات الكرون (كل 15 دقيقة). النتائج مستثناة (أولويّة قصوى).
+$nonPrioDone = false;
 
 /**
  * Helper موحَّد للنشر مع احترام الفاصل الأدنى.
@@ -192,7 +195,7 @@ $sent = 0; $failed = 0;
  * هذا يُصلح حالة «أوّل تغريدة فشلت → $sent ظلّ 0 → لا نوم → الكل يفشل».
  */
 $blocked = false;   // عند رفعها = توقّف عن المحاولة لبقيّة الـ run
-$send = function (string $tag, string $label, callable $sender, bool $priority = false) use (&$sent, &$failed, &$blocked, $log, $dry, $pace) {
+$send = function (string $tag, string $label, callable $sender, bool $priority = false) use (&$sent, &$failed, &$blocked, &$nonPrioDone, $log, $dry, $pace) {
     if ($dry) {
         $log("[{$tag}] would tweet {$label}");
         return ['ok' => false, 'skipped' => 'dry'];
@@ -221,6 +224,7 @@ $send = function (string $tag, string $label, callable $sender, bool $priority =
     if (!empty($r['ok'])) {
         $log("[{$tag}] OK {$label} id=" . (string)$r['id']);
         $sent++;
+        if (!$priority) $nonPrioDone = true;   // استهلكنا «الحصّة» غير-الأولويّة لهذا التشغيل
     } else {
         $log("[{$tag}] FAIL {$label} " . (string)($r['error'] ?? '?'));
         $failed++;
@@ -247,14 +251,38 @@ if (!$skipMatches) {
     }
 }
 
-// ═══════════════════ A) الفترات اليوميّة (AR + EN) ═══════════════════
-if (!$skipDaily) {
+// ─────────────────────────────────────────────────────────────────────
+//  بقيّة الفئات «غير ذات الأولويّة» — تغريدة واحدة فقط لكل تشغيل (إلا drain).
+//  الترتيب حسب الأهميّة التي طلبها صاحب الموقع:
+//    1) قَبل المباراة (مهمّ جداً)  2) الفترة اليوميّة (ومنها «مباريات الـ24 ساعة» صباحاً)
+//    3) استطلاع «من سيفوز؟»        4) ترتيب المجموعات   5) لوحة الإحصائيّات (الأدنى)
+//  العَلَم $nonPrioDone يُرفَع بعد أوّل نجاح غير-أولويّ → تتباعد التغريدات 15 دقيقة
+//  ولا تظهر «تغريدتان في نفس الوقت». (drain يتجاوزه لإفراغ الطابور يدوياً.)
+// ─────────────────────────────────────────────────────────────────────
+
+// ═══════════════════ B) قَبل المباراة (الأهمّ بعد النتائج) ═══════════════════
+if (!$skipMatches && ($drain || !$nonPrioDone)) {
+    $pre = MatchTweets::pendingPre();
+    $log('[pre]  candidates=' . count($pre));
+    foreach ($pre as $job) {
+        if (!$drain && $nonPrioDone) break;
+        if ($sent >= $capPerRun) { $log('[pre] cap reached, stop.'); break; }
+        $m = $job['match']; $lg = $job['lang'];
+        $label = '#' . (int)$m['_index'] . ' ' . $m['team1'] . '-' . $m['team2'] . ' [' . $lg . ']';
+        if ($dry) { $log('[pre] would tweet ' . $label); $log('---'); $log(MatchTweets::buildPre($m, $lg)); $log('---'); continue; }
+        $send('pre', $label, fn() => MatchTweets::sendPre($m, $lg));
+    }
+}
+
+// ═══════════════════ A) الفترة اليوميّة (ومنها «مباريات الـ24 ساعة» صباحاً) ═══════════════════
+if (!$skipDaily && ($drain || !$nonPrioDone)) {
     $dailySlot = $slot !== '' ? $slot : (TweetComposer::currentSlot() ?? '');
     if ($dailySlot === '') {
         $log('[daily] no slot active at ' . date('H:i') . '.');
     } else {
         $langs = defined('X_LANGS') && is_array(X_LANGS) && X_LANGS ? X_LANGS : ['ar', 'en'];
         foreach ($langs as $lg) {
+            if (!$drain && $nonPrioDone) break;   // تغريدة واحدة لكل تشغيل
             $slotKey = $dailySlot . '_' . $lg;
             // dry-run لا يحجز الفترة — كان يستهلكها فتُحجَب تغريدة اليوم الفعلية بعده!
             if (!$force && !$dry && !XPublisher::claimSlot($slotKey)) {
@@ -300,8 +328,35 @@ if (!$skipDaily) {
     }
 }
 
-// ═══ تغريدة لوحة الإحصائيّات (إنجليزيّة، مرّة يوميّاً 21:00 بتوقيت دبي) ═══
-if (!$skipDaily && !$blocked && class_exists('TweetComposer')) {
+// ═══ استطلاع «من سيفوز؟» للمباريات الكبرى القادمة (تفاعل عالٍ) — واحد لكل run ═══
+if (!$skipMatches && ($drain || !$nonPrioDone)) {
+    $polls = MatchTweets::pendingPolls();
+    $log('[poll] candidates=' . count($polls));
+    foreach ($polls as $pm) {
+        if (!$drain && $nonPrioDone) break;
+        if ($sent >= $capPerRun) { $log('[poll] cap reached, stop.'); break; }
+        $label = '#' . (int)$pm['_index'] . ' ' . $pm['team1'] . '-' . $pm['team2'];
+        if ($dry) { $pp = MatchTweets::buildPoll($pm); $log('[poll] would tweet ' . $label); $log('---'); $log($pp['text']); $log('[options] ' . implode('  |  ', $pp['options'])); $log('---'); continue; }
+        $send('poll', $label, fn() => MatchTweets::sendPoll($pm));
+        break;   // استطلاع واحد لكل تشغيل (تفادي الإغراق)
+    }
+}
+
+// ═══════════════════ D) ترتيب المجموعات ═══════════════════
+if (!$skipMatches && ($drain || !$nonPrioDone)) {
+    $gq = GroupTweets::pending();
+    $log('[group] candidates=' . count($gq));
+    foreach ($gq as $job) {
+        if (!$drain && $nonPrioDone) break;
+        if ($sent >= $capPerRun) { $log('[group] cap reached, stop.'); break; }
+        $label = $job['group'] . ' · ' . $job['milestone'] . ' [' . $job['lang'] . ']';
+        if ($dry) { $log('[group] would tweet ' . $label); $log('---'); $log(GroupTweets::buildStandings($job['group'], $job['milestone'], $job['lang'])); $log('---'); continue; }
+        $send('group', $label, fn() => GroupTweets::sendStandings($job['group'], $job['milestone'], $job['lang']));
+    }
+}
+
+// ═══ لوحة الإحصائيّات (إنجليزيّة، مرّة يوميّاً 21:00 بتوقيت دبي) — أدنى أولويّة ═══
+if (!$skipDaily && ($drain || !$nonPrioDone) && class_exists('TweetComposer')) {
     $wantDash = ($slot === 'dashboard') || ((int)date('G') === 21);
     if ($wantDash && ($force || $dry || XPublisher::claimSlot('dashboard_en'))) {
         $text = TweetComposer::dashboardTweet('en');
@@ -311,46 +366,6 @@ if (!$skipDaily && !$blocked && class_exists('TweetComposer')) {
             $r = $send('dashboard', 'dashboard_en', fn() => XPublisher::tweet($text));
             if (empty($r['ok'])) { XPublisher::releaseSlot('dashboard_en'); }
         }
-    }
-}
-
-// ═══════════════════ B) قَبل المباراة ═══════════════════
-if (!$skipMatches) {
-    $pre = MatchTweets::pendingPre();
-    $log('[pre]  candidates=' . count($pre));
-    foreach ($pre as $job) {
-        if ($sent >= $capPerRun) { $log('[pre] cap reached, stop.'); break; }
-        $m = $job['match']; $lg = $job['lang'];
-        $label = '#' . (int)$m['_index'] . ' ' . $m['team1'] . '-' . $m['team2'] . ' [' . $lg . ']';
-        if ($dry) { $log('[pre] would tweet ' . $label); $log('---'); $log(MatchTweets::buildPre($m, $lg)); $log('---'); continue; }
-        $send('pre', $label, fn() => MatchTweets::sendPre($m, $lg));
-    }
-}
-
-// ═══ استطلاع «من سيفوز؟» للمباريات الكبرى القادمة (تفاعل عالٍ) — واحد لكل run ═══
-if (!$skipMatches) {
-    $polls = MatchTweets::pendingPolls();
-    $log('[poll] candidates=' . count($polls));
-    foreach ($polls as $pm) {
-        if ($sent >= $capPerRun) { $log('[poll] cap reached, stop.'); break; }
-        $label = '#' . (int)$pm['_index'] . ' ' . $pm['team1'] . '-' . $pm['team2'];
-        if ($dry) { $pp = MatchTweets::buildPoll($pm); $log('[poll] would tweet ' . $label); $log('---'); $log($pp['text']); $log('[options] ' . implode('  |  ', $pp['options'])); $log('---'); continue; }
-        $send('poll', $label, fn() => MatchTweets::sendPoll($pm));
-        break;   // استطلاع واحد لكل تشغيل (تفادي الإغراق)
-    }
-}
-
-// ═══════════════════ C) (نُقلت تغريدة النتيجة إلى الأعلى — أولويّة قصوى) ═══════════════════
-
-// ═══════════════════ D) ترتيب المجموعات ═══════════════════
-if (!$skipMatches) {
-    $gq = GroupTweets::pending();
-    $log('[group] candidates=' . count($gq));
-    foreach ($gq as $job) {
-        if ($sent >= $capPerRun) { $log('[group] cap reached, stop.'); break; }
-        $label = $job['group'] . ' · ' . $job['milestone'] . ' [' . $job['lang'] . ']';
-        if ($dry) { $log('[group] would tweet ' . $label); $log('---'); $log(GroupTweets::buildStandings($job['group'], $job['milestone'], $job['lang'])); $log('---'); continue; }
-        $send('group', $label, fn() => GroupTweets::sendStandings($job['group'], $job['milestone'], $job['lang']));
     }
 }
 

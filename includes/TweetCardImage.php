@@ -80,7 +80,7 @@ class TweetCardImage
                     if ($motm && (string)($motm['photo'] ?? '') === '') $motm = null;
                 }
             }
-            $statsH = $statsRows ? (520 + ($motm ? 168 : 0)) : 0;   // رادار + (شريط رجل المباراة)
+            $statsH = $statsRows ? (590 + ($motm ? 168 : 0)) : 0;   // رادار (أكبر) + (شريط رجل المباراة)
             $H = max(780, $headH + $n * $rowH + $statsH + $footH);
 
             $im = imagecreatetruecolor($W, $H);
@@ -144,18 +144,30 @@ class TweetCardImage
                 $sy  = $headH + $n * $rowH + 6;
                 self::centerText($im, $fontAr, 30, $W / 2, $sy + 22, $gold, ArabicText::shape('إحصائيات المباراة'));
 
-                // ── الشبكة العنكبوتيّة (رادار) — تيل لفريق1 · سماوي لفريق2 (بلا أصفر) ──
-                $teal  = imagecolorallocate($im, 38, 206, 168);
-                $sky   = imagecolorallocate($im, 96, 165, 250);
-                $tealF = imagecolorallocatealpha($im, 38, 206, 168, 96);
-                $skyF  = imagecolorallocatealpha($im, 96, 165, 250, 112);
-                $grid  = imagecolorallocatealpha($im, 255, 255, 255, 114);
+                // ── الشبكة العنكبوتيّة (رادار) — تركوازي لفريق1 · وردي لفريق2 (لونان متباينان واضحان) ──
+                $teal  = imagecolorallocate($im, 45, 212, 191);     // فريق1
+                $rose  = imagecolorallocate($im, 251, 113, 133);    // فريق2
+                $tealF = imagecolorallocatealpha($im, 45, 212, 191, 94);
+                $roseF = imagecolorallocatealpha($im, 251, 113, 133, 98);
+                $grid  = imagecolorallocatealpha($im, 255, 255, 255, 100);
                 $axes  = array_slice($statsRows, 0, 6); $nA = count($axes);
-                $cx = (int)($W / 2); $R = 150; $cyR = $sy + 92 + $R;
+                $cx = (int)($W / 2); $R = 172; $cyR = $sy + 100 + $R;   // أكبر قليلاً
                 imagealphablending($im, true);
                 $ptF = function (int $i, float $r) use ($cx, $cyR, $nA) {
                     $a = deg2rad(-90 + $i * 360 / $nA);
                     return [(int)round($cx + $r * cos($a)), (int)round($cyR + $r * sin($a))];
+                };
+                // قيمة ملوّنة بترتيب RTL: فريق2 (يسار/وردي) : فريق1 (يمين/تركوازي) — كل رقم بلون
+                // فريقه ومطابق لجهة العلم والنتيجة، فيعرف القارئ فوراً أيّ رقم لمن.
+                $valW = function (string $a, string $b) use ($fontEn) {
+                    $bb = imagettfbbox(19, 0, $fontEn, $b . ' : ' . $a); return $bb[2] - $bb[0];
+                };
+                $drawVal = function (int $x, int $y, string $a, string $b) use ($im, $fontEn, $teal, $rose, $white) {
+                    imagettftext($im, 19, 0, $x, $y, $rose, $fontEn, $b);
+                    $bb = imagettfbbox(19, 0, $fontEn, $b);      $x += $bb[2] - $bb[0];
+                    imagettftext($im, 19, 0, $x, $y, $white, $fontEn, ' : ');
+                    $bb = imagettfbbox(19, 0, $fontEn, ' : ');   $x += $bb[2] - $bb[0];
+                    imagettftext($im, 19, 0, $x, $y, $teal, $fontEn, $a);
                 };
                 foreach ([0.34, 0.67, 1.0] as $ring) {
                     $pts = []; for ($i = 0; $i < $nA; $i++) { [$x, $y] = $ptF($i, $R * $ring); $pts[] = $x; $pts[] = $y; }
@@ -163,14 +175,14 @@ class TweetCardImage
                 }
                 for ($i = 0; $i < $nA; $i++) {
                     [$x, $y] = $ptF($i, $R); imageline($im, $cx, $cyR, $x, $y, $grid);
-                    [$lx, $ly] = $ptF($i, $R + 30); $s = $axes[$i];
-                    $nm = ArabicText::shape((string)($s['k'] ?? '')); $bb = imagettfbbox(15, 0, $fontAr, $nm); $tw = $bb[2] - $bb[0];
+                    [$lx, $ly] = $ptF($i, $R + 36); $s = $axes[$i];
+                    $nm = ArabicText::shape((string)($s['k'] ?? '')); $bb = imagettfbbox(17, 0, $fontAr, $nm); $tw = $bb[2] - $bb[0];
                     $ax = abs($lx - $cx) < 8 ? (int)($lx - $tw / 2) : ($lx > $cx ? $lx : (int)($lx - $tw));
-                    imagettftext($im, 15, 0, $ax, $ly, $white, $fontAr, $nm);
-                    $vs = ((string)($s['v'][0] ?? 0)) . ' : ' . ((string)($s['v'][1] ?? 0));
-                    $bb2 = imagettfbbox(14, 0, $fontEn, $vs); $vw = $bb2[2] - $bb2[0];
+                    imagettftext($im, 17, 0, $ax, $ly, $white, $fontAr, $nm);
+                    $a0 = (string)($s['v'][0] ?? 0); $b0 = (string)($s['v'][1] ?? 0);
+                    $vw = $valW($a0, $b0);
                     $vx = abs($lx - $cx) < 8 ? (int)($lx - $vw / 2) : ($lx > $cx ? $lx : (int)($lx - $vw));
-                    imagettftext($im, 14, 0, $vx, $ly + 19, $gold, $fontEn, $vs);
+                    $drawVal($vx, $ly + 25, $a0, $b0);
                 }
                 $p1 = []; $p2 = [];
                 for ($i = 0; $i < $nA; $i++) {
@@ -178,15 +190,16 @@ class TweetCardImage
                     [$x1, $y1] = $ptF($i, $R * max(0.05, $v1 / $mx)); $p1[] = $x1; $p1[] = $y1;
                     [$x2, $y2] = $ptF($i, $R * max(0.05, $v2 / $mx)); $p2[] = $x2; $p2[] = $y2;
                 }
-                self::poly($im, $p2, $skyF, true);  self::poly($im, $p2, $sky, false);
-                self::poly($im, $p1, $tealF, true); self::poly($im, $p1, $teal, false);
+                self::poly($im, $p2, $roseF, true);  self::poly($im, $p2, $rose, false);
+                self::poly($im, $p1, $tealF, true);  self::poly($im, $p1, $teal, false);
 
-                // وسيلة إيضاح (أيّ لون لأيّ فريق) + سطر البطاقات
-                $ly2 = $cyR + $R + 56;
-                imagefilledellipse($im, (int)($W / 2 - 150), $ly2 - 6, 16, 16, $teal);
-                imagettftext($im, 18, 0, (int)($W / 2 - 132), $ly2, $white, $fontAr, ArabicText::shape($t1n));
-                imagefilledellipse($im, (int)($W / 2 + 60), $ly2 - 6, 16, 16, $sky);
-                imagettftext($im, 18, 0, (int)($W / 2 + 78), $ly2, $white, $fontAr, ArabicText::shape($t2n));
+                // وسيلة إيضاح (أيّ لون لأيّ فريق) — أسفل المحور السفلي بمسافة كافية (لا تصادم)
+                // ترتيب RTL: فريق2 (يسار/وردي) · فريق1 (يمين/تركوازي) مطابق للأعلام والنتيجة.
+                $ly2 = $cyR + $R + 98;
+                imagefilledellipse($im, (int)($W / 2 - 160), $ly2 - 6, 18, 18, $rose);
+                imagettftext($im, 19, 0, (int)($W / 2 - 140), $ly2, $white, $fontAr, ArabicText::shape($t2n));
+                imagefilledellipse($im, (int)($W / 2 + 58), $ly2 - 6, 18, 18, $teal);
+                imagettftext($im, 19, 0, (int)($W / 2 + 80), $ly2, $white, $fontAr, ArabicText::shape($t1n));
 
                 // ── شريط رجل المباراة (صورته + اسمه + تقييمه) ──
                 if ($motm) {

@@ -91,15 +91,15 @@ class MatchTweets
     /** ينشر تغريدة قَبليّة (يبني → يرسل → يسجّل). يعيد مصفوفة XPublisher. */
     public static function sendPre(array $m, string $lang, bool $priority = false): array
     {
-        // النصّ بلا رابط (الرابط يُنشَر في ردّ → يرفع وصول التغريدة الرئيسة)
-        $text = self::buildPre($m, $lang, false);
+        // تغريدة واحدة: الرابط داخلها (معها بطاقة صورة → الوصول لا يتأثّر). لا ردّ منفصل
+        // (الردّ كان يُحتسب في سقف الـ12 ويظهر «تغريدتين في نفس الوقت» ويضاعف التكلفة).
+        $text = self::buildPre($m, $lang, true);
         $img = class_exists('TweetCardImage')
              ? TweetCardImage::generate([$m], ['title' => 'مباراة قادمة', 'subtitle' => 'كأس العالم 2026'])
              : null;
         $r = XPublisher::tweet($text, $img, $priority);
         if ($r['ok']) {
             self::markSent((int)$m['_index'], 'pre', $lang, (string)$r['id']);
-            self::replyWithLink((string)$r['id'], $m, 'ar', '🔗 التفاصيل والتوقّعات · Details & predictions 👇');
         }
         return $r + ['text' => $text];
     }
@@ -107,7 +107,8 @@ class MatchTweets
     /** ينشر تغريدة بعديّة (يولّد التقرير لو لزم → يبني → يرسل → يسجّل). */
     public static function sendPost(array $m, string $lang): array
     {
-        $text = self::buildPost($m, $lang, false);   // بلا رابط — يُنشَر في ردّ
+        // تغريدة واحدة: الرابط داخلها (معها بطاقة النتيجة) — لا ردّ منفصل (يوفّر سقف + تكلفة)
+        $text = self::buildPost($m, $lang, true);
         $img = class_exists('TweetCardImage')
              ? TweetCardImage::generate([$m], ['title' => 'نتيجة المباراة', 'subtitle' => 'كأس العالم 2026', 'mode' => 'result'])
              : null;
@@ -115,17 +116,8 @@ class MatchTweets
         $r = XPublisher::tweet($text, $img, true);
         if ($r['ok']) {
             self::markSent((int)$m['_index'], 'post', $lang, (string)$r['id']);
-            self::replyWithLink((string)$r['id'], $m, 'ar', '🔗 التفاصيل + رجل المباراة · Full stats & POTM 👇');
         }
         return $r + ['text' => $text];
-    }
-
-    /** ينشر الرابط كردّ تحت التغريدة (يبقي الرابط متاحاً دون خفض وصول التغريدة الرئيسة). */
-    private static function replyWithLink(string $parentId, array $m, string $lang, string $label): void
-    {
-        if ($parentId === '' || !class_exists('XPublisher')) return;
-        $url = self::link('match.php?id=' . (int)$m['_index'] . '&lang=' . ($lang === 'en' ? 'en' : 'ar'));
-        XPublisher::tweet($label . "\n" . $url, null, false, $parentId);   // الردّ يتجاوز الحارس
     }
 
     // ───────────────────── استطلاع «من سيفوز؟» (للمباريات الكبرى) ─────────────────────
@@ -184,7 +176,6 @@ class MatchTweets
             ['options' => $p['options'], 'minutes' => $p['minutes']]);
         if (!empty($r['ok'])) {
             self::markSent((int)$m['_index'], 'poll', 'ar', (string)$r['id']);
-            self::replyWithLink((string)$r['id'], $m, 'ar', '🔗 التشكيلة والتفاصيل · Lineups & details 👇');
         }
         return $r + ['text' => $p['text']];
     }

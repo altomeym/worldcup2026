@@ -286,33 +286,18 @@ if (!$skipMatches) {
 // ─────────────────────────────────────────────────────────────────────
 //  بقيّة الفئات «غير ذات الأولويّة» — تغريدة واحدة فقط لكل تشغيل (إلا drain).
 //  الترتيب حسب الأهميّة التي طلبها صاحب الموقع:
-//    1) قَبل المباراة (مهمّ جداً)  2) الفترة اليوميّة (ومنها «مباريات الـ24 ساعة» صباحاً)
-//    3) استطلاع «من سيفوز؟»        4) ترتيب المجموعات   5) لوحة الإحصائيّات (الأدنى)
+//    1) الفترة اليوميّة (نتائج الليل 9ص · مباريات الـ24 ساعة 6م · ...) — نافذتها ساعة فقط
+//    2) قَبل المباراة (مهمّ جداً)   3) المتأهّلون لدور الـ32   4) استطلاع «من سيفوز؟»
+//    5) ترتيب المجموعات            6) لوحة الإحصائيّات (الأدنى)
 //  العَلَم $nonPrioDone يُرفَع بعد أوّل نجاح غير-أولويّ → تتباعد التغريدات 15 دقيقة
 //  ولا تظهر «تغريدتان في نفس الوقت». (drain يتجاوزه لإفراغ الطابور يدوياً.)
 // ─────────────────────────────────────────────────────────────────────
 
-// ═══════════════════ B) قَبل المباراة (الأهمّ بعد النتائج) ═══════════════════
-if (!$skipMatches && ($drain || !$nonPrioDone)) {
-    $pre = MatchTweets::pendingPre();
-    $log('[pre]  candidates=' . count($pre));
-    foreach ($pre as $job) {
-        if (!$drain && $nonPrioDone) break;
-        if ($sent >= $capPerRun) { $log('[pre] cap reached, stop.'); break; }
-        $m = $job['match']; $lg = $job['lang'];
-        $label = '#' . (int)$m['_index'] . ' ' . $m['team1'] . '-' . $m['team2'] . ' [' . $lg . ']';
-        if ($dry) { $log('[pre] would tweet ' . $label); $log('---'); $log(MatchTweets::buildPre($m, $lg)); $log('---'); continue; }
-        $send('pre', $label, fn() => MatchTweets::sendPre($m, $lg));
-    }
-}
-
-// ═══ بطاقة «المتأهّلون إلى دور الـ32» — تلقائياً عند تأهّل منتخب جديد (تغريدة واحدة لكل تشغيل) ═══
-if (!$skipMatches && ($drain || !$nonPrioDone)) {
-    $r = $r32Tweet(false, false);
-    if (!empty($r['ok'])) { $log('[r32] OK auto id=' . (string)$r['id'] . ' (cnt=' . (string)($r['count'] ?? '?') . ')'); $sent++; $nonPrioDone = true; }
-}
-
-// ═══════════════════ A) الفترة اليوميّة (ومنها «مباريات الـ24 ساعة» صباحاً) ═══════════════════
+// ═══════════════════ A) الفترة اليوميّة — أولويّة عُليا بعد النتائج (تُنشَر أوّلاً في ساعتها) ═══════════════════
+//   recap 9ص (نتائج الليل) · news 14 · morning 18 (مباريات الـ24 ساعة) · evening 23.
+//   محميّة: نافذتها ساعة واحدة فقط → تُعالَج قبل قَبل-المباراة/الاستطلاع كي لا تُزاحَم، وتتجاوز
+//   السقف اليومي (قليلة + محجوزة مرّة/يوم بـclaimSlot فلا تُغرِق) كي لا تُحجَب أبداً — وتبقى
+//   «تغريدة واحدة لكل تشغيل» (نرفع $nonPrioDone يدوياً بعد نجاحها فلا تخرج معها أخرى).
 if (!$skipDaily && ($drain || !$nonPrioDone)) {
     $dailySlot = $slot !== '' ? $slot : (TweetComposer::currentSlot() ?? '');
     if ($dailySlot === '') {
@@ -358,12 +343,32 @@ if (!$skipDaily && ($drain || !$nonPrioDone)) {
             if ($img) $log('[daily] card image: ' . basename($img));
 
             if ($dry) { $log('[daily] dry-run:'); $log('---'); $log($text); $log('---'); continue; }
-            $r = $send('daily', $slotKey, fn() => XPublisher::tweet($text, $img));
-            // فشل النشر → حرّر الفترة حتى يعيد الكرون التالي المحاولة
-            // (كانت تُعتبر «منشورة» رغم الفشل فتضيع تغريدة اليوم بصمت).
-            if (empty($r['ok'])) { XPublisher::releaseSlot($slotKey); }
+            // priority=true → تتجاوز السقف اليومي (مهمّة وقليلة)؛ ثمّ نرفع العَلَم يدوياً (واحدة/تشغيل)
+            $r = $send('daily', $slotKey, fn() => XPublisher::tweet($text, $img, true), true);
+            if (!empty($r['ok'])) { $nonPrioDone = true; }
+            else { XPublisher::releaseSlot($slotKey); }   // فشل → حرّر الفترة ليعيد الكرون المحاولة
         }
     }
+}
+
+// ═══════════════════ B) قَبل المباراة (مهمّ جداً) ═══════════════════
+if (!$skipMatches && ($drain || !$nonPrioDone)) {
+    $pre = MatchTweets::pendingPre();
+    $log('[pre]  candidates=' . count($pre));
+    foreach ($pre as $job) {
+        if (!$drain && $nonPrioDone) break;
+        if ($sent >= $capPerRun) { $log('[pre] cap reached, stop.'); break; }
+        $m = $job['match']; $lg = $job['lang'];
+        $label = '#' . (int)$m['_index'] . ' ' . $m['team1'] . '-' . $m['team2'] . ' [' . $lg . ']';
+        if ($dry) { $log('[pre] would tweet ' . $label); $log('---'); $log(MatchTweets::buildPre($m, $lg)); $log('---'); continue; }
+        $send('pre', $label, fn() => MatchTweets::sendPre($m, $lg));
+    }
+}
+
+// ═══ بطاقة «المتأهّلون إلى دور الـ32» — تلقائياً عند تأهّل منتخب جديد (تغريدة واحدة لكل تشغيل) ═══
+if (!$skipMatches && ($drain || !$nonPrioDone)) {
+    $r = $r32Tweet(false, false);
+    if (!empty($r['ok'])) { $log('[r32] OK auto id=' . (string)$r['id'] . ' (cnt=' . (string)($r['count'] ?? '?') . ')'); $sent++; $nonPrioDone = true; }
 }
 
 // ═══ استطلاع «من سيفوز؟» للمباريات الكبرى القادمة (تفاعل عالٍ) — واحد لكل run ═══

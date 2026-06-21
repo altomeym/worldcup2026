@@ -25,6 +25,7 @@ class TweetComposer
         'countdown' => 16,   // عدّ تنازلي عصراً قبل المباريات
         'morning'   => 18,   // 6م: معاينة مباريات الـ24 ساعة القادمة (تبدأ ~8م حتى فجر الغد)
         'trivia'    => 18,   // سؤال اليوم في وقت ذروة التفاعل
+        'leaderboard' => 21, // 9م: أفضل المتوقّعين (يشجّع على المنافسة والتسجيل)
         'stats'     => 22,   // ملخّص رقمي قبل المباريات الليلية
         'evening'   => 23,   // نتائج آخر مباريات المساء
     ];
@@ -46,7 +47,7 @@ class TweetComposer
         // ⭐ أثناء البطولة: 4 فترات أساسيّة فقط (المستخدم يكمل بتغريدات يدويّة)
         //    recap = نتائج الليل · news = تذكير الأخبار
         //    morning = مباريات اليوم · evening = نتائج المساء
-        foreach (['recap', 'news', 'morning', 'evening'] as $s) {
+        foreach (['recap', 'news', 'morning', 'leaderboard', 'evening'] as $s) {
             if ($h === self::SLOT_HOURS[$s]) return $s;
         }
         return null;
@@ -64,6 +65,7 @@ class TweetComposer
             case 'stats':     return self::stats($ar, $lang);
             case 'trivia':    return self::trivia($ar, $lang);
             case 'recap':     return self::recap($ar);
+            case 'leaderboard': return self::leaderboardTop($ar);
             case 'news':      return self::newsCTA($ar, $lang);
             case 'manual':
             default:          return self::manual($ar);
@@ -269,6 +271,30 @@ class TweetComposer
         // 🆕 وسوم فرق أبرز نتيجة (عربي + إنجليزي) — للوصول الدولي
         return self::sign($head . "\n" . implode("\n", $lines) . "\n" . $foot, self::link('leaderboard.php'), 'recap',
                           self::teamTags($results, 1));
+    }
+
+    /** أفضل المتوقّعين (9م) — يشجّع المنافسة والتسجيل. أعلى 5 + رابط الصدارة. */
+    private static function leaderboardTop(bool $ar): string
+    {
+        $link = self::link('leaderboard.php');
+        $tags = $ar ? '#توقعات #كأس_العالم_2026 #WorldCup2026' : '#Predictions #WorldCup2026';
+        $rows = class_exists('Predictions') ? Predictions::leaderboard(5) : [];
+        if (!$rows) {
+            $msg = $ar
+                ? "🏆 مسابقة التوقّعات — كأس العالم 2026\nسجّل، توقّع نتائج المباريات، ونافس على الصدارة!"
+                : "🏆 World Cup 2026 Predictions\nSign up, predict the scores, and climb the leaderboard!";
+            return self::sign($msg, $link, null, $tags);
+        }
+        $medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+        $lines  = [];
+        foreach (array_slice($rows, 0, 5) as $i => $r) {
+            $nick = trim((string)($r['nickname'] ?? ''));
+            if ($nick === '') continue;
+            $lines[] = ($medals[$i] ?? (($i + 1) . '.')) . ' ' . $nick . ' · ' . (int)($r['points'] ?? 0) . ($ar ? ' نقطة' : ' pts');
+        }
+        $head = $ar ? '🏆 أفضل المتوقّعين اليوم — كأس العالم 2026' : '🏆 Top predictors today — World Cup 2026';
+        $foot = $ar ? 'نافس على الصدارة وسجّل الآن 👇' : 'Climb the leaderboard — join now 👇';
+        return self::sign($head . "\n" . implode("\n", $lines) . "\n" . $foot, $link, null, $tags);
     }
 
     /** trivia — سؤال اليوم + رابط trivia.php (يستخدم الكاش اليومي للذكاء). */

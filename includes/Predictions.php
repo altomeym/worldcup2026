@@ -543,6 +543,55 @@ class Predictions
     }
 
     /**
+     * userPredictions() — توقّعات لاعب واحد (بالاسم المستعار) مقابل النتائج الفعليّة.
+     * تُستخدم في صفحة «توقّعات اللاعب» عند الضغط على اسمه في الصدارة.
+     * كل صفّ: idx, m (المباراة), p1, p2 (توقّعه), a1, a2 (الفعليّة أو null), pts (أو null للقادمة).
+     * @return array{nickname:string,points:int,exact:int,correct:int,played:int,rows:array}|null
+     */
+    public static function userPredictions(string $nickname): ?array
+    {
+        $nickname = trim($nickname);
+        if ($nickname === '' || !self::useDb()) return null;
+        $pdo = Database::pdo();
+        if ($pdo === null) return null;
+
+        try {
+            $st = $pdo->prepare('SELECT id, display_name FROM users WHERE display_name = ? LIMIT 1');
+            $st->execute([$nickname]);
+            $u = $st->fetch();
+        } catch (Throwable $e) { return null; }
+        if (!$u) return null;
+
+        $uid     = (int)$u['id'];
+        $results = self::finishedResults();
+        try {
+            $ps = $pdo->prepare('SELECT match_index, pred1, pred2 FROM predictions WHERE user_id = ?');
+            $ps->execute([$uid]);
+            $preds = $ps->fetchAll();
+        } catch (Throwable $e) { $preds = []; }
+
+        $rows = []; $points = $exact = $correct = $played = 0;
+        foreach ($preds as $p) {
+            $idx = (int)$p['match_index'];
+            $m   = DataService::matchByIndex($idx);
+            if ($m === null) continue;
+            $p1 = (int)$p['pred1']; $p2 = (int)$p['pred2'];
+            $has = isset($results[$idx]);
+            $a1 = $has ? (int)$results[$idx][0] : null;
+            $a2 = $has ? (int)$results[$idx][1] : null;
+            $pts = $has ? self::scoreOne($p1, $p2, (int)$a1, (int)$a2) : null;
+            if ($has) { $played++; $points += (int)$pts; if ($pts === 3) $exact++; if ($pts > 0) $correct++; }
+            $rows[] = ['idx' => $idx, 'm' => $m, 'p1' => $p1, 'p2' => $p2,
+                       'a1' => $a1, 'a2' => $a2, 'pts' => $pts,
+                       'ts' => DataService::matchTimestamp($m) ?? 0];
+        }
+        usort($rows, fn($x, $y) => ($y['ts']) <=> ($x['ts']));   // الأحدث أوّلاً
+
+        return ['nickname' => (string)$u['display_name'], 'points' => $points,
+                'exact' => $exact, 'correct' => $correct, 'played' => $played, 'rows' => $rows];
+    }
+
+    /**
      * recordTrivia() — يسجّل إجابة اليوم (مرة واحدة) ويمنح 3 نقاط إن صحّت
      * (شرط أن تكون البطولة قد انطلقت — قبلها يُسجَّل الجواب بلا نقاط لتحقيق المساواة).
      * يُرجّع ['awarded'=>bool,'points'=>int,'total'=>int,'already'=>bool]

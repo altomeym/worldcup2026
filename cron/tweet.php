@@ -400,7 +400,7 @@ if (!$skipMatches && ($drain || !$nonPrioDone)) {
 
 // ═══ لوحة الإحصائيّات (إنجليزيّة، مرّة يوميّاً 21:00 بتوقيت دبي) — أدنى أولويّة ═══
 if (!$skipDaily && ($drain || !$nonPrioDone) && class_exists('TweetComposer')) {
-    $wantDash = ($slot === 'dashboard') || ((int)date('G') === 21);
+    $wantDash = ($slot === 'dashboard') || ((int)date('G') === 12);   // الظهر (9م صارت لتغريدة الصدارة)
     if ($wantDash && ($force || $dry || XPublisher::claimSlot('dashboard_en'))) {
         $text = TweetComposer::dashboardTweet('en');
         $log('[dashboard] chars=' . mb_strlen($text, 'UTF-8'));

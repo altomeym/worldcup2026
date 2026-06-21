@@ -50,7 +50,7 @@ tpl('header');
         $rank = $i + 1; ?>
         <tr class="<?= $isMe ? 'lb-me' : '' ?> <?= $isAi ? 'lb-ai' : '' ?> <?= $rank <= 3 ? 'lb-top lb-top-' . $rank : '' ?>">
           <td class="lb-rank"><?= $rank <= 3 ? ['','🥇','🥈','🥉'][$rank] : $rank ?></td>
-          <td class="lb-name"><?= e($r['nickname']) ?></td>
+          <td class="lb-name"><?php if ($isAi): ?><?= e($r['nickname']) ?><?php else: ?><a class="lb-link" href="<?= e(url('predictor.php', ['u' => $r['nickname']])) ?>"><?= e($r['nickname']) ?></a><?php endif; ?></td>
           <td class="lb-pts"><strong><?= (int)$r['points'] ?></strong></td>
           <td><?= (int)$r['exact'] ?></td>
           <td><?= (int)$r['correct'] ?></td>
@@ -60,6 +60,12 @@ tpl('header');
     </tbody>
   </table>
 </div>
+<p class="muted" style="text-align:center;font-size:.85rem;margin:10px 0 0">
+  <?= e(current_lang()==='ar' ? 'اضغط على اسم أيّ لاعب لرؤية توقّعاته' : (current_lang()==='fr' ? "Cliquez sur un nom pour voir ses pronostics" : "Tap any player's name to see their predictions")) ?>
+</p>
+<style>.lb-link{color:inherit;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35)}.lb-link:hover{border-bottom-style:solid}</style>
+
+<?php render_share(canonical_url(), t('leaderboard') . ' — ' . SITE_NAME_AR); ?>
 
 <?php if ($players === 0): ?>
   <p style="text-align:center;margin-top:16px">

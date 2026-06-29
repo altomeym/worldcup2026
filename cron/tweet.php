@@ -385,18 +385,10 @@ if (!$skipMatches && ($drain || !$nonPrioDone)) {
     }
 }
 
-// ═══════════════════ D) ترتيب المجموعات ═══════════════════
-if (!$skipMatches && ($drain || !$nonPrioDone)) {
-    $gq = GroupTweets::pending();
-    $log('[group] candidates=' . count($gq));
-    foreach ($gq as $job) {
-        if (!$drain && $nonPrioDone) break;
-        if ($sent >= $capPerRun) { $log('[group] cap reached, stop.'); break; }
-        $label = $job['group'] . ' · ' . $job['milestone'] . ' [' . $job['lang'] . ']';
-        if ($dry) { $log('[group] would tweet ' . $label); $log('---'); $log(GroupTweets::buildStandings($job['group'], $job['milestone'], $job['lang'])); $log('---'); continue; }
-        $send('group', $label, fn() => GroupTweets::sendStandings($job['group'], $job['milestone'], $job['lang']));
-    }
-}
+// ═══ D) ترتيب المجموعات — معطّل (انتهى دور المجموعات بطلب صاحب الموقع) ═══
+//    لا نريد تغريدات جداول المجموعات بعد انتهاء الدور. «المباريات القادمة» للأدوار
+//    الإقصائيّة تغطّيها فترة morning (معاينة الـ24 ساعة) + قسم القادم أدناه.
+$log('[group] disabled — group stage over; upcoming knockout fixtures cover this instead.');
 
 // ═══ لوحة الإحصائيّات (إنجليزيّة، مرّة يوميّاً 21:00 بتوقيت دبي) — أدنى أولويّة ═══
 if (!$skipDaily && ($drain || !$nonPrioDone) && class_exists('TweetComposer')) {

@@ -156,7 +156,9 @@ console.log(data.scorers);
   <span class="k">"team1_ar"</span>: <span class="s">"البرازيل"</span>, <span class="k">"team2_ar"</span>: <span class="s">"المغرب"</span>,
   <span class="k">"flag1"</span>: <span class="s">"https://flagcdn.com/w80/br.png"</span>,
   <span class="k">"status"</span>: <span class="s">"finished"</span>,   <span class="c">// upcoming | live | finished</span>
-  <span class="k">"score"</span>: [<span class="n">1</span>, <span class="n">1</span>],       <span class="c">// [team1, team2] or null</span>
+  <span class="k">"score"</span>: [<span class="n">1</span>, <span class="n">1</span>],       <span class="c">// [team1, team2] full-time (incl. extra time), or null</span>
+  <span class="k">"penalties"</span>: [<span class="n">4</span>, <span class="n">2</span>],   <span class="c">// shoot-out [team1, team2] — only if decided on penalties, else null</span>
+  <span class="k">"winner"</span>: <span class="s">"team1"</span>,   <span class="c">// team1 | team2 | draw | null (not finished)</span>
   <span class="k">"live_minute"</span>: <span class="n">null</span>,
   <span class="k">"date"</span>: <span class="s">"2026-06-14"</span>, <span class="k">"time"</span>: <span class="s">"20:00"</span>, <span class="k">"datetime"</span>: <span class="n">1718390000</span>,
   <span class="k">"ground"</span>: <span class="s">"Dallas (Arlington)"</span>

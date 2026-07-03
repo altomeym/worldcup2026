@@ -23,6 +23,20 @@ $action = $_GET['action'] ?? 'today';
 /** يبسّط مصفوفة مباراة لإرسالها كـ JSON خفيف */
 function slim_match(array $m): array {
     $ts = DataService::matchTimestamp($m);
+    $ft = $m['score']['ft'] ?? null;
+
+    // ركلات الترجيح (للإقصائيّات المحسومة بالترجيح فقط) + الفائز النهائي
+    $pens = (isset($m['score']['p']) && is_array($m['score']['p']) && isset($m['score']['p'][0], $m['score']['p'][1]))
+          ? [(int)$m['score']['p'][0], (int)$m['score']['p'][1]] : null;
+    $winner = null;
+    if (is_array($ft) && isset($ft[0], $ft[1]) && is_numeric($ft[0]) && is_numeric($ft[1])) {
+        $a = (int)$ft[0]; $b = (int)$ft[1];
+        if ($a > $b)      $winner = 'team1';
+        elseif ($b > $a)  $winner = 'team2';
+        elseif ($pens)    $winner = ($pens[0] >= $pens[1]) ? 'team1' : 'team2';   // حُسمت بالترجيح
+        else              $winner = 'draw';
+    }
+
     return [
         'id'       => $m['_index'] ?? null,
         'round'    => $m['round'] ?? '',
@@ -34,7 +48,9 @@ function slim_match(array $m): array {
         'flag1'    => flag_url(trim($m['team1'] ?? ''), 'w80'),
         'flag2'    => flag_url(trim($m['team2'] ?? ''), 'w80'),
         'status'   => $m['_status'] ?? DataService::matchStatus($m),
-        'score'    => $m['score']['ft'] ?? null,
+        'score'    => $ft,
+        'penalties' => $pens,     // [p1,p2] لو حُسمت المباراة بركلات الترجيح، وإلّا null
+        'winner'    => $winner,   // team1 | team2 | draw | null (لم تنتهِ بعد)
         'live_minute' => $m['_live_minute'] ?? null,
         'date'     => $ts ? date('Y-m-d', $ts) : null,
         'time'     => fmt_time($ts),

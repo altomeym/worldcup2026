@@ -76,7 +76,9 @@ console.log(data.scorers); // [{ name, team, goals }, ...]
   "flag1": "https://flagcdn.com/w80/br.png",
   "flag2": "https://flagcdn.com/w80/ma.png",
   "status": "finished",        // upcoming | live | finished
-  "score": [1, 1],             // [team1, team2] or null
+  "score": [1, 1],             // [team1, team2] full-time (incl. extra time), or null
+  "penalties": [4, 2],         // shoot-out [team1, team2] — only if decided on penalties, else null
+  "winner": "team1",           // team1 | team2 | draw | null (not finished)
   "live_minute": null,
   "date": "2026-06-14", "time": "20:00", "datetime": 1718390000,
   "ground": "Dallas (Arlington)"

@@ -12,7 +12,7 @@ $site = ($lang === 'ar') ? SITE_NAME_AR : SITE_NAME_EN;
 $code = '<iframe src="' . $base . '/widget.php?lang=' . $lang . '" '
       . 'width="100%" height="360" style="border:0;max-width:540px" '
       . 'loading="lazy" title="' . htmlspecialchars($site, ENT_QUOTES) . '"></iframe>' . "\n"
-      . '<p><a href="' . $base . '" target="_blank" rel="noopener">' . htmlspecialchars($site, ENT_QUOTES) . ' — ' . htmlspecialchars(parse_url(SITE_URL, PHP_URL_HOST) ?: 'wcup2026.org', ENT_QUOTES) . '</a></p>';
+      . '<p><a href="' . $base . '" target="_blank" rel="noopener">' . htmlspecialchars($site, ENT_QUOTES) . ' — ' . htmlspecialchars(parse_url(SITE_URL, PHP_URL_HOST) ?: ' foot-boll.com', ENT_QUOTES) . '</a></p>';
 
 $page_title = t('embed_widget');
 $page_desc  = t('embed_intro');

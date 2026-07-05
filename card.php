@@ -249,7 +249,7 @@ $jsV = @filemtime(__DIR__ . '/assets/js/share.js') ?: 1;
 
   <div class="card-foot">
     <span><?= e($data['emoji']) ?> <?= e($lang === 'ar' ? 'كأس العالم 2026' : 'World Cup 2026') ?></span>
-    <span class="domain"><?= e(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org') ?></span>
+    <span class="domain"><?= e(parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com') ?></span>
   </div>
 </div>
 

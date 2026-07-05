@@ -10,7 +10,7 @@
  *
  * بين كل تغريدتَين: نوم X_MIN_SPACING+2 ثانية (افتراضي 17ث) لاحترام الفاصل.
  * تشغيل (Hostinger):
- *   *​/15 * * * *  /usr/bin/php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php
+ *   *​/15 * * * *  /usr/bin/php /home/USER/domains/ foot-boll.com/public_html/cron/tweet.php
  * ============================================================
  */
 require __DIR__ . '/../includes/bootstrap.php';

@@ -10,7 +10,7 @@
 ![No build](https://img.shields.io/badge/build-none-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![i18n](https://img.shields.io/badge/i18n-AR%20%2F%20EN-orange)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-wcup2026.org-2ea44f)](https://wcup2026.org/index.php?lang=en)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo- foot-boll.com-2ea44f)](https:// foot-boll.com/index.php?lang=en)
 [![GitHub stars](https://img.shields.io/github/stars/salah23222/worldcup2026?style=social)](https://github.com/salah23222/worldcup2026/stargazers)
 
 > ⭐ **If you find this useful, please give it a star — it really helps the project grow!**
@@ -22,11 +22,11 @@
 The platform now goes well beyond scores — **official data, rich media, and full automation**:
 
 <p align="center">
-  <img src="https://wcup2026.org/card_img.php?mode=player&id=433872" alt="FIFA technical player profile card — official photo, rating and category scores" width="680">
+  <img src="https:// foot-boll.com/card_img.php?mode=player&id=433872" alt="FIFA technical player profile card — official photo, rating and category scores" width="680">
   <br><em>Every player now has a full technical profile — official photo, rating &amp; percentile breakdowns.</em>
 </p>
 
-- 👤 **Full player technical profiles** — every player has a profile with their **official FIFA photo**, a tournament rating, an overall radar (Attacking · Creation · Line‑breaking · Defending) and per‑category breakdowns (passing options, pressing, set pieces…) — each metric shown **per‑90 with percentile bars vs same‑position players**. Bilingual AR/EN. *(See [player.php](https://wcup2026.org/player.php?id=433872&lang=en).)*
+- 👤 **Full player technical profiles** — every player has a profile with their **official FIFA photo**, a tournament rating, an overall radar (Attacking · Creation · Line‑breaking · Defending) and per‑category breakdowns (passing options, pressing, set pieces…) — each metric shown **per‑90 with percentile bars vs same‑position players**. Bilingual AR/EN. *(See [player.php](https:// foot-boll.com/player.php?id=433872&lang=en).)*
 - 🖼️ **Official FIFA player photos** — real player photos from FIFA's Digital Hub across every squad, shown on match player cards, the physical explorer, and the new profiles — refreshed automatically as new players and substitutes appear.
 - 📊 **Official FIFA match stats (PMSR)** — every finished match shows FIFA's official
   post‑match data in the site's own identity: possession, shots, passing, **phases of
@@ -55,7 +55,7 @@ The platform now goes well beyond scores — **official data, rich media, and fu
 
 ## 🌐 Live Demo
 
-**Try the site live:** **[https://wcup2026.org/index.php?lang=en](https://wcup2026.org/index.php?lang=en)**
+**Try the site live:** **[https:// foot-boll.com/index.php?lang=en](https:// foot-boll.com/index.php?lang=en)**
 
 ---
 
@@ -66,17 +66,17 @@ A free, **CORS‑enabled JSON API** (no key) — matches, live scores, match det
 Use it straight from a browser, mobile app or backend:
 
 ```
-https://wcup2026.org/api/data.php?action=scorers
-https://wcup2026.org/api/data.php?action=match&id=12
+https:// foot-boll.com/api/data.php?action=scorers
+https:// foot-boll.com/api/data.php?action=match&id=12
 ```
 
-📖 **Full reference & all endpoints → [API.md](API.md)** · plain‑text [football.txt](https://wcup2026.org/football.php) export too.
+📖 **Full reference & all endpoints → [API.md](API.md)** · plain‑text [football.txt](https:// foot-boll.com/football.php) export too.
 
 ---
 
 ## 📸 Screenshots
 
-> Live demo: **[wcup2026.org](https://wcup2026.org/index.php?lang=en)**
+> Live demo: **[ foot-boll.com](https:// foot-boll.com/index.php?lang=en)**
 
 <!-- 🎞️ TIP: record a short screen-capture GIF of the site, save it as docs/demo.gif,
      then uncomment the next line to show an animated demo right here:
@@ -96,7 +96,7 @@ https://wcup2026.org/api/data.php?action=match&id=12
 *Every player gets a full profile from official FIFA data — official photo, tournament
 rating, an overall radar (Attacking · Creation · Line‑breaking · Defending) and a
 per‑category breakdown (with per‑90 values and percentile bars vs same‑position players).
-Bilingual AR/EN. [See it live →](https://wcup2026.org/player.php?id=433872&lang=en)*
+Bilingual AR/EN. [See it live →](https:// foot-boll.com/player.php?id=433872&lang=en)*
 
 <p align="center">
   <img src="docs/screenshots/player-profile.png" alt="Player technical profile — header, rating and overall radar" width="760">
@@ -108,7 +108,7 @@ Bilingual AR/EN. [See it live →](https://wcup2026.org/player.php?id=433872&lan
 *Auto‑generated share card (also used as the social preview & in this README, rendered live by the site):*
 
 <p align="center">
-  <img src="https://wcup2026.org/card_img.php?mode=player&id=433872" alt="Player technical profile share card" width="520">
+  <img src="https:// foot-boll.com/card_img.php?mode=player&id=433872" alt="Player technical profile share card" width="520">
 </p>
 
 ---
@@ -194,15 +194,15 @@ on it in **any language** (Python, JavaScript, Java, Go, Rust, C#, …). A publi
 **CORS-enabled, key-free** API is included:
 
 ```bash
-curl "https://wcup2026.org/api/data.php?action=today"
+curl "https:// foot-boll.com/api/data.php?action=today"
 ```
 ```python
 import requests
-matches = requests.get("https://wcup2026.org/api/data.php?action=today").json()["matches"]
+matches = requests.get("https:// foot-boll.com/api/data.php?action=today").json()["matches"]
 ```
 ```javascript
 const { standings } = await (await fetch(
-  "https://wcup2026.org/api/data.php?action=standings")).json();
+  "https:// foot-boll.com/api/data.php?action=standings")).json();
 ```
 
 👉 Full endpoint reference & response shapes: **[docs/API.md](docs/API.md)**.

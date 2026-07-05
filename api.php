@@ -2,7 +2,7 @@
 /**
  * api.php — صفحة مرجع الـAPI العامّة (للمطوّرين).
  * توثّق api/data.php وكل الـactions + football.txt. صفحة قائمة بذاتها
- * على wcup2026.org (نطاقنا → سيو لنا)، بنمط الموقع وثلاثيّة اللغة.
+ * على foot-boll.com (نطاقنا → سيو لنا)، بنمط الموقع وثلاثيّة اللغة.
  */
 require __DIR__ . '/includes/bootstrap.php';
 
@@ -35,7 +35,7 @@ tpl('header');
   'description' => 'Free, public, CORS-enabled JSON API for the FIFA World Cup 2026: matches, live scores, match details, top scorers, standings and per-player physical data.',
   'url'         => canonical_url(),
   'documentation' => $apiBase,
-  'provider'    => ['@type' => 'Organization', 'name' => 'wcup2026.org', 'url' => rtrim(SITE_URL, '/')],
+  'provider'    => ['@type' => 'Organization', 'name' => ' foot-boll.com', 'url' => rtrim(SITE_URL, '/')],
   'isAccessibleForFree' => true,
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
 </script>
@@ -209,16 +209,16 @@ console.log(data.scorers);
   </ul>
   <p class="lead" style="margin:14px 0 0">
     <?= e($tx('بنيت شيئاً بواجهتنا؟ أخبرنا لنعرضه هنا:', 'Built something with our API? Tell us and we\'ll feature it:', 'Vous avez créé quelque chose ? Dites-le-nous :')) ?>
-    <a href="mailto:info@wcup2026.org">info@wcup2026.org</a>
+    <a href="mailto:info@ foot-boll.com">info@ foot-boll.com</a>
   </p>
 </section>
 
 <section class="api-sec">
   <h2><?= e($tx('الاستخدام العادل', 'Fair use', 'Usage équitable')) ?></h2>
   <p class="lead" style="margin:0"><?= e($tx(
-    'للقراءة فقط ومجّاني. خزّن مؤقّتاً حيثما أمكن (البيانات تتحدّث كل دقيقة تقريباً). الإسناد مُقدَّر — ضع رابطاً إلى wcup2026.org. بيانات الجدول من openfootball (ملك عام)؛ إحصائيات المباراة من بيانات الفيفا الرسميّة.',
-    'Read-only and free. Please cache where you can (data refreshes ~every minute). Attribution appreciated — link back to wcup2026.org. Schedule data is openfootball (Public Domain); match metrics are FIFA official data.',
-    'Lecture seule et gratuit. Mettez en cache si possible. Attribution appréciée — un lien vers wcup2026.org. Calendrier : openfootball (domaine public) ; statistiques : données officielles FIFA.'
+    'للقراءة فقط ومجّاني. خزّن مؤقّتاً حيثما أمكن (البيانات تتحدّث كل دقيقة تقريباً). الإسناد مُقدَّر — ضع رابطاً إلى foot-boll.com. بيانات الجدول من openfootball (ملك عام)؛ إحصائيات المباراة من بيانات الفيفا الرسميّة.',
+    'Read-only and free. Please cache where you can (data refreshes ~every minute). Attribution appreciated — link back to foot-boll.com. Schedule data is openfootball (Public Domain); match metrics are FIFA official data.',
+    'Lecture seule et gratuit. Mettez en cache si possible. Attribution appréciée — un lien vers foot-boll.com. Calendrier : openfootball (domaine public) ; statistiques : données officielles FIFA.'
   )) ?></p>
 </section>
 

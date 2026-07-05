@@ -9,14 +9,14 @@ scorers, group standings and per‑player physical data.
 - ✅ Responses are `application/json; charset=utf-8`, cached ~60s.
 - 📊 Data source: **openfootball** (schedule, Public Domain) + **official FIFA** post‑match reports + live results.
 
-> Live site: **[wcup2026.org](https://wcup2026.org/index.php?lang=en)** · Open data also in [football.txt](#-plain-text-footballtxt) format.
+> Live site: **[ foot-boll.com](https:// foot-boll.com/index.php?lang=en)** · Open data also in [football.txt](#-plain-text-footballtxt) format.
 
 ---
 
 ## Base URL
 
 ```
-https://wcup2026.org/api/data.php?action=<ACTION>
+https:// foot-boll.com/api/data.php?action=<ACTION>
 ```
 
 Every response is an envelope:
@@ -47,15 +47,15 @@ Every response is an envelope:
 ### Examples
 
 ```bash
-curl "https://wcup2026.org/api/data.php?action=results"
-curl "https://wcup2026.org/api/data.php?action=match&id=12"
-curl "https://wcup2026.org/api/data.php?action=scorers"
-curl "https://wcup2026.org/api/data.php?action=group&g=Group%20A"
+curl "https:// foot-boll.com/api/data.php?action=results"
+curl "https:// foot-boll.com/api/data.php?action=match&id=12"
+curl "https:// foot-boll.com/api/data.php?action=scorers"
+curl "https:// foot-boll.com/api/data.php?action=group&g=Group%20A"
 ```
 
 ```js
 // React Native / browser — no backend needed
-const res  = await fetch('https://wcup2026.org/api/data.php?action=scorers');
+const res  = await fetch('https:// foot-boll.com/api/data.php?action=scorers');
 const data = await res.json();
 console.log(data.scorers); // [{ name, team, goals }, ...]
 ```
@@ -124,9 +124,9 @@ The whole tournament is also exported in the **openfootball `football.txt`** for
 (human‑ and machine‑readable plain text):
 
 ```
-https://wcup2026.org/football.php            # schedule + results
-https://wcup2026.org/football.php?results    # results only
-https://wcup2026.org/football.php?reports    # results + scorers + bookings
+https:// foot-boll.com/football.php            # schedule + results
+https:// foot-boll.com/football.php?results    # results only
+https:// foot-boll.com/football.php?reports    # results + scorers + bookings
 ```
 
 ---
@@ -137,13 +137,13 @@ Apps & projects developers have built using this API:
 
 - **[FIFA World Cup Fixtures](https://play.google.com/store/apps/details?id=com.fifaworldcupfixtures)** — Android app on Google Play.
 
-Built something with our API? Tell us and we'll feature it here — **info@wcup2026.org** (or open a discussion / issue on this repo).
+Built something with our API? Tell us and we'll feature it here — **info@ foot-boll.com** (or open a discussion / issue on this repo).
 
 ---
 
 ## Notes & fair use
 
 - Read‑only and free. Please cache where you can (data updates roughly every minute).
-- Attribution appreciated: link back to **wcup2026.org**.
+- Attribution appreciated: link back to ** foot-boll.com**.
 - Schedule data is openfootball (Public Domain); FIFA post‑match metrics are FIFA's official data, presented here.
-- This is a community project — built with ❤️ for football. Questions / ideas: **info@wcup2026.org**.
+- This is a community project — built with ❤️ for football. Questions / ideas: **info@ foot-boll.com**.

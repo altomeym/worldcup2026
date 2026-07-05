@@ -1,7 +1,7 @@
 # 📱 PWA Marketing — 15 تغريدة جاهزة للنشر
 
 > اربط كل تغريدة بالصفحة الجديدة:  
-> **https://wcup2026.org/install-app.php**
+> **https:// foot-boll.com/install-app.php**
 
 ---
 
@@ -18,7 +18,7 @@
 🔔 إشعارات قبل كل مباراة
 
 👇 ركّبه الآن من هنا
-https://wcup2026.org/install-app.php
+https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #المونديال #FIFAWorldCup26
 ```
@@ -34,7 +34,7 @@ https://wcup2026.org/install-app.php
 🔔 Match alerts
 
 👇 Install now
-https://wcup2026.org/install-app.php
+https:// foot-boll.com/install-app.php
 
 #FIFAWorldCup26 #WeAre26 #WorldCup2026
 ```
@@ -48,12 +48,12 @@ https://wcup2026.org/install-app.php
 ```
 🍎 آيفونك؟ خلّيك معي 60 ثانية:
 
-1️⃣ افتح wcup2026.org في Safari
+1️⃣ افتح foot-boll.com في Safari
 2️⃣ اضغط زر المشاركة (⬆️ أسفل الشاشة)
 3️⃣ اختر «إضافة إلى الشاشة الرئيسية»
 
 ✨ تطبيق كأس العالم 2026 صار على جوالك!
-🔗 https://wcup2026.org/install-app.php
+🔗 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #FIFAWorldCup26
 ```
@@ -63,12 +63,12 @@ https://wcup2026.org/install-app.php
 ```
 🍎 iPhone? Give me 60 seconds:
 
-1️⃣ Open wcup2026.org in Safari
+1️⃣ Open foot-boll.com in Safari
 2️⃣ Tap Share button (⬆️ bottom toolbar)
 3️⃣ "Add to Home Screen"
 
 ✨ The World Cup 2026 app is on your phone!
-🔗 https://wcup2026.org/install-app.php
+🔗 https:// foot-boll.com/install-app.php
 
 #FIFAWorldCup26 #WeAre26
 ```
@@ -82,12 +82,12 @@ https://wcup2026.org/install-app.php
 ```
 🤖 أندرويد؟ أسرع بعد:
 
-1️⃣ افتح wcup2026.org في Chrome
+1️⃣ افتح foot-boll.com في Chrome
 2️⃣ شريط «تثبيت التطبيق» يطلع تلقائياً
 3️⃣ اضغطه. خلاص.
 
 ⚡ تطبيق كأس العالم 2026 جاهز
-🔗 https://wcup2026.org/install-app.php
+🔗 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #المونديال
 ```
@@ -97,12 +97,12 @@ https://wcup2026.org/install-app.php
 ```
 🤖 Android? Even faster:
 
-1️⃣ Open wcup2026.org in Chrome
+1️⃣ Open foot-boll.com in Chrome
 2️⃣ "Install app" banner appears automatically
 3️⃣ Tap it. Done.
 
 ⚡ Your World Cup 2026 app is ready
-🔗 https://wcup2026.org/install-app.php
+🔗 https:// foot-boll.com/install-app.php
 
 #FIFAWorldCup26
 ```
@@ -122,7 +122,7 @@ https://wcup2026.org/install-app.php
 ✅ بدون انتظار
 ✅ التحديثات تجي تلقائي
 
-📲 https://wcup2026.org/install-app.php
+📲 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #PWA #FIFAWorldCup26
 ```
@@ -135,7 +135,7 @@ https://wcup2026.org/install-app.php
 
 ⚡ الجدول، المجموعات، الترتيب — كلها متاحة
 📲 ركّبه قبل المباراة في ثوانٍ:
-   https://wcup2026.org/install-app.php
+   https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #المونديال
 ```
@@ -151,7 +151,7 @@ https://wcup2026.org/install-app.php
 📱 آيفون + أندرويد
 🆓 مجاناً للأبد
 
-👇 https://wcup2026.org/install-app.php
+👇 https:// foot-boll.com/install-app.php
 
 #FIFAWorldCup26 #WeAre26
 ```
@@ -170,7 +170,7 @@ https://wcup2026.org/install-app.php
 ✅ نتائج لحظيّة
 ✅ جدول دائم بين يديك
 
-📲 https://wcup2026.org/install-app.php
+📲 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #المونديال
 ```
@@ -180,10 +180,10 @@ https://wcup2026.org/install-app.php
 ```
 🎉 ليلة الافتتاح اقتربت!
 
-ركّب تطبيق wcup2026.org على جوالك خلال 10 ثوانٍ
+ركّب تطبيق foot-boll.com على جوالك خلال 10 ثوانٍ
 ولا يفوتك بداية أوّل مباراة 🇲🇽 المكسيك × جنوب أفريقيا 🇿🇦
 
-🔗 https://wcup2026.org/install-app.php
+🔗 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #FIFAWorldCup26
 ```
@@ -199,8 +199,8 @@ https://wcup2026.org/install-app.php
 
 كم مرّة فتحت موقع رياضي بطيء وندمت؟
 
-اليوم وضّحت لك كيف تخلّي wcup2026.org تطبيقاً نيتيف بثوانٍ:
-📲 https://wcup2026.org/install-app.php
+اليوم وضّحت لك كيف تخلّي foot-boll.com تطبيقاً نيتيف بثوانٍ:
+📲 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026
 ```
@@ -215,7 +215,7 @@ https://wcup2026.org/install-app.php
 - أندرويد: Chrome → Install app
 
 عدّاد التحدّي يبدأ من هنا 👇
-https://wcup2026.org/install-app.php
+https:// foot-boll.com/install-app.php
 
 #PWA #كأس_العالم_2026
 ```
@@ -229,7 +229,7 @@ https://wcup2026.org/install-app.php
 ```
 📱 تطبيقك على جوالك
    ⬇️
-🌐 wcup2026.org
+🌐 foot-boll.com
    ⬇️
 📤 شارك
    ⬇️
@@ -238,7 +238,7 @@ https://wcup2026.org/install-app.php
 ⚽ كأس العالم 2026 في يدك
 
 3️⃣0️⃣ ثانية فقط
-🔗 https://wcup2026.org/install-app.php
+🔗 https:// foot-boll.com/install-app.php
 
 #FIFAWorldCup26
 ```
@@ -251,7 +251,7 @@ https://wcup2026.org/install-app.php
 ⚡ بعد: ضغطة على أيقونة → التطبيق مفتوح مباشرة
 
 🎁 الفرق = PWA
-🔗 ركّبه: https://wcup2026.org/install-app.php
+🔗 ركّبه: https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #المونديال #PWA
 ```
@@ -267,7 +267,7 @@ https://wcup2026.org/install-app.php
 
 سرّ اسمه PWA (Progressive Web App)
 
-موقع wcup2026.org عملته هكذا. اقرأ معي 5 تويتات قصيرة ⬇️
+موقع foot-boll.com عملته هكذا. اقرأ معي 5 تويتات قصيرة ⬇️
 ```
 
 **Reply 1:**
@@ -294,7 +294,7 @@ https://wcup2026.org/install-app.php
 
 كل مالك موقع. منصّات الأخبار، المتاجر، المواقع الرياضيّة...
 
-wcup2026.org استخدمه لتطبيق كأس العالم 2026.
+ foot-boll.com استخدمه لتطبيق كأس العالم 2026.
 الجمهور رضي ← شفتم النتيجة.
 ```
 
@@ -302,7 +302,7 @@ wcup2026.org استخدمه لتطبيق كأس العالم 2026.
 ```
 4/ كيف تجرّبه الآن؟
 
-افتح: https://wcup2026.org/install-app.php
+افتح: https:// foot-boll.com/install-app.php
 
 فيه خطوات بصريّة لـ iPhone و Android.
 60 ثانية ولديك تطبيق.
@@ -314,7 +314,7 @@ wcup2026.org استخدمه لتطبيق كأس العالم 2026.
 ```
 5/ تبي تتعلّم كيف أبنيه لموقعك؟
 
-أنا متاح للتواصل — تواصل من wcup2026.org/contact أو واتساب.
+أنا متاح للتواصل — تواصل من foot-boll.com/contact أو واتساب.
 أبني لك موقعاً + PWA + نشر تلقائي على X بميزانية معقولة.
 
 ⚽ كل ما تحتاجه في مكان واحد.
@@ -337,7 +337,7 @@ wcup2026.org استخدمه لتطبيق كأس العالم 2026.
 ✓ نتائج لحظيّة
 
 كلّه على جوالك في 30 ثانية:
-https://wcup2026.org/install-app.php
+https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #FIFAWorldCup26
 ```
@@ -347,11 +347,11 @@ https://wcup2026.org/install-app.php
 ```
 🎯 أبسط تغريدة:
 
-موقع wcup2026.org يتحوّل لتطبيق على جوالك في 3 خطوات.
+موقع foot-boll.com يتحوّل لتطبيق على جوالك في 3 خطوات.
 
 مجاناً. بدون App Store. بدون اشتراك. مدى الحياة.
 
-📲 https://wcup2026.org/install-app.php
+📲 https:// foot-boll.com/install-app.php
 
 #كأس_العالم_2026 #المونديال #FIFAWorldCup26
 ```
@@ -381,7 +381,7 @@ https://wcup2026.org/install-app.php
 
 ### لقطات شاشة لازمة (5 دقائق على جوالك):
 
-1. **iPhone Safari + wcup2026.org مفتوح** + سهم يشير لزر Share
+1. **iPhone Safari + foot-boll.com مفتوح** + سهم يشير لزر Share
 2. **iPhone قائمة Share + سهم على "Add to Home Screen"**
 3. **iPhone Home Screen مع أيقونة 26 ظاهرة**
 4. **Android Chrome مع بانر "Install app" ظاهر**

@@ -205,11 +205,11 @@ try {
                 $pill($colX['pts'], $mid, (string)(int)$r['pts']);
                 $y += 78;
             }
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 22, $H - 22, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 280, $white, 'GROUP ' . $gL . ' STANDINGS');
-            $centerBuiltin($im, 4, 330, $dim, 'wcup2026.org');
+            $centerBuiltin($im, 4, 330, $dim, ' foot-boll.com');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -264,11 +264,11 @@ try {
                 $pill(150, $mid, (string)(int)($r['points'] ?? 0));
                 $y += 48;
             }
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 22, $H - 20, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 290, $white, 'LEADERBOARD');
-            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
+            $centerBuiltin($im, 4, 340, $dim, ' foot-boll.com');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -368,11 +368,11 @@ try {
                 $centerText($im, 30, 330, $white, $fontAr, $shape('لا مباريات خلال الـ24 ساعة القادمة'));
                 $centerText($im, 22, 372, $dim,   $font,   'NO MATCHES IN THE NEXT 24 HOURS');
             }
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 22, $H - 22, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 300, $white, 'UPCOMING MATCHES');
-            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
+            $centerBuiltin($im, 4, 340, $dim, ' foot-boll.com');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -410,10 +410,10 @@ try {
                 $ctile($im, 12, $cx, $top + 106, $dim, $font, $t['le']);
                 if ($t['s'] !== '') $ctile($im, 14, $cx, $top + 136, $dim, $t['sa'] ? $fontAr : $font, $t['sa'] ? $shape($t['s']) : $t['s']);
             }
-            $centerText($im, 22, $H - 22, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org'));
+            $centerText($im, 22, $H - 22, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com'));
         } else {
             $centerBuiltin($im, 5, 300, $white, 'FIFA STATS DASHBOARD');
-            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
+            $centerBuiltin($im, 4, 340, $dim, ' foot-boll.com');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -493,10 +493,10 @@ try {
                 $by += $gap;
             }
 
-            $centerText($im, 22, $H - 22, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org'));
+            $centerText($im, 22, $H - 22, $white, $font, strtoupper(parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com'));
         } else {
             $centerBuiltin($im, 5, 300, $white, 'PLAYER PROFILE');
-            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
+            $centerBuiltin($im, 4, 340, $dim, ' foot-boll.com');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -548,7 +548,7 @@ try {
                 }
                 $i++;
             }
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 22, $H - 30, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 280, $white, 'GROUP STANDINGS - WORLD CUP 2026');
@@ -640,11 +640,11 @@ try {
 
                 $y += 74; $rank++;
             }
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 22, $H - 22, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 300, $white, 'CARDS - WORLD CUP 2026');
-            $centerBuiltin($im, 4, 340, $dim, 'wcup2026.org');
+            $centerBuiltin($im, 4, 340, $dim, ' foot-boll.com');
         }
         imagepng($im); imagedestroy($im); exit;
     }
@@ -697,7 +697,7 @@ try {
             }
 
             $centerText($im, 26, 458, $dim, $font, '104 MATCHES  .  48 TEAMS  .  16 CITIES');
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 28, $H - 44, $white, $font, strtoupper($domain));
         } else {
             $centerBuiltin($im, 5, 280, $white, 'FIFA WORLD CUP 2026');
@@ -720,7 +720,7 @@ try {
         if ($hasFont) {
             $centerText($im, 80, 300, $accentCol, $font, '*');   // نجمة كبيرة كرمز
             $centerText($im, 44, 400, $white, $font, 'STICKER UNLOCKED');
-            $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+            $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
             $centerText($im, 24, $H-50, $white, $font, $domain);
         } else {
             $centerBuiltin($im, 5, 300, $white, 'STICKER UNLOCKED');
@@ -780,13 +780,13 @@ try {
         }
 
         // تذييل: النطاق الرسمي
-        $domain = parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org';
+        $domain = parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com';
         $centerText($im, 24, $H-50, $white, $font, $domain);
     } else {
         // احتياطي بلا خط TTF: لا يزال يُنتج صورة صالحة
         $centerBuiltin($im, 5, $fy + 90, $white, $isMatch ? 'VS' : ($data['score'] !== '' ? $data['score'] : 'VS'));
         $centerBuiltin($im, 4, $fy + $fh + 40, $dim, $t1 . '  -  ' . $t2);
-        $centerBuiltin($im, 3, $H-40, $white, parse_url(base_url(), PHP_URL_HOST) ?: 'wcup2026.org');
+        $centerBuiltin($im, 3, $H-40, $white, parse_url(base_url(), PHP_URL_HOST) ?: ' foot-boll.com');
     }
 
     imagepng($im);

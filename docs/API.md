@@ -18,12 +18,12 @@ because it speaks plain HTTP + JSON.
 
 | Environment | Base URL |
 |---|---|
-| Live demo | `https://wcup2026.org` |
+| Live demo | `https:// foot-boll.com` |
 | Docker (this repo) | `http://localhost:8080` |
 | XAMPP subfolder | `http://localhost/worldcup2026` |
 
 All endpoints below are relative to the base URL, e.g.
-`https://wcup2026.org/api/data.php?action=today`.
+`https:// foot-boll.com/api/data.php?action=today`.
 
 ---
 
@@ -122,16 +122,16 @@ These plain JSON files live in [`/data`](../data) and can be downloaded or impor
 
 ### cURL
 ```bash
-curl "https://wcup2026.org/api/data.php?action=today"
-curl "https://wcup2026.org/api/data.php?action=standings"
-curl "https://wcup2026.org/api/data.php?action=match&id=0"
+curl "https:// foot-boll.com/api/data.php?action=today"
+curl "https:// foot-boll.com/api/data.php?action=standings"
+curl "https:// foot-boll.com/api/data.php?action=match&id=0"
 ```
 
 ### Python
 ```python
 import requests
 
-BASE = "https://wcup2026.org/api/data.php"
+BASE = "https:// foot-boll.com/api/data.php"
 today = requests.get(BASE, params={"action": "today"}).json()
 for m in today["matches"]:
     print(f'{m["date"]} {m["time"]}  {m["team1"]} vs {m["team2"]}')
@@ -139,7 +139,7 @@ for m in today["matches"]:
 
 ### JavaScript (browser or Node 18+)
 ```javascript
-const BASE = "https://wcup2026.org/api/data.php";
+const BASE = "https:// foot-boll.com/api/data.php";
 const res  = await fetch(`${BASE}?action=upcoming&limit=5`);
 const data = await res.json();
 data.matches.forEach(m => console.log(`${m.team1} vs ${m.team2}`));
@@ -148,7 +148,7 @@ data.matches.forEach(m => console.log(`${m.team1} vs ${m.team2}`));
 ### PHP
 ```php
 $data = json_decode(file_get_contents(
-    "https://wcup2026.org/api/data.php?action=standings"), true);
+    "https:// foot-boll.com/api/data.php?action=standings"), true);
 print_r($data["standings"]["Group A"]);
 ```
 

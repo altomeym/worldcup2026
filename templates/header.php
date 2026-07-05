@@ -164,7 +164,7 @@ seo_head([
       endif; ?>
       <?php
         // مبدّل اللغة الثلاثي: AR · EN · FR (FR contributed by @sibylassana95)
-        $langs = ['ar' => 'العربية', 'en' => 'English', 'fr' => 'Français'];
+        $langs = ['ar' => 'العربية', 'en' => 'English'];
         foreach ($langs as $code => $label):
           if ($code === $lang) continue; // لا تعرض اللغة الحالية كرابط
       ?>

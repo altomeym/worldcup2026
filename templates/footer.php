@@ -42,7 +42,7 @@ $lang       = current_lang();
       <div class="footer-brand">
         <span class="footer-mark" aria-hidden="true">26</span>
         <div class="footer-brand-text">
-          <strong>wcup2026.org</strong>
+          <strong> foot-boll.com</strong>
           <span><?= e($lang === 'ar' ? 'كأس العالم 2026 · كندا · المكسيك · أمريكا' : 'FIFA World Cup 2026 · Canada · Mexico · USA') ?></span>
           <span class="footer-brand-dates">📅 <?= e($lang === 'ar' ? '11 يونيو – 19 يوليو 2026' : 'June 11 – July 19, 2026') ?></span>
         </div>
@@ -67,13 +67,7 @@ $lang       = current_lang();
     <div class="footer-col">
       <h4 class="footer-h"><?= e($lang === 'ar' ? 'البيانات والمصدر' : 'Data & source') ?></h4>
       <ul class="footer-list">
-        <li>
-          <span class="li-ico">📦</span>
-          <span><?= e(t('data_source')) ?>:
-            <a href="https://github.com/openfootball/worldcup.json" target="_blank" rel="noopener">openfootball</a>
-            <span class="muted">· Public Domain</span>
-          </span>
-        </li>
+     
         <?php if ($lastUpdate): ?>
         <li>
           <span class="li-ico">🔄</span>
@@ -90,18 +84,7 @@ $lang       = current_lang();
           <span class="li-ico">🧩</span>
           <a href="<?= e(url('embed.php')) ?>"><?= e(t('embed_widget')) ?></a>
         </li>
-        <li>
-          <span class="li-ico">🗒️</span>
-          <a href="<?= e(url('football.php')) ?>"><?= e($lang === 'ar' ? 'بيانات مفتوحة · football.txt' : ($lang === 'fr' ? 'Données ouvertes · football.txt' : 'Open data · football.txt')) ?></a>
-        </li>
-        <li>
-          <span class="li-ico">🔌</span>
-          <a href="<?= e(url('api.php')) ?>"><?= e($lang === 'ar' ? 'واجهة المطوّرين (API)' : ($lang === 'fr' ? 'API développeur' : 'Developer API')) ?></a>
-        </li>
-        <li>
-          <span class="li-ico">💻</span>
-          <a href="https://github.com/salah23222/worldcup2026" target="_blank" rel="noopener"><?= e($lang === 'ar' ? 'الكود المصدري (GitHub)' : ($lang === 'fr' ? 'Code source (GitHub)' : 'Source code (GitHub)')) ?></a>
-        </li>
+    
       </ul>
     </div>
 
@@ -143,13 +126,13 @@ $lang       = current_lang();
   <!-- ──────── شريط ترويجي: «اطلب موقعك» ──────── -->
   <?php
     $cPhone = defined('CONTACT_PHONE') ? trim((string)CONTACT_PHONE) : '';
-    $cMail  = defined('CONTACT_EMAIL') ? CONTACT_EMAIL : 'info@wcup2026.org';
+    $cMail  = defined('CONTACT_EMAIL') ? CONTACT_EMAIL : 'info@ foot-boll.com';
     $waNum  = $cPhone !== '' ? preg_replace('/\D/', '', $cPhone) : '';
     $waMsg  = rawurlencode($lang === 'ar'
-              ? 'مرحباً، شفت موقع wcup2026.org وحاب أطلب موقعاً مشابهاً 👋'
-              : 'Hi! I saw wcup2026.org and would like to order a similar site 👋');
+              ? 'مرحباً، شفت موقع foot-boll.com وحاب أطلب موقعاً مشابهاً 👋'
+              : 'Hi! I saw foot-boll.com and would like to order a similar site 👋');
   ?>
-  <div class="hire-bar">
+  <!-- <div class="hire-bar">
     <div class="wrap hire-bar-inner">
       <div class="hire-bar-content">
         <span class="hire-bar-icon" aria-hidden="true">💼</span>
@@ -177,13 +160,13 @@ $lang       = current_lang();
         </button>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- ──────── شريط حقوق سفلي ──────── -->
   <div class="footer-bottom">
     <div class="wrap footer-bottom-inner">
       <p class="copyright">
-        © <?= date('Y') ?> wcup2026.org
+        © <?= date('Y') ?> foot-boll.com
         <span class="dot">·</span>
         <?= e($lang === 'ar' ? 'صُنع بشغف لكرة القدم' : 'Built with love for football') ?>
       </p>

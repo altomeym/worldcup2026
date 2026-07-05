@@ -10,3 +10,6 @@ and abusive behavior are not tolerated.
 Violations may be reported confidentially to the maintainers at
 `conduct@example.com` *(replace with your address)*. All reports will be reviewed
 and handled fairly. By participating, you agree to uphold this code.
+
+
+https://github.com/openfootball/worldcup.json

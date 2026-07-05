@@ -1,4 +1,4 @@
-# 🎓 دورة wcup2026.org — من الصفر إلى الإطلاق
+# 🎓 دورة foot-boll.com — من الصفر إلى الإطلاق
 ### دليل YouTube الشامل · 12 حلقة · ~3 ساعات إجمالاً
 
 > هذا الدليل سكريبت تصوير + فهرس تقني. كل حلقة فيها: hook، أهداف،
@@ -60,7 +60,7 @@
 ## 🎬 على الشاشة
 
 افتح المتصفّح وأظهر:
-- `wcup2026.org` (الصفحة الرئيسية)
+- ` foot-boll.com` (الصفحة الرئيسية)
 - `matches.php` (104 مباراة)
 - `predict.php` (التوقّعات)
 - `x.com/salah1alhammadi` (التغريدات التلقائيّة)
@@ -453,7 +453,7 @@ Mailer::send($to, $subject, $html, $text);
 ```php
 'SMTP_HOST'   => 'smtp.hostinger.com',
 'SMTP_PORT'   => 465,
-'SMTP_USER'   => 'info@wcup2026.org',
+'SMTP_USER'   => 'info@ foot-boll.com',
 'SMTP_PASS'   => '...',
 'SMTP_SECURE' => 'ssl',
 ```
@@ -612,7 +612,7 @@ RateGuard::record($success, $slot, $error);
 - أضِفها في `config.local.php`
 
 #### 4. تشغيل installer
-- زر `wcup2026.org/install.php?token=XXX`
+- زر ` foot-boll.com/install.php?token=XXX`
 - يُنشئ كل الجداول
 
 #### 5. Cron Jobs
@@ -628,14 +628,14 @@ RateGuard::record($success, $slot, $error);
 #### 7. مراقبة
 - Analytics الـ Hostinger
 - `admin.php` لوحة التحكم
-- Health endpoint: `wcup2026.org/health.php`
+- Health endpoint: ` foot-boll.com/health.php`
 
 ### قائمة فحص قبل الإطلاق
 
 - [ ] الـ keys في `config.local.php` صحيحة
 - [ ] ADMIN_PASS_HASH مضبوط
 - [ ] DB_ENABLED = true
-- [ ] SITE_URL = `https://wcup2026.org`
+- [ ] SITE_URL = `https:// foot-boll.com`
 - [ ] Cron Jobs مُفعّلة
 - [ ] SSL مفعّل
 - [ ] OG image يعمل (افتح Twitter Card Validator)
@@ -656,7 +656,7 @@ RateGuard::record($success, $slot, $error);
 ### روابط لتُرفق في كل وصف
 
 ```
-🌐 الموقع الحيّ:       https://wcup2026.org
+🌐 الموقع الحيّ:       https:// foot-boll.com
 💻 GitHub:            https://github.com/salah23222/worldcup2026
 📊 Hostinger الإحالة:  [رابط affiliate]
 📖 openfootball:      https://github.com/openfootball/worldcup.json
@@ -729,7 +729,7 @@ RateGuard::record($success, $slot, $error);
 ### مرحلة ما بعد
 
 - جمع الحلقات في **playlist** واحدة
-- أنشئ موقع `course.wcup2026.org` يجمع كل المواد
+- أنشئ موقع `course. foot-boll.com` يجمع كل المواد
 - بيع PDF dossier ($5) للسكريبتات الكاملة
 
 ---

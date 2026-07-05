@@ -10,8 +10,8 @@ $ar = (current_lang() === 'ar');
 $L  = fn(string $a, string $e) => $ar ? $a : $e;
 
 $page_title = $L('سياسة الخصوصية', 'Privacy Policy');
-$page_desc  = $L('كيف يتعامل موقع wcup2026.org مع بياناتك: الحسابات، الكوكيز، الإعلانات، وحقوقك.',
-                 'How wcup2026.org handles your data: accounts, cookies, advertising, and your rights.');
+$page_desc  = $L('كيف يتعامل موقع foot-boll.com مع بياناتك: الحسابات، الكوكيز، الإعلانات، وحقوقك.',
+                 'How  foot-boll.com handles your data: accounts, cookies, advertising, and your rights.');
 
 tpl('header');
 ?>
@@ -24,8 +24,8 @@ tpl('header');
 <div class="prose" style="max-width:780px;margin:0 auto;line-height:2">
 
   <p><?= e($L(
-    'خصوصيتك تهمنا. توضح هذه الصفحة ما نجمعه من بيانات عند استخدامك موقع wcup2026.org ولماذا، وكيف نحميها، وما حقوقك عليها.',
-    'Your privacy matters to us. This page explains what data wcup2026.org collects, why, how it is protected, and your rights over it.')) ?></p>
+    'خصوصيتك تهمنا. توضح هذه الصفحة ما نجمعه من بيانات عند استخدامك موقع foot-boll.com ولماذا، وكيف نحميها، وما حقوقك عليها.',
+    'Your privacy matters to us. This page explains what data foot-boll.com collects, why, how it is protected, and your rights over it.')) ?></p>
 
   <h2><?= e($L('١. البيانات التي نجمعها', '1. Data we collect')) ?></h2>
   <ul>

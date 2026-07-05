@@ -7,7 +7,7 @@
  * تلقائياً بعد نهاية البطولة.
  *
  * التشغيل (Hostinger Cron) — مرّة يومياً والسكربت يضبط التكرار بنفسه:
- *   php /home/USER/domains/wcup2026.org/public_html/cron/digest.php
+ *   php /home/USER/domains/ foot-boll.com/public_html/cron/digest.php
  *
  * خيارات (CLI):  --dry-run  (لا يرسل، يعرض فقط)
  *                --test=you@mail.com  (يرسل رسالة تجريبية واحدة)

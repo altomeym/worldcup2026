@@ -117,7 +117,7 @@ $hbStale = ($hbTweet === 0) || (time() - $hbTweet > 2 * 3600);
     <p class="admin-muted" style="line-height:1.9"><?= e($L(
       'النشر التلقائي لا يحدث إلا عبر مهمّة Cron كل 15 دقيقة. اذهب إلى hPanel → Advanced → Cron Jobs وأضف:',
       'Auto-publishing only happens via a Cron job every 15 minutes. Go to hPanel → Advanced → Cron Jobs and add:')) ?></p>
-    <pre style="background:#0a1626;padding:10px 14px;border-radius:8px;overflow:auto;direction:ltr;font-size:12px">*/15 * * * *  php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php</pre>
+    <pre style="background:#0a1626;padding:10px 14px;border-radius:8px;overflow:auto;direction:ltr;font-size:12px">*/15 * * * *  php /home/USER/domains/ foot-boll.com/public_html/cron/tweet.php</pre>
   <?php else: ?>
     <p>
       <span class="admin-badge <?= $hbStale ? 'admin-badge-bad' : 'admin-badge-ok' ?>"><?= e($hbStale ? $L('متوقّف','Stalled') : $L('يعمل','Running')) ?></span>
@@ -337,7 +337,7 @@ $dColor = $dPct >= 90 ? '#dc2626' : ($dPct >= 70 ? '#f59e0b' : '#16a34a');
   <p class="admin-muted" style="margin-top:10px">
     <?= e($L('سطر Cron المقترح (كل 15 دقيقة — لالتقاط نوافذ ما-قبل-المباراة بدقّة):',
              'Suggested Cron line (every 15 min — to catch pre-match windows accurately):')) ?>
-    <br><code>*/15 * * * * php /home/USER/domains/wcup2026.org/public_html/cron/tweet.php</code>
+    <br><code>*/15 * * * * php /home/USER/domains/ foot-boll.com/public_html/cron/tweet.php</code>
   </p>
 
   <!-- زر اختبار شامل للجدول — POST يبثّ النتيجة (يُخفي INSTALL_TOKEN عن HTML) -->

@@ -398,14 +398,14 @@ class RefereesFetcher
         if (function_exists('http_get')) {
             return http_get($url, [
                 'timeout' => 6,
-                'ua'      => 'wcup2026.org/1.0 (contact: salah232@gmail.com)',
+                'ua'      => ' foot-boll.com/1.0 (contact: info@ foot-boll.com)',
             ]);
         }
         $prev = @ini_set('default_socket_timeout', '6');
         $ctx  = stream_context_create([
             'http' => [
                 'method'  => 'GET',
-                'header'  => "User-Agent: wcup2026.org/1.0 (contact: salah232@gmail.com)\r\n",
+                'header'  => "User-Agent: foot-boll.com/1.0 (contact: info@ foot-boll.com)\r\n",
                 'timeout' => 6,
             ],
         ]);

@@ -3,7 +3,7 @@
  * cron/refs-check.php — صفحة تشخيص سريع للتأكّد أن نظام الحكام يعمل على الإنتاج.
  * ============================================================
  * الاستخدام:
- *   https://wcup2026.org/cron/refs-check.php?token=INSTALL_TOKEN
+ *   https:// foot-boll.com/cron/refs-check.php?token=INSTALL_TOKEN
  *
  * تعرض:
  *   ✓/✗ هل RefereesFetcher محمّل؟

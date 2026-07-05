@@ -67,7 +67,7 @@ $home  = base_url();
       <div class="wgt-t"><?php if(flag_url($t2)): ?><img src="<?= e(flag_url($t2,'w40')) ?>" alt=""><?php endif; ?><span><?= e(team_name($t2)) ?></span></div>
     </div>
   <?php endforeach; ?>
-  <a class="wgt-foot" href="<?= e($home) ?>" target="_top" rel="noopener"><?= e($site) ?> — <?= e(parse_url(SITE_URL, PHP_URL_HOST) ?: 'wcup2026.org') ?> ›</a>
+  <a class="wgt-foot" href="<?= e($home) ?>" target="_top" rel="noopener"><?= e($site) ?> — <?= e(parse_url(SITE_URL, PHP_URL_HOST) ?: ' foot-boll.com') ?> ›</a>
 </div>
 <script>
   // حوّل الأوقات لتوقيت زائر الموقع المُضيف

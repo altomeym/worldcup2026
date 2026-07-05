@@ -444,7 +444,7 @@ class TweetComposer
 
     private static function link(string $page = '', bool $bustCache = true): string
     {
-        $base = defined('SITE_URL') && SITE_URL !== '' ? rtrim(SITE_URL, '/') : 'https://wcup2026.org';
+        $base = defined('SITE_URL') && SITE_URL !== '' ? rtrim(SITE_URL, '/') : 'https:// foot-boll.com';
         $url  = $base . ($page !== '' ? '/' . ltrim($page, '/') : '');
         // ✨ يُجبر تويتر/فيسبوك على إعادة سحب OG-image كل يوم
         // (تجنّب الكاش الفارغ القديم — كل URL جديد = صورة معاينة جميلة جديدة).

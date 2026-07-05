@@ -5,7 +5,7 @@
 if (!defined('WC2026')) { exit('Access denied'); }
 
 /** اللغات المدعومة في الموقع. */
-const SUPPORTED_LANGS = ['ar', 'en', 'fr'];
+const SUPPORTED_LANGS = ['ar', 'en'];
 
 /**
  * يحلّل ترويسة Accept-Language ويعيد أوّل لغة مدعومة (حسب الأولويّة)

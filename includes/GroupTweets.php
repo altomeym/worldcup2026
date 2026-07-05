@@ -210,7 +210,7 @@ class GroupTweets
 
     private static function link(string $path = ''): string
     {
-        $base = defined('SITE_URL') && SITE_URL !== '' ? rtrim(SITE_URL, '/') : 'https://wcup2026.org';
+        $base = defined('SITE_URL') && SITE_URL !== '' ? rtrim(SITE_URL, '/') : 'https:// foot-boll.com';
         return $base . '/' . ltrim($path, '/');
     }
 }

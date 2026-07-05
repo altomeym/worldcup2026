@@ -12,7 +12,7 @@
  * يُشغَّل محليّاً فقط (مثل fifa-build). per-90/المئويّات/الرادار تُحسب وقت العرض في FifaMetrics.
  */
 chdir(dirname(__DIR__));
-$_SERVER['HTTP_HOST'] = 'wcup2026.org';
+$_SERVER['HTTP_HOST'] = ' foot-boll.com';
 require __DIR__ . '/../includes/bootstrap.php';   // لإتاحة fifa_iso() لمطابقة رجل المباراة
 $dir = rtrim($argv[1] ?? (__DIR__ . '/_fp'), '/\\');
 

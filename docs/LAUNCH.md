@@ -3,7 +3,7 @@
 Ready-to-post copy for sharing the project. Keep it honest — no inflated claims,
 no asking for upvotes/stars on Hacker News (against the rules there).
 
-Live demo: https://wcup2026.org/index.php?lang=en
+Live demo: https:// foot-boll.com/index.php?lang=en
 Repo: https://github.com/salah23222/worldcup2026
 
 ---
@@ -20,7 +20,7 @@ Show HN: Open-source World Cup 2026 site in plain PHP – no framework, no build
 
 ```
 I built an open-source companion site for the 2026 World Cup. Live demo:
-https://wcup2026.org/index.php?lang=en — Code: https://github.com/salah23222/worldcup2026
+https:// foot-boll.com/index.php?lang=en — Code: https://github.com/salah23222/worldcup2026
 
 A few things that made it interesting to build:
 
@@ -59,7 +59,7 @@ Arabic-first companion site — and I wanted it to run on the cheapest shared
 hosting without falling over. So I built it in **plain PHP 8: no framework, no
 build step, no Composer, and no database required.**
 
-🔗 Live: https://wcup2026.org/index.php?lang=en
+🔗 Live: https:// foot-boll.com/index.php?lang=en
 ⭐ Code (MIT): https://github.com/salah23222/worldcup2026
 
 ## Why no framework?

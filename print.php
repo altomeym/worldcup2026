@@ -7,7 +7,7 @@
  *   • شبكة أعلام كل مجموعة (12 × 4)
  *   • جدول كامل: التاريخ · المجموعة · المباراة (علمَا الفريقَين) · الوقت
  *   • التوقيت بتوقيت المستخدم المحلي تلقائياً (عبر JS — Intl.DateTimeFormat)
- *   • تذييل: 72 MATCHES · wcup2026.org
+ *   • تذييل: 72 MATCHES · foot-boll.com
  * ============================================================
  */
 require __DIR__ . '/includes/bootstrap.php';
@@ -65,7 +65,7 @@ $qrFor = function (string $url): string {
     @file_put_contents($cache, $data);
     return $data;
 };
-$siteUrl = defined('SITE_URL') && SITE_URL !== '' ? rtrim(SITE_URL, '/') : 'https://wcup2026.org';
+$siteUrl = defined('SITE_URL') && SITE_URL !== '' ? rtrim(SITE_URL, '/') : 'https:// foot-boll.com';
 $qrPng   = $qrFor($siteUrl);
 
 $page_title = $ar ? 'جدول البطولة — للطباعة' : 'Tournament Schedule — Printable';
@@ -337,7 +337,7 @@ html, body {
       <div class="panel qr-panel">
         <div class="qr-img">
           <?php if ($qrPng !== ''): ?>
-            <img src="<?= e($qrPng) ?>" alt="QR · wcup2026.org">
+            <img src="<?= e($qrPng) ?>" alt="QR · foot-boll.com">
           <?php endif; ?>
         </div>
         <div class="qr-text">
@@ -474,7 +474,7 @@ html, body {
         <small style="display:block"><?= e($ar ? 'مرحلة المجموعات' : 'GROUP STAGE') ?></small>
       </div>
       <div class="site">
-        <div class="site-name">wcup2026.org</div>
+        <div class="site-name"> foot-boll.com</div>
         <div class="site-tag"><?= e($ar ? 'كل المعلومات في مكان واحد' : 'All in one place') ?></div>
       </div>
     </div>

@@ -37,7 +37,7 @@ class FootballTxt
     {
         return "= FIFA World Cup 2026\n\n"
              . "# {$sub}\n"
-             . "# Source:  https://wcup2026.org  (auto-generated, kept in sync with live results)\n"
+             . "# Source:  https:// foot-boll.com  (auto-generated, kept in sync with live results)\n"
              . "# Data:    openfootball schedule + ESPN/FIFA live results\n"
              . "# Format:  football.txt  (https://github.com/openfootball)\n"
              . "# Updated: " . gmdate('Y-m-d H:i') . " UTC\n\n";

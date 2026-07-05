@@ -142,7 +142,7 @@ class Admin
             $when = gmdate('Y-m-d H:i:s') . ' UTC';
             $ip   = self::ip();
             $ua   = substr((string)($_SERVER['HTTP_USER_AGENT'] ?? '-'), 0, 200);
-            $host = (string)($_SERVER['HTTP_HOST'] ?? 'wcup2026.org');
+            $host = (string)($_SERVER['HTTP_HOST'] ?? ' foot-boll.com');
             $subj = '[' . $host . '] Admin login at ' . $when;
             $body = "Successful admin login on {$host}\n\n"
                   . "Time:  {$when}\n"

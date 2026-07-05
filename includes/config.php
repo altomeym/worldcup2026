@@ -36,11 +36,11 @@ define('SITE_NAME_AR', 'كأس العالم 2026');
 define('SITE_NAME_EN', 'World Cup 2026');
 define('SITE_TAGLINE_AR', 'كندا · المكسيك · الولايات المتحدة');
 define('SITE_TAGLINE_EN', 'Canada · Mexico · USA');
-// من config.local.php / البيئة. فارغ = روابط نسبية. للإنتاج: https://wcup2026.org
+// من config.local.php / البيئة. فارغ = روابط نسبية. للإنتاج: https:// foot-boll.com
 define('SITE_URL', (string)cfg_secret('SITE_URL', '', $__local));
 
 // بريد التواصل (يستقبل رسائل نموذج «تواصل معنا/الرعاية»).
-define('CONTACT_EMAIL', (string)cfg_secret('CONTACT_EMAIL', 'info@wcup2026.org', $__local));
+define('CONTACT_EMAIL', (string)cfg_secret('CONTACT_EMAIL', 'info@ foot-boll.com', $__local));
 // رقم التواصل المباشر (اتصال/واتساب) — يظهر في صندوق التأكيد بعد الإرسال.
 // بصيغة دولية مثل +9665XXXXXXXX. فارغ = لا يُعرض رقم. ضعه في config.local.php.
 define('CONTACT_PHONE', (string)cfg_secret('CONTACT_PHONE', '', $__local));
@@ -117,7 +117,7 @@ define('DB_ENABLED', filter_var(cfg_secret('DB_ENABLED', false, $__local), FILTE
 define('INSTALL_TOKEN', (string)cfg_secret('INSTALL_TOKEN', '', $__local));
 
 // ---------- البريد (SMTP لإرسال النشرة الدورية للمشتركين) ----------
-// ضع بيانات صندوق بريدك (info@wcup2026.org) في config.local.php / البيئة.
+// ضع بيانات صندوق بريدك (info@ foot-boll.com) في config.local.php / البيئة.
 // فارغ = يُستخدم mail() المدمجة بدل SMTP (وصول أضعف). للإنتاج استخدم SMTP.
 define('SMTP_HOST',   (string)cfg_secret('SMTP_HOST', '', $__local));        // مثل smtp.hostinger.com
 define('SMTP_PORT',   (int)   cfg_secret('SMTP_PORT', 465, $__local));        // 465=ssl أو 587=tls
@@ -206,7 +206,7 @@ define('X_LANGS', $__xLangs);
 // ---------- (اختياري) بوت تيليجرام ----------
 // فارغ = البوت معطّل تماماً (نقطة الويبهوك ترد 503 ولا تتصل بأي شيء).
 // لتفعيله: أنشئ بوتاً عبر @BotFather، ضع التوكن هنا، واضبط ويبهوك يشير إلى
-// https://wcup2026.org/api/telegram.php مع secret_token = TELEGRAM_WEBHOOK_SECRET.
+// https:// foot-boll.com/api/telegram.php مع secret_token = TELEGRAM_WEBHOOK_SECRET.
 define('TELEGRAM_BOT_TOKEN',      (string)cfg_secret('TELEGRAM_BOT_TOKEN', '', $__local));
 define('TELEGRAM_WEBHOOK_SECRET', (string)cfg_secret('TELEGRAM_WEBHOOK_SECRET', '', $__local));
 

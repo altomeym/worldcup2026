@@ -267,7 +267,7 @@ class Referrals
     {
         $base = defined('SITE_URL') && SITE_URL !== ''
               ? rtrim((string)SITE_URL, '/')
-              : ((($_SERVER['HTTPS'] ?? '') ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'wcup2026.org'));
+              : ((($_SERVER['HTTPS'] ?? '') ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? ' foot-boll.com'));
         return $base . '/?ref=' . rawurlencode($username);
     }
 

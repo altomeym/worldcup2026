@@ -80,7 +80,7 @@ tpl('header');
       <div class="ia-step-num">1</div>
       <div class="ia-phone-mock">
         <div class="ia-phone-screen">
-          <div class="ia-mock-bar"><span class="ia-mock-url">wcup2026.org</span></div>
+          <div class="ia-mock-bar"><span class="ia-mock-url"> foot-boll.com</span></div>
           <div class="ia-mock-content">
             <div class="ia-mock-26">26</div>
             <p><?= e($ar ? 'كأس العالم 2026' : 'World Cup 2026') ?></p>
@@ -90,8 +90,8 @@ tpl('header');
       </div>
       <h3><?= e($ar ? 'افتح في Safari' : 'Open in Safari') ?></h3>
       <p><?= e($ar
-        ? 'ادخل wcup2026.org في متصفّح Safari (مهم: Chrome على iOS لا يدعم التثبيت)'
-        : 'Visit wcup2026.org in Safari (Chrome on iOS does NOT support install)') ?></p>
+        ? 'ادخل foot-boll.com في متصفّح Safari (مهم: Chrome على iOS لا يدعم التثبيت)'
+        : 'Visit foot-boll.com in Safari (Chrome on iOS does NOT support install)') ?></p>
     </article>
 
     <!-- خطوة 2 -->
@@ -160,7 +160,7 @@ tpl('header');
       <div class="ia-step-num">1</div>
       <div class="ia-phone-mock">
         <div class="ia-phone-screen">
-          <div class="ia-mock-bar"><span class="ia-mock-url">wcup2026.org</span></div>
+          <div class="ia-mock-bar"><span class="ia-mock-url"> foot-boll.com</span></div>
           <div class="ia-mock-content">
             <div class="ia-mock-26">26</div>
             <p><?= e($ar ? 'كأس العالم 2026' : 'World Cup 2026') ?></p>
@@ -168,7 +168,7 @@ tpl('header');
         </div>
       </div>
       <h3><?= e($ar ? 'افتح في Chrome' : 'Open in Chrome') ?></h3>
-      <p><?= e($ar ? 'ادخل wcup2026.org من متصفّح Chrome' : 'Visit wcup2026.org in Chrome') ?></p>
+      <p><?= e($ar ? 'ادخل foot-boll.com من متصفّح Chrome' : 'Visit foot-boll.com in Chrome') ?></p>
     </article>
 
     <!-- خطوة 2 -->

@@ -6,7 +6,7 @@
  * يُشغَّل محليّاً فقط (يتطلّب pdftotext لإنتاج ملفّات النصّ — غير متوفّر على Hostinger).
  */
 chdir(dirname(__DIR__));
-$_SERVER['HTTP_HOST'] = 'wcup2026.org';
+$_SERVER['HTTP_HOST'] = ' foot-boll.com';
 require __DIR__ . '/../includes/bootstrap.php';
 
 $cmd = $argv[1] ?? 'build';

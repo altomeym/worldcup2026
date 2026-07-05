@@ -116,7 +116,7 @@ class TweetCardImage
             // ── الترويسة: شارة 26 + النطاق ──
             self::roundedRect($im, $W/2 - 38, 36, $W/2 + 38, 112, 18, $white);
             self::centerText($im, $fontEn, 34, $W/2, 92, $navy, '26');
-            self::centerText($im, $fontEn, 17, $W/2, 145, $light, 'WCUP2026.ORG');
+            self::centerText($im, $fontEn, 17, $W/2, 145, $light, ' foot-boll.com');
 
             // ── العنوان والعنوان الفرعي ──
             self::centerText($im, $fontAr, 52, $W/2, 225, $white, ArabicText::shape($title));
@@ -230,7 +230,7 @@ class TweetCardImage
             // ── التذييل ──
             imageline($im, 120, $H - 95, $W - 120, $H - 95, $dimW);
             self::centerText($im, $fontAr, 24, $W/2, $H - 52, $light,
-                ArabicText::shape('كل المباريات بتوقيتك على wcup2026.org'));
+                ArabicText::shape('كل المباريات بتوقيتك على foot-boll.com'));
 
             if (!is_dir($dir)) @mkdir($dir, 0755, true);
             imagepng($im, $file);
@@ -314,7 +314,7 @@ class TweetCardImage
 
             // تذييل
             self::centerText($im, $fontAr, 25, $W/2, $H - 38, $light,
-                ArabicText::shape('المتأهّلون فور حسمهم رياضياً · wcup2026.org'));
+                ArabicText::shape('المتأهّلون فور حسمهم رياضياً · foot-boll.com'));
 
             if (!is_dir($dir)) @mkdir($dir, 0755, true);
             imagepng($im, $file);

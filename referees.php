@@ -185,7 +185,8 @@ $CONT_OF = [
 
 // ===== قسم إحصائيات الحكّام: من أدار مباريات + أرقامه الحقيقيّة (ESPN) =====
 $statRows = [];
-$contCounts = [];   // عدد الحكّام الذين أداروا مباريات لكل قارّة
+$contCounts  = [];   // عدد الحكّام الذين أداروا مباريات لكل قارّة
+$contMatches = [];   // عدد المباريات التي أدارها حكّام كل قارّة
 foreach ($referees as $idx => $r) {
     if (($r['role'] ?? 'referee') !== 'referee') continue;   // الحكّام الرئيسيون فقط
     $nm = trim((string)($r['name'] ?? ''));
@@ -198,7 +199,10 @@ foreach ($referees as $idx => $r) {
     $fl = (int)($st['fouls'] ?? 0);
     $fg = strtolower(trim((string)($r['flag'] ?? '')));
     $cont = $CONT_OF[$fg] ?? '';
-    if ($cont !== '') $contCounts[$cont] = ($contCounts[$cont] ?? 0) + 1;
+    if ($cont !== '') {
+        $contCounts[$cont]  = ($contCounts[$cont] ?? 0) + 1;
+        $contMatches[$cont] = ($contMatches[$cont] ?? 0) + $mt;
+    }
     $statRows[] = [
         'idx'     => $idx,
         'name'    => $nm,
@@ -355,21 +359,41 @@ if ($contTotal > 0):
       <text x="21" y="25.5" text-anchor="middle" class="rd-lbl"><?= e($lang === 'ar' ? 'حكماً' : 'refs') ?></text>
     </svg>
     <ul class="ref-donut-legend">
-      <?php foreach ($contCounts as $ck => $cn): $C = $CONTINENTS[$ck]; $p = (int)round($cn / $contTotal * 100); ?>
-      <li>
+      <?php foreach ($contCounts as $ck => $cn): $C = $CONTINENTS[$ck];
+        $p = (int)round($cn / $contTotal * 100); $mtc = (int)($contMatches[$ck] ?? 0); ?>
+      <li class="rdl-item" data-cont="<?= e($ck) ?>" role="button" tabindex="0"
+          title="<?= e($lang === 'ar' ? 'اعرض حكّام هذه القارّة' : 'Show this continent’s referees') ?>">
         <span class="rdl-dot" style="background:<?= $C['color'] ?>"></span>
         <span class="rdl-name"><?= e($C[$lang === 'ar' ? 'ar' : 'en']) ?></span>
-        <span class="rdl-val"><strong><?= (int)$cn ?></strong> · <?= $p ?>%</span>
+        <span class="rdl-val">
+          <strong><?= (int)$cn ?></strong> <?= e($lang === 'ar' ? 'حكّام' : 'refs') ?>
+          · <strong><?= $mtc ?></strong> <?= e($lang === 'ar' ? 'مباراة' : 'matches') ?>
+          · <?= $p ?>%
+        </span>
       </li>
       <?php endforeach; ?>
     </ul>
   </div>
   <p class="muted" style="font-size:.78rem;margin-top:10px">
     <?= e($lang === 'ar'
-        ? 'عدد الحكّام الذين أداروا مباريات في كأس العالم 2026 موزّعين حسب قارّة (اتحاد) كل حكم.'
-        : 'Referees who officiated FIFA World Cup 2026 matches, grouped by each referee\'s continent (confederation).') ?>
+        ? 'الحكّام الـ' . count($statRows) . ' الظاهرون في جدول الإحصائيات أعلاه، موزّعون حسب قارّة (اتحاد) كل حكم مع عدد مبارياتهم — اضغط أي قارّة لعرض أسماء حكّامها في الجدول.'
+        : 'The ' . count($statRows) . ' referees in the statistics table above, grouped by each referee\'s continent (confederation) with their match counts — tap a continent to show its referees in the table.') ?>
   </p>
 </section>
+<script>
+(function(){
+  var items = document.querySelectorAll('.rdl-item');
+  if (!items.length) return;
+  function go(c){
+    var b = document.querySelector('.rcf-btn[data-cont="' + c + '"]');
+    if (b){ b.click(); var t = document.getElementById('refStatsTbl'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  items.forEach(function(li){
+    li.addEventListener('click', function(){ go(li.getAttribute('data-cont')); });
+    li.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(li.getAttribute('data-cont')); } });
+  });
+})();
+</script>
 <?php endif; ?>
 <?php endif; ?>
 

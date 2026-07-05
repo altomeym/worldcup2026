@@ -91,6 +91,23 @@ class Referees
     }
 
     /**
+     * فهرس الحكم في القائمة (للربط بصفحة referee.php?i=) أو null — مطابقة ذكيّة.
+     * الفهرس = موضع الحكم في مصفوفة all() لأنّ byIndex($i) تُرجِع all()[$i].
+     */
+    public static function indexOf(string $name): ?int
+    {
+        $name = trim($name);
+        if ($name === '') return null;
+        foreach (self::all() as $i => $r) {
+            $rn = trim((string)($r['name'] ?? ''));
+            if ($rn !== '' && self::sameRef($rn, $name)) {
+                return (int)$i;
+            }
+        }
+        return null;
+    }
+
+    /**
      * tournamentStats() — إحصائيات تحكيميّة محسوبة من بيانات مبارياتنا
      * (لا يوجد مصدر مجاني موثوق لتقييم الحكام — نحسبها بأنفسنا من الواقع):
      *   لكل حكم: مباريات أدارها · 🟨 · 🟥 · ركلات جزاء احتسبها · معدّل البطاقات.

@@ -14,11 +14,13 @@ $page_desc  = t('top_scorers_intro');
 tpl('header');
 
 /**
- * صورة اللاعب لكرت FUT: Wikimedia أولاً (مجانية CC) ثم علم منتخبه كبديل.
+ * صورة اللاعب لكرت FUT: صورة FIFA الرسميّة أولاً (assets/fifa-photos.json عبر
+ * player_photo)، ثم Wikimedia (CC) كبديل، ثم علم منتخبه.
  * $flagUrl رابط علم احتياطي (يُعرض حين لا تتوفّر صورة).
  */
 function fut_photo_html(string $name, string $flagUrl): string {
-    $photo = Scorers::photo($name);
+    $photo = function_exists('player_photo') ? player_photo($name) : '';   // FIFA الرسميّة
+    if ($photo === '') $photo = Scorers::photo($name);                      // Wikimedia بديلاً
     if ($photo !== '') {
         return '<img class="fut-img" src="' . e($photo) . '" alt="' . e($name) . '" loading="lazy">';
     }
@@ -76,6 +78,16 @@ $lang = current_lang();
         ]);
       endforeach; ?>
     </div>
+  <?php endif; ?>
+
+  <?php if ($current): ?>
+    <?php
+      $topName = team_name($current[0]['team']);
+      $shareTxt = $lang === 'ar'
+                ? '⚽ هدّافو كأس العالم 2026 — يتصدّر ' . $current[0]['name'] . ' (' . (int)$current[0]['goals'] . ' أهداف). سباق الحذاء الذهبي:'
+                : '⚽ FIFA World Cup 2026 top scorers — ' . $current[0]['name'] . ' leads with ' . (int)$current[0]['goals'] . ' goals. Golden Boot race:';
+    ?>
+    <?php render_share(canonical_url(), $shareTxt); ?>
   <?php endif; ?>
 </section>
 

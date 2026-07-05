@@ -1685,6 +1685,11 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .ref-reason-bar { flex:1 1 auto; background:#1a2940; border-radius:8px; height:10px; overflow:hidden; }
 .ref-reason-bar span { display:block; height:100%; border-radius:8px; background:#f7e09a; transition:width .3s; }
 .ref-reason-n { flex:0 0 auto; font-size:.85rem; font-weight:800; min-width:20px; text-align:center; }
+.ref-inline-stats { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; align-items:center; }
+.ref-chip { font-size:.72rem; font-weight:700; background:var(--surface-2); border:1px solid var(--border); border-radius:20px; padding:2px 9px; color:var(--text-dim); white-space:nowrap; }
+.ref-chip-strict { color:var(--text); border-color:var(--accent); }
+.ref-inline-link { font-size:.72rem; font-weight:800; color:var(--accent); text-decoration:none; white-space:nowrap; }
+.ref-inline-link:hover { text-decoration:underline; }
 
 /* بطاقات المباراة (الإنذارات/الطرد) */
 .md-cards { margin-top:22px; }

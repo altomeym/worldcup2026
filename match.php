@@ -493,6 +493,21 @@ seo_sportsevent($m);
   };
   $tbaSpan = '<span class="ref-tbd">'.e($L('يُعلَن قبل المباراة','TBA before kickoff')).'</span>';
 
+  // إحصائيات الحكم الرئيسي الحقيقيّة + رابط صفحته (إتمام حلقة الحكّام)
+  $refName     = trim((string)(($offMain['name'] ?? '') ?: ($m['referee'] ?? '')));
+  $refIdx      = ($refName !== '' && class_exists('Referees')) ? Referees::indexOf($refName)  : null;
+  $refStats    = ($refName !== '' && class_exists('Referees')) ? Referees::statsFor($refName) : null;
+  $refFpm = $refCardsAvg = null; $refStrict = '';
+  if ($refStats && (int)($refStats['matches'] ?? 0) > 0) {
+      $rm = (int)$refStats['matches'];
+      $rc = (int)($refStats['yellow'] ?? 0) + (int)($refStats['red'] ?? 0);
+      $refCardsAvg = round($rc / $rm, 1);
+      if ((int)($refStats['fouls'] ?? 0) > 0) $refFpm = round($refStats['fouls'] / $rm, 1);
+      $refStrict = $refCardsAvg < 2 ? $L('هادئ','Lenient')
+                : ($refCardsAvg < 4 ? $L('متوازن','Balanced')
+                : ($refCardsAvg < 6 ? $L('صارم','Strict') : $L('صارم جداً','Very strict')));
+  }
+
   // ملخّص البطاقات
   $y1 = $y2 = $r1 = $r2 = 0;
   if (!empty($m['cards']) && is_array($m['cards'])) {
@@ -552,6 +567,17 @@ seo_sportsevent($m);
             <?= e($m['referee']) ?>
           <?php else: ?>
             <?= $tbaSpan ?>
+          <?php endif; ?>
+          <?php if ($refStats && (int)($refStats['matches'] ?? 0) > 0): ?>
+            <span class="ref-inline-stats">
+              <span class="ref-chip">📋 <?= (int)$refStats['matches'] ?> <?= e($L('مباراة','matches')) ?></span>
+              <?php if ($refFpm !== null): ?><span class="ref-chip">🚫 <?= e((string)$refFpm) ?> <?= e($L('خطأ/مباراة','fouls/m')) ?></span><?php endif; ?>
+              <span class="ref-chip">🟨 <?= e((string)$refCardsAvg) ?> <?= e($L('بطاقة/مباراة','cards/m')) ?></span>
+              <?php if ($refStrict !== ''): ?><span class="ref-chip ref-chip-strict"><?= e($refStrict) ?></span><?php endif; ?>
+              <?php if ($refIdx !== null): ?>
+                <a class="ref-inline-link" href="<?= e(url('referee.php', ['i' => $refIdx])) ?>"><?= e($L('إحصائياته الكاملة','Full stats')) ?> ↗</a>
+              <?php endif; ?>
+            </span>
           <?php endif; ?>
         </span>
       </li>

@@ -44,19 +44,88 @@ tpl('header');
 </div>
 
 <?php
-// ===== إحصائيات شاملة بالمجموع (كل مباريات البطولة المنتهية — ESPN) =====
-$agg = ['matches'=>0,'yellow'=>0,'red'=>0,'fouls'=>0,'offsides'=>0,'goals'=>0,'pens'=>0];
-$aggRefs = 0;
-foreach (Referees::tournamentStats() as $tr) {
-    if ((int)($tr['matches'] ?? 0) < 1) continue;
-    $aggRefs++;
-    foreach (['matches','yellow','red','fouls','offsides','goals','pens'] as $k) {
-        $agg[$k] += (int)($tr[$k] ?? 0);
+// ===== القارّات (الاتحادات) — ألوان أولمبيّة رسميّة مكيّفة للثيم الداكن =====
+//  أزرق=أوروبا · أصفر=آسيا · (الأسود الأولمبي لأفريقيا يختفي على الداكن → أخضر) ·
+//  الأحمر الأولمبي للأمريكتَين → الجنوبية أحمر والشمالية برتقالي (نفس العائلة).
+$CONTINENTS = [
+    'eur'  => ['ar' => 'أوروبا',          'en' => 'Europe',     'color' => '#0081C8'],
+    'asia' => ['ar' => 'آسيا',             'en' => 'Asia',       'color' => '#F4C300'],
+    'afr'  => ['ar' => 'أفريقيا',          'en' => 'Africa',     'color' => '#00A651'],
+    'sam'  => ['ar' => 'أمريكا الجنوبية', 'en' => 'S. America', 'color' => '#EE334E'],
+    'nam'  => ['ar' => 'أمريكا الشمالية', 'en' => 'N. America', 'color' => '#EE7A34'],
+    'oce'  => ['ar' => 'أوقيانوسيا',       'en' => 'Oceania',    'color' => '#9AA0A6'],
+];
+$CONT_OF = [
+    'ch'=>'eur','de'=>'eur','es'=>'eur','fr'=>'eur','gb-eng'=>'eur','it'=>'eur','nl'=>'eur',
+    'no'=>'eur','pl'=>'eur','pt'=>'eur','ro'=>'eur','se'=>'eur','si'=>'eur',
+    'ar'=>'sam','br'=>'sam','cl'=>'sam','co'=>'sam','pe'=>'sam','py'=>'sam','uy'=>'sam','ve'=>'sam',
+    'ca'=>'nam','cr'=>'nam','hn'=>'nam','jm'=>'nam','mx'=>'nam','sv'=>'nam','us'=>'nam',
+    'dz'=>'afr','eg'=>'afr','ga'=>'afr','ma'=>'afr','mr'=>'afr','so'=>'afr','za'=>'afr',
+    'ae'=>'asia','au'=>'asia','cn'=>'asia','jo'=>'asia','jp'=>'asia','qa'=>'asia','sa'=>'asia','uz'=>'asia',
+    'nz'=>'oce',
+];
+// قارّة حكم المباراة: علم الطاقم، ثمّ مطابقة الاسم بقائمة الحكّام الرسميّة
+$contOfMatch = function (array $mm) use ($CONT_OF) {
+    $off = $mm['officials']['main'] ?? null;
+    $fg  = strtolower(trim((string)($off['flag'] ?? '')));
+    if ($fg === '' && class_exists('Referees')) {
+        $rn = trim((string)(($off['name'] ?? '') ?: ($mm['referee'] ?? '')));
+        $ix = $rn !== '' ? Referees::indexOf($rn) : null;
+        if ($ix !== null) { $rr = Referees::byIndex($ix); $fg = strtolower(trim((string)($rr['flag'] ?? ''))); }
+    }
+    return $CONT_OF[$fg] ?? '';
+};
+
+// ===== المجاميع الكليّة + توزيعها الحقيقي لكل قارّة (من كل مباريات البطولة) =====
+$agg     = ['matches'=>0,'refs'=>0,'yellow'=>0,'red'=>0,'fouls'=>0,'offsides'=>0,'goals'=>0,'pens'=>0];
+$contAgg = [];                       // مجاميع كل قارّة
+$refSets = ['__all' => []];          // مجموعات الحكّام (لعدّهم بلا تكرار)
+foreach (DataService::allMatches() as $mm) {
+    if (($mm['_status'] ?? '') !== 'finished') continue;
+    $yl = 0; $rd = 0;
+    foreach ((array)($mm['cards'] ?? []) as $c) { (($c['type'] ?? '') === 'red') ? $rd++ : $yl++; }
+    $fo = Referees::matchFouls($mm);
+    $os = Referees::matchOffsides($mm);
+    $ft = $mm['score']['ft'] ?? null;
+    $go = (is_array($ft) && isset($ft[0], $ft[1])) ? ((int)$ft[0] + (int)$ft[1]) : 0;
+    $pn = 0;
+    foreach ([($mm['goals1'] ?? []), ($mm['goals2'] ?? [])] as $side) {
+        foreach ((array)$side as $g) { if (!empty($g['penalty'])) $pn++; }
+    }
+    $refN = trim((string)(($mm['officials']['main']['name'] ?? '') ?: ($mm['referee'] ?? '')));
+
+    $agg['matches']++; $agg['yellow']+=$yl; $agg['red']+=$rd; $agg['fouls']+=$fo;
+    $agg['offsides']+=$os; $agg['goals']+=$go; $agg['pens']+=$pn;
+    if ($refN !== '') $refSets['__all'][$refN] = true;
+
+    $ck = $contOfMatch($mm);
+    if ($ck !== '') {
+        if (!isset($contAgg[$ck])) $contAgg[$ck] = ['matches'=>0,'yellow'=>0,'red'=>0,'fouls'=>0,'offsides'=>0,'goals'=>0,'pens'=>0];
+        $contAgg[$ck]['matches']++; $contAgg[$ck]['yellow']+=$yl; $contAgg[$ck]['red']+=$rd; $contAgg[$ck]['fouls']+=$fo;
+        $contAgg[$ck]['offsides']+=$os; $contAgg[$ck]['goals']+=$go; $contAgg[$ck]['pens']+=$pn;
+        if ($refN !== '') $refSets[$ck][$refN] = true;
     }
 }
+$agg['refs'] = count($refSets['__all']);
+uasort($contAgg, fn($a, $b) => $b['matches'] <=> $a['matches']);
+foreach ($contAgg as $ck => &$v) { $v['refs'] = isset($refSets[$ck]) ? count($refSets[$ck]) : 0; }
+unset($v);
+
+$aggRefs = $agg['refs'];
 $aggCards = $agg['yellow'] + $agg['red'];
 $aggCpm   = $agg['matches'] ? round($aggCards   / $agg['matches'], 1) : 0;
 $aggFpm   = $agg['matches'] ? round($agg['fouls'] / $agg['matches'], 1) : 0;
+
+// بيانات JS: قيم كل مقياس لكل قارّة + الكل (لتحديث البطاقات العلويّة عند الاختيار)
+$mkStat = fn(array $a) => [
+    'matches'=>(int)$a['matches'], 'refs'=>(int)($a['refs'] ?? 0),
+    'yellow'=>(int)$a['yellow'], 'red'=>(int)$a['red'], 'fouls'=>(int)$a['fouls'],
+    'offsides'=>(int)$a['offsides'], 'goals'=>(int)$a['goals'], 'pens'=>(int)$a['pens'],
+    'cpm'=> $a['matches'] ? round(($a['yellow']+$a['red'])/$a['matches'],1) : 0,
+    'fpm'=> $a['matches'] ? round($a['fouls']/$a['matches'],1) : 0,
+];
+$contData = ['all' => $mkStat($agg)];
+foreach ($contAgg as $ck => $a) $contData[$ck] = $mkStat($a);
 
 // كل بطاقات البطولة (مباراة · دقيقة · لاعب · حكم · نوع) — للوحة التفاصيل عند النقر
 $allCards = [];
@@ -81,20 +150,25 @@ foreach (DataService::allMatches() as $mm) {
 usort($allCards, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (int)$b['minute']]);
 ?>
 <?php if ($agg['matches'] > 0): ?>
-<section class="ref-section">
-  <h2 class="day-title">🌍 <?= e($lang === 'ar' ? 'إحصائيات شاملة — بالمجموع' : 'Overall totals') ?></h2>
+<section class="ref-section" id="aggSection">
+  <h2 class="day-title">🌍 <?= e($lang === 'ar' ? 'إحصائيات شاملة —' : 'Overall totals —') ?>
+    <span id="aggScope" class="agg-scope"><?= e($lang === 'ar' ? 'بالمجموع' : 'All') ?></span>
+  </h2>
   <div class="ref-stats-grid">
-    <div class="ref-stat"><div class="ref-stat-v"><?= $agg['matches'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'مباريات أُديرت' : 'Matches') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v"><?= $aggRefs ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'حكّام أداروا' : 'Referees') ?></div></div>
-    <button type="button" class="ref-stat ref-stat-click" data-cards="yellow"><div class="ref-stat-v" style="color:#f7e09a">🟨 <?= $agg['yellow'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات صفراء' : 'Yellow') ?> <span class="ref-stat-hint">👁</span></div></button>
-    <button type="button" class="ref-stat ref-stat-click" data-cards="red"><div class="ref-stat-v" style="color:#ef4444">🟥 <?= $agg['red'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات حمراء' : 'Red') ?> <span class="ref-stat-hint">👁</span></div></button>
-    <div class="ref-stat"><div class="ref-stat-v">🚫 <?= $agg['fouls'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'إجمالي الأخطاء' : 'Fouls') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v">🚩 <?= $agg['offsides'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'حالات تسلّل' : 'Offsides') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v">🥅 <?= $agg['goals'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'الأهداف' : 'Goals') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v">⚽ <?= $agg['pens'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'ركلات جزاء' : 'Penalties') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v"><?= e((string)$aggCpm) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقة/مباراة' : 'Cards/match') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v"><?= e((string)$aggFpm) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ/مباراة' : 'Fouls/match') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v"><span data-metric="matches"><?= $agg['matches'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'مباريات أُديرت' : 'Matches') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v"><span data-metric="refs"><?= $aggRefs ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'حكّام أداروا' : 'Referees') ?></div></div>
+    <button type="button" class="ref-stat ref-stat-click" data-cards="yellow"><div class="ref-stat-v" style="color:#f7e09a">🟨 <span data-metric="yellow"><?= $agg['yellow'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات صفراء' : 'Yellow') ?> <span class="ref-stat-hint">👁</span></div></button>
+    <button type="button" class="ref-stat ref-stat-click" data-cards="red"><div class="ref-stat-v" style="color:#ef4444">🟥 <span data-metric="red"><?= $agg['red'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات حمراء' : 'Red') ?> <span class="ref-stat-hint">👁</span></div></button>
+    <div class="ref-stat"><div class="ref-stat-v">🚫 <span data-metric="fouls"><?= $agg['fouls'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'إجمالي الأخطاء' : 'Fouls') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v">🚩 <span data-metric="offsides"><?= $agg['offsides'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'حالات تسلّل' : 'Offsides') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v">🥅 <span data-metric="goals"><?= $agg['goals'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'الأهداف' : 'Goals') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v">⚽ <span data-metric="pens"><?= $agg['pens'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'ركلات جزاء' : 'Penalties') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v"><span data-metric="cpm"><?= e((string)$aggCpm) ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقة/مباراة' : 'Cards/match') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v"><span data-metric="fpm"><?= e((string)$aggFpm) ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ/مباراة' : 'Fouls/match') ?></div></div>
   </div>
+  <script>window.REF_CONT_DATA = <?= json_encode($contData, JSON_UNESCAPED_UNICODE) ?>;
+  window.REF_CONT_NAMES = <?= json_encode(array_map(fn($c) => $c[$lang === 'ar' ? 'ar' : 'en'], $CONTINENTS), JSON_UNESCAPED_UNICODE) ?>;
+  window.REF_ALL_LABEL = <?= json_encode($lang === 'ar' ? 'بالمجموع' : 'All', JSON_UNESCAPED_UNICODE) ?>;</script>
 </section>
 
 <?php if ($allCards): ?>
@@ -163,30 +237,9 @@ usort($allCards, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (i
 <?php endif; ?>
 
 <?php
-// ===== القارّات (الاتحادات) — لتصنيف الحكّام حسب القارّة =====
-$CONTINENTS = [
-    'eur'  => ['ar' => 'أوروبا',           'en' => 'Europe',      'color' => '#3b82f6'],
-    'sam'  => ['ar' => 'أمريكا الجنوبية',  'en' => 'S. America',  'color' => '#14b8a6'],
-    'nam'  => ['ar' => 'أمريكا الشمالية',  'en' => 'N. America',  'color' => '#a855f7'],
-    'afr'  => ['ar' => 'أفريقيا',           'en' => 'Africa',      'color' => '#22c55e'],
-    'asia' => ['ar' => 'آسيا',              'en' => 'Asia',        'color' => '#f59e0b'],
-    'oce'  => ['ar' => 'أوقيانوسيا',        'en' => 'Oceania',     'color' => '#ec4899'],
-];
-// كود الدولة (ISO) → القارّة/الاتحاد (أستراليا في AFC = آسيا كرويّاً)
-$CONT_OF = [
-    'ch'=>'eur','de'=>'eur','es'=>'eur','fr'=>'eur','gb-eng'=>'eur','it'=>'eur','nl'=>'eur',
-    'no'=>'eur','pl'=>'eur','pt'=>'eur','ro'=>'eur','se'=>'eur','si'=>'eur',
-    'ar'=>'sam','br'=>'sam','cl'=>'sam','co'=>'sam','pe'=>'sam','py'=>'sam','uy'=>'sam','ve'=>'sam',
-    'ca'=>'nam','cr'=>'nam','hn'=>'nam','jm'=>'nam','mx'=>'nam','sv'=>'nam','us'=>'nam',
-    'dz'=>'afr','eg'=>'afr','ga'=>'afr','ma'=>'afr','mr'=>'afr','so'=>'afr','za'=>'afr',
-    'ae'=>'asia','au'=>'asia','cn'=>'asia','jo'=>'asia','jp'=>'asia','qa'=>'asia','sa'=>'asia','uz'=>'asia',
-    'nz'=>'oce',
-];
-
 // ===== قسم إحصائيات الحكّام: من أدار مباريات + أرقامه الحقيقيّة (ESPN) =====
+// (القارّات $CONTINENTS/$CONT_OF/$contAgg مُعرّفة أعلاه — نُعيد استخدامها هنا)
 $statRows = [];
-$contCounts  = [];   // عدد الحكّام الذين أداروا مباريات لكل قارّة
-$contMatches = [];   // عدد المباريات التي أدارها حكّام كل قارّة
 foreach ($referees as $idx => $r) {
     if (($r['role'] ?? 'referee') !== 'referee') continue;   // الحكّام الرئيسيون فقط
     $nm = trim((string)($r['name'] ?? ''));
@@ -198,16 +251,11 @@ foreach ($referees as $idx => $r) {
     $rd = (int)($st['red'] ?? 0);
     $fl = (int)($st['fouls'] ?? 0);
     $fg = strtolower(trim((string)($r['flag'] ?? '')));
-    $cont = $CONT_OF[$fg] ?? '';
-    if ($cont !== '') {
-        $contCounts[$cont]  = ($contCounts[$cont] ?? 0) + 1;
-        $contMatches[$cont] = ($contMatches[$cont] ?? 0) + $mt;
-    }
     $statRows[] = [
         'idx'     => $idx,
         'name'    => $nm,
         'flag'    => $fg,
-        'cont'    => $cont,
+        'cont'    => ($CONT_OF[$fg] ?? ''),
         'matches' => $mt,
         'yellow'  => $yl,
         'red'     => $rd,
@@ -221,8 +269,6 @@ foreach ($referees as $idx => $r) {
     ];
 }
 usort($statRows, fn($a, $b) => [$b['matches'], $b['fouls']] <=> [$a['matches'], $a['fouls']]);
-arsort($contCounts);   // الأكثر أوّلاً
-$contTotal = array_sum($contCounts);
 
 $strictOf = function (float $avg) use ($lang): array {
     if ($avg < 2) return [$lang === 'ar' ? 'هادئ'      : 'Lenient',     '#36c08f'];
@@ -243,12 +289,12 @@ $strictOf = function (float $avg) use ($lang): array {
         : 'Real figures from tournament matches (source: ESPN) — click any column to sort, or a name for full stats.') ?>
   </p>
 
-  <?php if ($contCounts): ?>
+  <?php if ($contAgg): ?>
   <div class="ref-cont-filter" id="contFilter">
-    <button type="button" class="rcf-btn active" data-cont="all"><?= e($lang === 'ar' ? 'كل القارّات' : 'All') ?> (<?= count($statRows) ?>)</button>
-    <?php foreach ($contCounts as $ck => $cn): $C = $CONTINENTS[$ck]; ?>
+    <button type="button" class="rcf-btn active" data-cont="all"><?= e($lang === 'ar' ? 'كل القارّات' : 'All continents') ?></button>
+    <?php foreach ($contAgg as $ck => $ca): $C = $CONTINENTS[$ck] ?? null; if (!$C) continue; ?>
       <button type="button" class="rcf-btn" data-cont="<?= e($ck) ?>">
-        <span class="rcf-dot" style="background:<?= $C['color'] ?>"></span><?= e($C[$lang === 'ar' ? 'ar' : 'en']) ?> (<?= (int)$cn ?>)
+        <span class="rcf-dot" style="background:<?= $C['color'] ?>"></span><?= e($C[$lang === 'ar' ? 'ar' : 'en']) ?>
       </button>
     <?php endforeach; ?>
   </div>
@@ -319,28 +365,42 @@ $strictOf = function (float $avg) use ($lang): array {
       rows.forEach(function(r, i){ r.cells[0].textContent = i + 1; body.appendChild(r); });
     });
   });
-  // فلتر القارّات
-  var filter = document.getElementById('contFilter');
+  // فلتر القارّات + تحديث الأرقام العلويّة عند الاختيار
+  var filter  = document.getElementById('contFilter');
+  var data    = window.REF_CONT_DATA  || {};
+  var names   = window.REF_CONT_NAMES || {};
+  var scopeEl = document.getElementById('aggScope');
+  function updateSummary(cont){
+    var d = data[cont] || data.all; if (!d) return;
+    document.querySelectorAll('#aggSection [data-metric]').forEach(function(el){
+      var m = el.getAttribute('data-metric');
+      if (d[m] !== undefined && d[m] !== null) el.textContent = d[m];
+    });
+    if (scopeEl) scopeEl.textContent = (cont === 'all') ? (window.REF_ALL_LABEL || 'All') : (names[cont] || cont);
+  }
+  window.refApplyContinent = function(c){
+    if (filter) filter.querySelectorAll('.rcf-btn').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-cont') === c); });
+    Array.prototype.forEach.call(body.rows, function(r){
+      r.style.display = (c === 'all' || r.getAttribute('data-cont') === c) ? '' : 'none';
+    });
+    updateSummary(c);
+  };
   if (filter) {
     filter.querySelectorAll('.rcf-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var c = btn.getAttribute('data-cont');
-        filter.querySelectorAll('.rcf-btn').forEach(function(b){ b.classList.toggle('active', b === btn); });
-        Array.prototype.forEach.call(body.rows, function(r){
-          r.style.display = (c === 'all' || r.getAttribute('data-cont') === c) ? '' : 'none';
-        });
-      });
+      btn.addEventListener('click', function(){ window.refApplyContinent(btn.getAttribute('data-cont')); });
     });
   }
 })();
 </script>
 
 <?php
-// ===== رسم الدونت: توزيع الحكّام حسب القارّة (رقم + نسبة) =====
-if ($contTotal > 0):
+// ===== رسم الدونت: توزيع الحكّام حسب القارّة (رقم + نسبة) — من كل مباريات البطولة =====
+$dTotal = 0; foreach ($contAgg as $ca) $dTotal += (int)($ca['refs'] ?? 0);
+if ($dTotal > 0):
   $cum = 0; $segs = '';
-  foreach ($contCounts as $ck => $cn) {
-      $p     = $cn / $contTotal * 100;
+  foreach ($contAgg as $ck => $ca) {
+      $cn = (int)($ca['refs'] ?? 0); if ($cn <= 0 || !isset($CONTINENTS[$ck])) continue;
+      $p  = $cn / $dTotal * 100;
       $segs .= sprintf(
           '<circle cx="21" cy="21" r="15.915" fill="transparent" stroke="%s" stroke-width="5.5" stroke-dasharray="%.3f %.3f" stroke-dashoffset="%.3f"><title>%s: %d (%d%%)</title></circle>',
           $CONTINENTS[$ck]['color'], $p, 100 - $p, 25 - $cum,
@@ -355,18 +415,18 @@ if ($contTotal > 0):
     <svg class="ref-donut" viewBox="0 0 42 42" role="img" aria-label="<?= e($lang === 'ar' ? 'توزيع الحكّام حسب القارّة' : 'Referees by continent') ?>">
       <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--surface-2)" stroke-width="5.5"></circle>
       <?= $segs ?>
-      <text x="21" y="20.5" text-anchor="middle" class="rd-num"><?= (int)$contTotal ?></text>
+      <text x="21" y="20.5" text-anchor="middle" class="rd-num"><?= (int)$dTotal ?></text>
       <text x="21" y="25.5" text-anchor="middle" class="rd-lbl"><?= e($lang === 'ar' ? 'حكماً' : 'refs') ?></text>
     </svg>
     <ul class="ref-donut-legend">
-      <?php foreach ($contCounts as $ck => $cn): $C = $CONTINENTS[$ck];
-        $p = (int)round($cn / $contTotal * 100); $mtc = (int)($contMatches[$ck] ?? 0); ?>
+      <?php foreach ($contAgg as $ck => $ca): if (!isset($CONTINENTS[$ck])) continue; $C = $CONTINENTS[$ck];
+        $cn = (int)($ca['refs'] ?? 0); $mtc = (int)($ca['matches'] ?? 0); $p = (int)round($cn / $dTotal * 100); ?>
       <li class="rdl-item" data-cont="<?= e($ck) ?>" role="button" tabindex="0"
-          title="<?= e($lang === 'ar' ? 'اعرض حكّام هذه القارّة' : 'Show this continent’s referees') ?>">
+          title="<?= e($lang === 'ar' ? 'اعرض أرقام وحكّام هذه القارّة' : 'Show this continent’s stats & referees') ?>">
         <span class="rdl-dot" style="background:<?= $C['color'] ?>"></span>
         <span class="rdl-name"><?= e($C[$lang === 'ar' ? 'ar' : 'en']) ?></span>
         <span class="rdl-val">
-          <strong><?= (int)$cn ?></strong> <?= e($lang === 'ar' ? 'حكّام' : 'refs') ?>
+          <strong><?= $cn ?></strong> <?= e($lang === 'ar' ? 'حكّام' : 'refs') ?>
           · <strong><?= $mtc ?></strong> <?= e($lang === 'ar' ? 'مباراة' : 'matches') ?>
           · <?= $p ?>%
         </span>
@@ -376,8 +436,8 @@ if ($contTotal > 0):
   </div>
   <p class="muted" style="font-size:.78rem;margin-top:10px">
     <?= e($lang === 'ar'
-        ? 'الحكّام الـ' . count($statRows) . ' الظاهرون في جدول الإحصائيات أعلاه، موزّعون حسب قارّة (اتحاد) كل حكم مع عدد مبارياتهم — اضغط أي قارّة لعرض أسماء حكّامها في الجدول.'
-        : 'The ' . count($statRows) . ' referees in the statistics table above, grouped by each referee\'s continent (confederation) with their match counts — tap a continent to show its referees in the table.') ?>
+        ? 'توزيع الحكّام الذين أداروا مباريات كأس العالم 2026 وعدد مبارياتهم حسب قارّة (اتحاد) كل حكم — اضغط أي قارّة: تتغيّر الأرقام أعلاه ويُفلتَر الجدول لحكّامها.'
+        : 'Referees who officiated FIFA World Cup 2026 and their match counts, by each referee\'s continent (confederation) — tap a continent: the totals above update and the table filters to its referees.') ?>
   </p>
 </section>
 <script>
@@ -385,8 +445,8 @@ if ($contTotal > 0):
   var items = document.querySelectorAll('.rdl-item');
   if (!items.length) return;
   function go(c){
-    var b = document.querySelector('.rcf-btn[data-cont="' + c + '"]');
-    if (b){ b.click(); var t = document.getElementById('refStatsTbl'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    if (window.refApplyContinent) window.refApplyContinent(c);
+    var t = document.getElementById('aggSection'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   items.forEach(function(li){
     li.addEventListener('click', function(){ go(li.getAttribute('data-cont')); });

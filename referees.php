@@ -69,6 +69,10 @@ tpl('header');
           $flag = strtolower(trim((string)($r['flag'] ?? '')));
           $n    = $officiated[$name] ?? 0;
           $href = url('referee.php', ['i' => (int)($r['_index'] ?? 0)]);
+          // فاولات/مباراة الحقيقيّة (من إحصائيات ESPN) — تظهر عند توفّرها
+          $rst  = Referees::statsFor($name);
+          $fpm  = ($rst && (int)($rst['matches'] ?? 0) > 0 && (int)($rst['fouls'] ?? 0) > 0)
+                ? round($rst['fouls'] / $rst['matches'], 1) : null;
         ?>
           <a class="ref-item" href="<?= e($href) ?>">
             <?php if ($flag !== ''): ?>
@@ -80,7 +84,12 @@ tpl('header');
               <span class="ref-country"><?= e($country) ?></span>
             </div>
             <?php if ($n > 0): ?>
-              <span class="ref-matches"><?= (int)$n ?> <?= e($L['matches']) ?></span>
+              <span class="ref-nums">
+                <span class="ref-matches"><?= (int)$n ?> <?= e($L['matches']) ?></span>
+                <?php if ($fpm !== null): ?>
+                  <span class="ref-fpm" title="<?= e($lang === 'ar' ? 'خطأ لكل مباراة (ESPN)' : 'Fouls per match (ESPN)') ?>">🚫 <?= e((string)$fpm) ?></span>
+                <?php endif; ?>
+              </span>
             <?php endif; ?>
           </a>
         <?php endforeach; ?>

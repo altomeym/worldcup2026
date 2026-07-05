@@ -817,6 +817,11 @@ img { display: block; max-width: 100%; }
   font-size: .68rem; font-weight: 800; color: var(--accent-2);
   background: var(--surface-2); border-radius: 20px; padding: 2px 8px; white-space: nowrap;
 }
+.ref-nums { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; flex: 0 0 auto; }
+.ref-fpm {
+  font-size: .62rem; font-weight: 800; color: var(--text-dim);
+  background: var(--surface-2); border-radius: 20px; padding: 2px 8px; white-space: nowrap;
+}
 a.ref-item { color: inherit; text-decoration: none; transition: border-color .15s, transform .15s; }
 a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 
@@ -1673,6 +1678,13 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .ref-strict-head { display:flex; justify-content:space-between; align-items:center; font-size:.9rem; margin-bottom:6px; }
 .ref-strict-bar { background:#1a2940; border-radius:8px; height:12px; overflow:hidden; }
 .ref-strict-bar span { display:block; height:100%; border-radius:8px; transition:width .3s; }
+.ref-reasons { margin-top:16px; }
+.ref-reasons-head { font-size:.9rem; font-weight:700; margin-bottom:10px; color:var(--text); }
+.ref-reason { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.ref-reason-l { flex:0 0 42%; font-size:.82rem; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ref-reason-bar { flex:1 1 auto; background:#1a2940; border-radius:8px; height:10px; overflow:hidden; }
+.ref-reason-bar span { display:block; height:100%; border-radius:8px; background:#f7e09a; transition:width .3s; }
+.ref-reason-n { flex:0 0 auto; font-size:.85rem; font-weight:800; min-width:20px; text-align:center; }
 
 /* بطاقات المباراة (الإنذارات/الطرد) */
 .md-cards { margin-top:22px; }

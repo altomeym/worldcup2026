@@ -111,15 +111,27 @@ class Referees
                 if (self::sameRef($ref, $r['name'])) { $idx = $k; break; }
             }
             if ($idx === null) {
-                $rows[] = ['name' => $ref, 'matches' => 0, 'yellow' => 0, 'red' => 0, 'pens' => 0];
+                $rows[] = ['name' => $ref, 'matches' => 0, 'yellow' => 0, 'red' => 0,
+                           'pens' => 0, 'fouls' => 0, 'reasons' => []];
                 $idx = array_key_last($rows);
             } elseif (mb_strlen($ref, 'UTF-8') > mb_strlen($rows[$idx]['name'], 'UTF-8')) {
                 $rows[$idx]['name'] = $ref;   // فضّل الصيغة الأكمل للعرض
             }
 
             $rows[$idx]['matches']++;
+            $rows[$idx]['fouls'] += self::matchFouls($m);   // فاولات حقيقيّة من إحصائيات ESPN
             foreach (($m['cards'] ?? []) as $c) {
                 (($c['type'] ?? '') === 'red') ? $rows[$idx]['red']++ : $rows[$idx]['yellow']++;
+                // سبب البطاقة (نوع المخالفة) كما ورد من ESPN — للتوزيع
+                $ra = trim((string)($c['reason_ar'] ?? ''));
+                $re = trim((string)($c['reason_en'] ?? ''));
+                if ($ra !== '' || $re !== '') {
+                    $key = $re !== '' ? $re : $ra;
+                    if (!isset($rows[$idx]['reasons'][$key])) {
+                        $rows[$idx]['reasons'][$key] = ['ar' => $ra, 'en' => $re, 'n' => 0];
+                    }
+                    $rows[$idx]['reasons'][$key]['n']++;
+                }
             }
             foreach ([($m['goals1'] ?? []), ($m['goals2'] ?? [])] as $side) {
                 foreach ((array)$side as $g) {
@@ -131,6 +143,22 @@ class Referees
         usort($rows, fn($a, $b) =>
             [$b['matches'], $b['yellow'] + $b['red']] <=> [$a['matches'], $a['yellow'] + $a['red']]);
         return $memo = $rows;
+    }
+
+    /**
+     * matchFouls() — إجمالي فاولات المباراة (الفريقين) من إحصائيات ESPN الحقيقيّة.
+     * الفاولات مخزّنة في $m['stats'] كصفّ حيث k_en === 'Fouls' وقيمته [فريق1, فريق2].
+     * لا يوجد أي تخمين هنا — رقم حقيقي أو صفر إن لم تصل الإحصائيّة بعد.
+     */
+    public static function matchFouls(array $m): int
+    {
+        foreach ((array)($m['stats'] ?? []) as $row) {
+            if (!is_array($row)) continue;
+            if (($row['k_en'] ?? '') === 'Fouls' && isset($row['v'][0], $row['v'][1])) {
+                return (int)$row['v'][0] + (int)$row['v'][1];
+            }
+        }
+        return 0;
     }
 
     /** إحصائيات حكم واحد (بمطابقة ذكيّة) أو null لو لم يُدِر مباراة منتهية بعد. */

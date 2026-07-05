@@ -83,6 +83,15 @@ $rs = Referees::statsFor($name);
 if ($rs && $rs['matches'] > 0):
     $cardsTotal = $rs['yellow'] + $rs['red'];
     $avg        = round($cardsTotal / $rs['matches'], 1);
+    // أرقام الفاولات الحقيقيّة (من إحصائيات ESPN لكل مباراة أدارها)
+    $fouls   = (int)($rs['fouls'] ?? 0);
+    $fpm     = $rs['matches'] ? round($fouls / $rs['matches'], 1) : 0;   // فاولات/مباراة
+    $fpc     = $cardsTotal ? round($fouls / $cardsTotal, 1) : 0;         // فاول لكل بطاقة (تساهل)
+    // توزيع أنواع مخالفات البطاقات (سبب البطاقة كما ورد من ESPN) — الأكثر أوّلاً
+    $reasons = $rs['reasons'] ?? [];
+    uasort($reasons, fn($a, $b) => ((int)($b['n'] ?? 0)) <=> ((int)($a['n'] ?? 0)));
+    $reasonMax = 0;
+    foreach ($reasons as $rr) $reasonMax = max($reasonMax, (int)($rr['n'] ?? 0));
     // مؤشّر الصرامة: معدّل بطاقات/مباراة على مقياس 0–8
     $pct = min(100, (int)round($avg / 8 * 100));
     if     ($avg < 2)  { $sLabel = $lang === 'ar' ? 'هادئ'       : 'Lenient';     $sColor = '#36c08f'; }
@@ -97,6 +106,11 @@ if ($rs && $rs['matches'] > 0):
     <div class="ref-stat"><div class="ref-stat-v" style="color:#f7e09a">🟨 <?= (int)$rs['yellow'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات صفراء' : 'Yellow cards') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v" style="color:#ef4444">🟥 <?= (int)$rs['red'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات حمراء' : 'Red cards') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v">⚽ <?= (int)$rs['pens'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'ركلات جزاء احتسبها' : 'Penalties awarded') ?></div></div>
+    <?php if ($fouls > 0): ?>
+    <div class="ref-stat"><div class="ref-stat-v">🚫 <?= $fouls ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'إجمالي الأخطاء' : 'Total fouls') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v"><?= e((string)$fpm) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ / مباراة' : 'Fouls / match') ?></div></div>
+    <div class="ref-stat"><div class="ref-stat-v"><?= e((string)$fpc) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ لكل بطاقة' : 'Fouls / card') ?></div></div>
+    <?php endif; ?>
   </div>
   <div class="ref-strict">
     <div class="ref-strict-head">
@@ -105,10 +119,29 @@ if ($rs && $rs['matches'] > 0):
     </div>
     <div class="ref-strict-bar"><span style="width:<?= $pct ?>%;background:<?= $sColor ?>"></span></div>
   </div>
+  <?php if (!empty($reasons) && $reasonMax > 0): ?>
+  <div class="ref-reasons">
+    <div class="ref-reasons-head"><?= e($lang === 'ar' ? 'أنواع مخالفات البطاقات' : 'Card foul types') ?></div>
+    <?php foreach ($reasons as $rr):
+        $label = $lang === 'ar'
+               ? ((string)($rr['ar'] ?? '') ?: (string)($rr['en'] ?? ''))
+               : ((string)($rr['en'] ?? '') ?: (string)($rr['ar'] ?? ''));
+        if ($label === '') continue;
+        $n = (int)($rr['n'] ?? 0);
+        $w = (int)round($n / $reasonMax * 100);
+    ?>
+    <div class="ref-reason">
+      <span class="ref-reason-l"><?= e($label) ?></span>
+      <span class="ref-reason-bar"><span style="width:<?= $w ?>%"></span></span>
+      <span class="ref-reason-n"><?= $n ?></span>
+    </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
   <p class="muted" style="font-size:.78rem;margin-top:8px">
     <?= e($lang === 'ar'
-        ? 'تُحسب تلقائياً من المباريات المنتهية التي أدارها في كأس العالم 2026.'
-        : 'Computed automatically from his finished FIFA World Cup 2026 matches.') ?>
+        ? 'أرقام حقيقيّة تُحسب تلقائياً من إحصائيات مبارياته المنتهية في كأس العالم 2026 (المصدر: ESPN). أنواع المخالفات من أسباب البطاقات المسجّلة.'
+        : 'Real figures computed automatically from his finished FIFA World Cup 2026 matches (source: ESPN). Foul types are from recorded card reasons.') ?>
   </p>
 </section>
 <?php endif; ?>

@@ -129,14 +129,17 @@ class Referees
             }
             if ($idx === null) {
                 $rows[] = ['name' => $ref, 'matches' => 0, 'yellow' => 0, 'red' => 0,
-                           'pens' => 0, 'fouls' => 0, 'reasons' => []];
+                           'pens' => 0, 'fouls' => 0, 'offsides' => 0, 'goals' => 0, 'reasons' => []];
                 $idx = array_key_last($rows);
             } elseif (mb_strlen($ref, 'UTF-8') > mb_strlen($rows[$idx]['name'], 'UTF-8')) {
                 $rows[$idx]['name'] = $ref;   // فضّل الصيغة الأكمل للعرض
             }
 
             $rows[$idx]['matches']++;
-            $rows[$idx]['fouls'] += self::matchFouls($m);   // فاولات حقيقيّة من إحصائيات ESPN
+            $rows[$idx]['fouls']    += self::matchFouls($m);      // فاولات حقيقيّة من إحصائيات ESPN
+            $rows[$idx]['offsides'] += self::matchOffsides($m);   // تسلّل حقيقي من ESPN
+            $ft = $m['score']['ft'] ?? null;                      // أهداف مبارياته (الفريقين)
+            if (is_array($ft) && isset($ft[0], $ft[1])) $rows[$idx]['goals'] += (int)$ft[0] + (int)$ft[1];
             foreach (($m['cards'] ?? []) as $c) {
                 (($c['type'] ?? '') === 'red') ? $rows[$idx]['red']++ : $rows[$idx]['yellow']++;
                 // سبب البطاقة (نوع المخالفة) كما ورد من ESPN — للتوزيع
@@ -163,20 +166,25 @@ class Referees
     }
 
     /**
-     * matchFouls() — إجمالي فاولات المباراة (الفريقين) من إحصائيات ESPN الحقيقيّة.
-     * الفاولات مخزّنة في $m['stats'] كصفّ حيث k_en === 'Fouls' وقيمته [فريق1, فريق2].
-     * لا يوجد أي تخمين هنا — رقم حقيقي أو صفر إن لم تصل الإحصائيّة بعد.
+     * statSum() — مجموع إحصائيّة المباراة (الفريقين) من $m['stats'] بمفتاح k_en.
+     * الإحصائيّات مخزّنة كصفوف {k, k_en, v:[فريق1, فريق2]} من ESPN الحقيقيّة.
+     * لا تخمين — رقم حقيقي أو صفر إن لم تصل الإحصائيّة بعد.
      */
-    public static function matchFouls(array $m): int
+    private static function statSum(array $m, string $keyEn): int
     {
         foreach ((array)($m['stats'] ?? []) as $row) {
-            if (!is_array($row)) continue;
-            if (($row['k_en'] ?? '') === 'Fouls' && isset($row['v'][0], $row['v'][1])) {
+            if (is_array($row) && ($row['k_en'] ?? '') === $keyEn && isset($row['v'][0], $row['v'][1])) {
                 return (int)$row['v'][0] + (int)$row['v'][1];
             }
         }
         return 0;
     }
+
+    /** إجمالي فاولات المباراة (الفريقين) — حقيقي من ESPN. */
+    public static function matchFouls(array $m): int    { return self::statSum($m, 'Fouls'); }
+
+    /** إجمالي حالات التسلّل في المباراة (الفريقين) — حقيقي من ESPN. */
+    public static function matchOffsides(array $m): int { return self::statSum($m, 'Offsides'); }
 
     /** إحصائيات حكم واحد (بمطابقة ذكيّة) أو null لو لم يُدِر مباراة منتهية بعد. */
     public static function statsFor(string $name): ?array

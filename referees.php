@@ -65,6 +65,8 @@ foreach ($referees as $idx => $r) {
         'red'     => $rd,
         'cards'   => $yl + $rd,
         'fouls'   => $fl,
+        'offsides'=> (int)($st['offsides'] ?? 0),
+        'goals'   => (int)($st['goals'] ?? 0),
         'pens'    => (int)($st['pens'] ?? 0),
         'fpm'     => $mt ? round($fl / $mt, 1) : 0,
         'avg'     => $mt ? round(($yl + $rd) / $mt, 1) : 0,
@@ -100,7 +102,9 @@ $strictOf = function (float $avg) use ($lang): array {
           <th data-k>🟨 · 🟥</th>
           <th data-k>🚫 <?= e($lang === 'ar' ? 'أخطاء' : 'Fouls') ?></th>
           <th data-k><?= e($lang === 'ar' ? 'خطأ/مباراة' : 'Fouls/m') ?></th>
-          <th data-k>⚽ <?= e($lang === 'ar' ? 'جزاء' : 'Pens') ?></th>
+          <th data-k>🚩 <?= e($lang === 'ar' ? 'تسلّل' : 'Offside') ?></th>
+          <th data-k>⚽ <?= e($lang === 'ar' ? 'أهداف' : 'Goals') ?></th>
+          <th data-k><?= e($lang === 'ar' ? 'جزاء' : 'Pens') ?></th>
           <th data-k><?= e($lang === 'ar' ? 'الصرامة' : 'Strictness') ?></th>
         </tr>
       </thead>
@@ -120,6 +124,8 @@ $strictOf = function (float $avg) use ($lang): array {
           <td data-v="<?= $s['cards'] ?>"><span class="rst-y"><?= $s['yellow'] ?></span> · <span class="rst-r"><?= $s['red'] ?></span></td>
           <td data-v="<?= $s['fouls'] ?>"><?= $s['fouls'] ?></td>
           <td data-v="<?= $s['fpm'] ?>"><?= e((string)$s['fpm']) ?></td>
+          <td data-v="<?= $s['offsides'] ?>"><?= $s['offsides'] ?></td>
+          <td data-v="<?= $s['goals'] ?>"><?= $s['goals'] ?></td>
           <td data-v="<?= $s['pens'] ?>"><?= $s['pens'] ?></td>
           <td data-v="<?= $s['avg'] ?>"><span class="rst-dot" style="background:<?= $sColor ?>"></span><?= e($sLabel) ?></td>
         </tr>

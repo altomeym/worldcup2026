@@ -111,6 +111,10 @@ if ($rs && $rs['matches'] > 0):
     <div class="ref-stat"><div class="ref-stat-v"><?= e((string)$fpm) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ / مباراة' : 'Fouls / match') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v"><?= e((string)$fpc) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ لكل بطاقة' : 'Fouls / card') ?></div></div>
     <?php endif; ?>
+    <?php if ((int)($rs['offsides'] ?? 0) > 0): ?>
+    <div class="ref-stat"><div class="ref-stat-v">🚩 <?= (int)$rs['offsides'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'حالات تسلّل' : 'Offsides') ?></div></div>
+    <?php endif; ?>
+    <div class="ref-stat"><div class="ref-stat-v">🥅 <?= (int)($rs['goals'] ?? 0) ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'أهداف مبارياته' : 'Goals in his matches') ?></div></div>
   </div>
   <div class="ref-strict">
     <div class="ref-strict-head">
@@ -142,6 +146,69 @@ if ($rs && $rs['matches'] > 0):
     <?= e($lang === 'ar'
         ? 'أرقام حقيقيّة تُحسب تلقائياً من إحصائيات مبارياته المنتهية في كأس العالم 2026 (المصدر: ESPN). أنواع المخالفات من أسباب البطاقات المسجّلة.'
         : 'Real figures computed automatically from his finished FIFA World Cup 2026 matches (source: ESPN). Foul types are from recorded card reasons.') ?>
+  </p>
+</section>
+<?php endif; ?>
+
+<?php
+// ===== سجلّ البطاقات المفصّل: كل بطاقة أظهرها (مباراة · دقيقة · لاعب · نوع · سبب) =====
+$cardLog = [];
+foreach ($matches as $mm) {
+    $t1 = trim((string)($mm['team1'] ?? ''));
+    $t2 = trim((string)($mm['team2'] ?? ''));
+    foreach ((array)($mm['cards'] ?? []) as $c) {
+        $isT1 = (int)($c['team'] ?? 1) === 1;
+        $cardLog[] = [
+            'idx'    => (int)($mm['_index'] ?? -1),
+            'match'  => team_name($t1) . ' × ' . team_name($t2),
+            'minute' => isset($c['minute']) ? (int)$c['minute'] : null,
+            'player' => (string)($c['name'] ?? ''),
+            'teamEn' => $isT1 ? $t1 : $t2,
+            'type'   => (($c['type'] ?? '') === 'red') ? 'red' : 'yellow',
+            'reason' => $lang === 'ar' ? (string)($c['reason_ar'] ?? '') : (string)($c['reason_en'] ?? ''),
+        ];
+    }
+}
+usort($cardLog, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (int)$b['minute']]);
+?>
+<?php if ($cardLog): ?>
+<section class="section">
+  <h2 class="section-title">🗂️ <?= e($lang === 'ar' ? 'سجلّ البطاقات' : 'Cards log') ?>
+    <span class="set-count">(<?= count($cardLog) ?>)</span>
+  </h2>
+  <div class="ref-stats-scroll">
+    <table class="ref-log-tbl">
+      <thead>
+        <tr>
+          <th class="rst-name"><?= e($lang === 'ar' ? 'المباراة' : 'Match') ?></th>
+          <th><?= e($lang === 'ar' ? 'الدقيقة' : 'Min') ?></th>
+          <th class="rst-name"><?= e($lang === 'ar' ? 'اللاعب' : 'Player') ?></th>
+          <th><?= e($lang === 'ar' ? 'النوع' : 'Type') ?></th>
+          <th class="rst-name"><?= e($lang === 'ar' ? 'السبب' : 'Reason') ?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($cardLog as $c):
+          $fl = function_exists('flag_url') ? flag_url($c['teamEn'], 'w20') : '';
+        ?>
+        <tr>
+          <td class="rst-name"><a href="<?= e(url('match.php', ['id' => $c['idx']])) ?>"><?= e($c['match']) ?></a></td>
+          <td class="rst-rank"><?= $c['minute'] !== null ? e($c['minute'] . "'") : '—' ?></td>
+          <td class="rst-name">
+            <?php if ($fl !== ''): ?><img src="<?= e($fl) ?>" alt="" loading="lazy" width="18" height="13"> <?php endif; ?>
+            <?= e($c['player']) ?>
+          </td>
+          <td><?= $c['type'] === 'red' ? '🟥' : '🟨' ?></td>
+          <td class="rst-name ref-log-reason"><?= $c['reason'] !== '' ? e($c['reason']) : '<span class="muted">—</span>' ?></td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.78rem;margin-top:8px">
+    <?= e($lang === 'ar'
+        ? 'كل بطاقة بدقيقتها ونوعها وسببها كما وردت من ESPN لمباريات الحكم المنتهية.'
+        : 'Every card with its minute, type and reason as recorded by ESPN for the referee\'s finished matches.') ?>
   </p>
 </section>
 <?php endif; ?>

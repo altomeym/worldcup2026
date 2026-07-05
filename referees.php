@@ -146,6 +146,22 @@ foreach (DataService::allMatches() as $mm) {
             'type'   => (($c['type'] ?? '') === 'red') ? 'red' : 'yellow',
         ];
     }
+    // ركلات الجزاء (أهداف من نقطة الجزاء) — لنفس اللوحة عند النقر على بطاقة الجزاء
+    foreach ([[$mm['goals1'] ?? [], $t1], [$mm['goals2'] ?? [], $t2]] as $side) {
+        [$goals, $teamEn] = $side;
+        foreach ((array)$goals as $g) {
+            if (empty($g['penalty'])) continue;
+            $allCards[] = [
+                'idx'    => (int)($mm['_index'] ?? -1),
+                'match'  => team_name($t1) . ' × ' . team_name($t2),
+                'minute' => isset($g['minute']) ? (int)$g['minute'] : null,
+                'player' => (string)($g['name'] ?? ''),
+                'teamEn' => $teamEn,
+                'ref'    => $refN,
+                'type'   => 'pen',
+            ];
+        }
+    }
 }
 usort($allCards, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (int)$b['minute']]);
 ?>
@@ -162,7 +178,7 @@ usort($allCards, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (i
     <div class="ref-stat"><div class="ref-stat-v">🚫 <span data-metric="fouls"><?= $agg['fouls'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'إجمالي الأخطاء' : 'Fouls') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v">🚩 <span data-metric="offsides"><?= $agg['offsides'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'حالات تسلّل' : 'Offsides') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v">🥅 <span data-metric="goals"><?= $agg['goals'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'الأهداف' : 'Goals') ?></div></div>
-    <div class="ref-stat"><div class="ref-stat-v">⚽ <span data-metric="pens"><?= $agg['pens'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'ركلات جزاء' : 'Penalties') ?></div></div>
+    <button type="button" class="ref-stat ref-stat-click" data-cards="pen"><div class="ref-stat-v">⚽ <span data-metric="pens"><?= $agg['pens'] ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'ركلات جزاء' : 'Penalties') ?> <span class="ref-stat-hint">👁</span></div></button>
     <div class="ref-stat"><div class="ref-stat-v"><span data-metric="cpm"><?= e((string)$aggCpm) ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقة/مباراة' : 'Cards/match') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v"><span data-metric="fpm"><?= e((string)$aggFpm) ?></span></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'خطأ/مباراة' : 'Fouls/match') ?></div></div>
   </div>
@@ -200,7 +216,7 @@ usort($allCards, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (i
             <?= e($c['player']) ?>
           </td>
           <td class="rst-name" data-label="<?= e($lang === 'ar' ? 'الحكم' : 'Referee') ?>"><?= e($c['ref']) ?></td>
-          <td data-label="<?= e($lang === 'ar' ? 'النوع' : 'Type') ?>"><?= $c['type'] === 'red' ? '🟥' : '🟨' ?></td>
+          <td data-label="<?= e($lang === 'ar' ? 'النوع' : 'Type') ?>"><?= $c['type'] === 'red' ? '🟥' : ($c['type'] === 'pen' ? '⚽' : '🟨') ?></td>
         </tr>
         <?php endforeach; ?>
       </tbody>
@@ -214,7 +230,8 @@ usort($allCards, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (i
   var titleEl = document.getElementById('cardsPanelTitle');
   var rows    = panel.querySelectorAll('tbody tr');
   var LBL = { yellow: '🟨 <?= e($lang === 'ar' ? 'كل البطاقات الصفراء' : 'All yellow cards') ?>',
-              red:    '🟥 <?= e($lang === 'ar' ? 'كل البطاقات الحمراء' : 'All red cards') ?>' };
+              red:    '🟥 <?= e($lang === 'ar' ? 'كل البطاقات الحمراء' : 'All red cards') ?>',
+              pen:    '⚽ <?= e($lang === 'ar' ? 'كل ركلات الجزاء' : 'All penalties') ?>' };
   function show(type){
     var n = 0;
     rows.forEach(function(r){

@@ -40,7 +40,7 @@ define('SITE_TAGLINE_EN', 'Canada · Mexico · USA');
 define('SITE_URL', (string)cfg_secret('SITE_URL', '', $__local));
 
 // بريد التواصل (يستقبل رسائل نموذج «تواصل معنا/الرعاية»).
-define('CONTACT_EMAIL', (string)cfg_secret('CONTACT_EMAIL', 'info@ foot-boll.com', $__local));
+define('CONTACT_EMAIL', (string)cfg_secret('CONTACT_EMAIL', 'info@foot-boll.com', $__local));
 // رقم التواصل المباشر (اتصال/واتساب) — يظهر في صندوق التأكيد بعد الإرسال.
 // بصيغة دولية مثل +9665XXXXXXXX. فارغ = لا يُعرض رقم. ضعه في config.local.php.
 define('CONTACT_PHONE', (string)cfg_secret('CONTACT_PHONE', '', $__local));
@@ -52,7 +52,7 @@ define('BING_SITE_VERIFICATION', (string)cfg_secret('BING_SITE_VERIFICATION', ''
 // ---------- إعلانات Google AdSense ----------
 // معرّف الناشر (ca-pub-...). فارغ = لا إعلانات ولا أي تغيير في CSP.
 // عند ضبطه: يُحقن سكربت AdSense في <head> وتُوسَّع CSP لنطاقات جوجل تلقائياً.
-define('ADSENSE_CLIENT', (string)cfg_secret('ADSENSE_CLIENT', 'ca-pub-7946017229023665', $__local));
+define('ADSENSE_CLIENT', (string)cfg_secret('ADSENSE_CLIENT', 'ca-pub-4205749747374725', $__local));
 
 // ---------- مصدر البيانات (مجاني 100% — بدون مفتاح API) ----------
 // openfootball: بيانات ملكية عامة، بدون حد طلبات، بدون تسجيل
@@ -117,7 +117,7 @@ define('DB_ENABLED', filter_var(cfg_secret('DB_ENABLED', false, $__local), FILTE
 define('INSTALL_TOKEN', (string)cfg_secret('INSTALL_TOKEN', '', $__local));
 
 // ---------- البريد (SMTP لإرسال النشرة الدورية للمشتركين) ----------
-// ضع بيانات صندوق بريدك (info@ foot-boll.com) في config.local.php / البيئة.
+// ضع بيانات صندوق بريدك (info@foot-boll.com) في config.local.php / البيئة.
 // فارغ = يُستخدم mail() المدمجة بدل SMTP (وصول أضعف). للإنتاج استخدم SMTP.
 define('SMTP_HOST',   (string)cfg_secret('SMTP_HOST', '', $__local));        // مثل smtp.hostinger.com
 define('SMTP_PORT',   (int)   cfg_secret('SMTP_PORT', 465, $__local));        // 465=ssl أو 587=tls

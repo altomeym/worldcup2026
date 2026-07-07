@@ -209,7 +209,7 @@ console.log(data.scorers);
   </ul>
   <p class="lead" style="margin:14px 0 0">
     <?= e($tx('بنيت شيئاً بواجهتنا؟ أخبرنا لنعرضه هنا:', 'Built something with our API? Tell us and we\'ll feature it:', 'Vous avez créé quelque chose ? Dites-le-nous :')) ?>
-    <a href="mailto:info@ foot-boll.com">info@ foot-boll.com</a>
+    <a href="mailto:info@foot-boll.com">info@foot-boll.com</a>
   </p>
 </section>
 

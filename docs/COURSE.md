@@ -453,7 +453,7 @@ Mailer::send($to, $subject, $html, $text);
 ```php
 'SMTP_HOST'   => 'smtp.hostinger.com',
 'SMTP_PORT'   => 465,
-'SMTP_USER'   => 'info@ foot-boll.com',
+'SMTP_USER'   => 'info@foot-boll.com',
 'SMTP_PASS'   => '...',
 'SMTP_SECURE' => 'ssl',
 ```

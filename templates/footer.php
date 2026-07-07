@@ -126,7 +126,7 @@ $lang       = current_lang();
   <!-- ──────── شريط ترويجي: «اطلب موقعك» ──────── -->
   <?php
     $cPhone = defined('CONTACT_PHONE') ? trim((string)CONTACT_PHONE) : '';
-    $cMail  = defined('CONTACT_EMAIL') ? CONTACT_EMAIL : 'info@ foot-boll.com';
+    $cMail  = defined('CONTACT_EMAIL') ? CONTACT_EMAIL : 'info@foot-boll.com';
     $waNum  = $cPhone !== '' ? preg_replace('/\D/', '', $cPhone) : '';
     $waMsg  = rawurlencode($lang === 'ar'
               ? 'مرحباً، شفت موقع foot-boll.com وحاب أطلب موقعاً مشابهاً 👋'

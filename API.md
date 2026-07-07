@@ -137,7 +137,7 @@ Apps & projects developers have built using this API:
 
 - **[FIFA World Cup Fixtures](https://play.google.com/store/apps/details?id=com.fifaworldcupfixtures)** — Android app on Google Play.
 
-Built something with our API? Tell us and we'll feature it here — **info@ foot-boll.com** (or open a discussion / issue on this repo).
+Built something with our API? Tell us and we'll feature it here — **info@foot-boll.com** (or open a discussion / issue on this repo).
 
 ---
 
@@ -146,4 +146,4 @@ Built something with our API? Tell us and we'll feature it here — **info@ foot
 - Read‑only and free. Please cache where you can (data updates roughly every minute).
 - Attribution appreciated: link back to ** foot-boll.com**.
 - Schedule data is openfootball (Public Domain); FIFA post‑match metrics are FIFA's official data, presented here.
-- This is a community project — built with ❤️ for football. Questions / ideas: **info@ foot-boll.com**.
+- This is a community project — built with ❤️ for football. Questions / ideas: **info@foot-boll.com**.

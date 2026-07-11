@@ -26,10 +26,19 @@ $summary = (!empty($rich['desc']) && mb_strlen($rich['desc']) > mb_strlen($item[
 $page_title = $item['title'];
 $page_desc  = $summary !== '' ? mb_substr($summary, 0, 160) : ($item['title']);
 $seo_type   = 'article';
+$page_robots = 'noindex,follow';
+gtm_add([
+    'article_id'     => $id,
+    'article_title'  => $item['title'],
+    'article_source' => (string)($item['source'] ?? ($item['host'] ?? '')),
+    'content_group'  => 'news_article',
+]);
 tpl('header');
 ?>
 
 <a class="back-link" href="<?= e(url('news.php')) ?>">‹ <?= e(t('back_to_news')) ?></a>
+
+<p class="news-disclaimer"><?= e(t('news_disclaimer')) ?></p>
 
 <article class="article-view">
   <?php if ($heroImg !== ''): ?>
@@ -52,12 +61,45 @@ tpl('header');
 
   <h1 class="article-title"><?= e($item['title']) ?></h1>
 
+  <?php if (!empty($item['context'])): ?>
+    <aside class="article-editorial">
+      <span class="article-editorial-label"><?= e(t('news_editorial')) ?></span>
+      <p><?= e($item['context']) ?></p>
+      <?php if (!empty($item['teams'])): ?>
+        <div class="article-editorial-links">
+          <?php foreach (array_slice($item['teams'], 0, 3) as $tEn): ?>
+            <?php if (isset(DataService::allTeams()[$tEn])): ?>
+              <a class="chip-link" href="<?= e(url('team.php', ['team' => $tEn])) ?>"><?= e(team_name($tEn)) ?></a>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+    </aside>
+  <?php endif; ?>
+
+  <?php if ($relatedMatch !== null): ?>
+    <div class="article-related">
+      <span class="article-related-label"><?= e(t('news_related_match')) ?></span>
+      <a class="article-related-match" href="<?= e(url('match.php', ['id' => (int)$item['match_index']])) ?>">
+        <span class="arm-teams"><?= e(team_name($relatedMatch['team1'] ?? '')) ?> × <?= e(team_name($relatedMatch['team2'] ?? '')) ?></span>
+        <?php if (!empty($relatedMatch['score']['ft'])): ?>
+          <span class="arm-score"><?= e(score_text($relatedMatch)) ?></span>
+        <?php elseif ($ts = DataService::matchTimestamp($relatedMatch)): ?>
+          <span class="arm-when"><?= local_dt($ts, 'date_short') ?></span>
+        <?php endif; ?>
+      </a>
+    </div>
+  <?php endif; ?>
+
   <?php if ($summary !== ''): ?>
-    <p class="article-summary"><?= e($summary) ?></p>
+    <p class="article-summary muted"><?= e($summary) ?></p>
   <?php endif; ?>
 
   <div class="article-cta">
-    <a class="btn btn-accent" href="<?= e($item['link']) ?>" target="_blank" rel="noopener nofollow">
+    <a class="btn btn-accent" href="<?= e($item['link']) ?>" target="_blank" rel="noopener nofollow"
+       data-gtm-event="article_read"
+       data-gtm-article-id="<?= e($id) ?>"
+       data-gtm-source="<?= e($item['source'] ?? ($item['host'] ?? '')) ?>">
       <?= e(t('read_full')) ?> <?= e($item['source'] ?: ($item['host'] ?? '')) ?> ↗
     </a>
   </div>

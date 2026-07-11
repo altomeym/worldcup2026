@@ -19,6 +19,7 @@ require __DIR__ . '/i18n.php';
 require __DIR__ . '/teams_ar.php';
 require __DIR__ . '/countries.php';
 require __DIR__ . '/helpers.php';
+require __DIR__ . '/analytics.php';
 require __DIR__ . '/seo.php';
 require __DIR__ . '/DataService.php';
 require __DIR__ . '/ArchiveService.php';
@@ -75,7 +76,7 @@ require __DIR__ . '/PageCache.php';
 function tpl(string $name): void {
     // متغيّرات الصفحة (تُضبَط في الصفحة قبل tpl) يجب أن تكون مرئية داخل القالب.
     // الصفحة هي نقطة الدخول → متغيّراتها عامّة، فنستوردها هنا صراحةً.
-    global $page_title, $page_desc, $seo_type, $page_image, $page_image_w, $page_image_h;
+    global $page_title, $page_desc, $seo_type, $page_image, $page_image_w, $page_image_h, $page_robots;
     $f = __DIR__ . '/../templates/' . $name . '.php';
     if (is_file($f)) require $f;
 }

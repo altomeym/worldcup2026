@@ -31,3 +31,33 @@ Use the issue templates and include: steps to reproduce, expected vs actual, PHP
 
 ## Security issues / الثغرات الأمنية
 Do **not** open a public issue — see [SECURITY.md](SECURITY.md).
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205749747374725"
+     crossorigin="anonymous"></script>
+
+
+
+G-F7D1889PSV
+ Content security policy (CSP) blocking Google scripts
+This page's security settings (Content Security Policy) are preventing scripts from Google domains like googletagmanager.com or google-analytics.com from loading or executing.
+How to fix the issue:
+Open your browser's Developer Tools and check the "Console" tab for errors mentioning CSP violations related to Google domains.
+This issue needs to be resolved by a web developer or server administrator. They will need to update the website's Content-Security-Policy HTTP header to include the necessary Google domains in the script-src-elem, img-src and connect-src directives. Refer to Google's documentation for specific domains.
+
+
+https://tagassistant.google.com/#/?url=https%3A%2F%2Ffoot-boll.com%2F
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F7D1889PSV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-F7D1889PSV');
+</script>
+
+
+https://wcup2026.org/index.php?lang=en

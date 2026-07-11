@@ -43,6 +43,13 @@ $page_desc  = team_name($teamRaw) . ' — ' . ($group ? group_label($group) . ' 
 $seo_type   = 'article';
 if (!empty($about['crest'])) { $page_image = $about['crest']; }
 
+gtm_add([
+    'team_slug'     => $teamRaw,
+    'team_name'     => team_name($teamRaw),
+    'team_group'    => (string)($group ?? ''),
+    'content_group' => 'team_profile',
+]);
+
 tpl('header');
 ?>
 

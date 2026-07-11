@@ -34,6 +34,8 @@ $pages = [
     ['trivia.php',    '0.7', 'daily'],
     ['archive.php',   '0.6', 'monthly'],
     ['api.php',       '0.5', 'monthly'],
+    ['about.php',     '0.4', 'monthly'],
+    ['terms.php',     '0.3', 'yearly'],
     ['privacy.php',   '0.3', 'yearly'],
 ];
 

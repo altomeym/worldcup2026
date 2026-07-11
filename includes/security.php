@@ -75,14 +75,16 @@ function security_init(): void
     $adHosts = ' https://*.googlesyndication.com https://*.doubleclick.net'
              . ' https://*.google.com https://*.gstatic.com'
              . ' https://*.adtrafficquality.google https://fundingchoicesmessages.google.com';
+    $gaHosts = ' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com';
     $csp = "default-src 'self'; "
-         . "script-src 'self' 'unsafe-inline'" . ($adsOn ? $adHosts : '') . "; "
+         . "script-src 'self' 'unsafe-inline'" . $gaHosts . ($adsOn ? $adHosts : '') . "; "
          . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
          . "font-src 'self' https://fonts.gstatic.com; "
-         . "img-src 'self' data: https:; "
-         . "connect-src 'self'" . ($adsOn ? $adHosts : '') . "; "
+         . "img-src 'self' data: https:" . $gaHosts . "; "
+         . "connect-src 'self'" . $gaHosts . ($adsOn ? $adHosts : '') . "; "
          // youtube-nocookie: تضمين ملخّصات المباريات (وضع الخصوصيّة المعزّز)
-         . "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com" . ($adsOn ? $adHosts : '') . "; "
+         // googletagmanager.com: GTM noscript iframe
+         . "frame-src 'self' https://www.googletagmanager.com https://www.youtube-nocookie.com https://www.youtube.com" . ($adsOn ? $adHosts : '') . "; "
          . "object-src 'none'; "
          . "base-uri 'self'; "
          . "form-action 'self'; "

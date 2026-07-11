@@ -108,6 +108,14 @@ foreach (($m['cards'] ?? []) as $c) {
 }
 usort($events, fn($a,$b)=>$a['min'] <=> $b['min']);
 
+gtm_add([
+    'match_id'     => $id,
+    'match_teams'  => team_name($t1) . ' vs ' . team_name($t2),
+    'match_status' => $status,
+    'match_round'  => (string)($m['round'] ?? ''),
+    'content_group'=> 'match_detail',
+]);
+
 tpl('header');
 seo_sportsevent($m);
 ?>
@@ -235,7 +243,9 @@ seo_sportsevent($m);
       $thumbUrl = 'https://i.ytimg.com/vi/' . rawurlencode($video['id']) . '/hqdefault.jpg';
       ?>
       <a class="video-thumb" href="<?= e($watchUrl) ?>" target="_blank" rel="noopener"
-         title="<?= e($video['title']) ?>">
+         title="<?= e($video['title']) ?>"
+         data-gtm-event="match_highlight"
+         data-gtm-match-id="<?= (int)$id ?>">
         <img src="<?= e($thumbUrl) ?>" alt="<?= e($video['title']) ?>" loading="lazy">
         <span class="video-play" aria-hidden="true">▶</span>
         <span class="video-cta"><?= e($L('شاهد الملخّص على YouTube ↗','Watch highlights on YouTube ↗')) ?></span>

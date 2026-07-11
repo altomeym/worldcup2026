@@ -61,6 +61,12 @@ $siteName = ($lang === 'ar') ? SITE_NAME_AR : SITE_NAME_EN;
 $ogTitle  = $data['headline'] . ' — ' . $siteName;
 $ogDesc   = $shareTxt;
 
+gtm_add([
+    'card_type'     => $type,
+    'match_id'      => $m ? (int)($m['id'] ?? 0) : null,
+    'content_group' => 'share_card',
+]);
+
 // البطاقة قابلة للتخزين (يوم كامل) — تطابق سلوك card.php التاريخي.
 header('Cache-Control: public, max-age=86400');
 
@@ -206,8 +212,10 @@ $jsV = @filemtime(__DIR__ . '/assets/js/share.js') ?: 1;
     .emoji-hero { font-size: 64px; }
   }
 </style>
+<?php require __DIR__ . '/templates/gtm-head.php'; ?>
 </head>
 <body>
+<?php require __DIR__ . '/templates/gtm-body.php'; ?>
 
 <div class="card">
   <div class="card-head">
@@ -254,9 +262,9 @@ $jsV = @filemtime(__DIR__ . '/assets/js/share.js') ?: 1;
 </div>
 
 <div class="share-bar" data-share-url="<?= e($shareUrl) ?>" data-share-text="<?= e($shareTxt) ?>">
-  <a class="share-btn s-wa" data-share="wa" href="<?= e('https://wa.me/?text=' . rawurlencode($shareTxt . ' ' . '#كأس_العالم_2026 #FIFAWorldCup26 #wcup2026' . ' ' . $shareUrl)) ?>" target="_blank" rel="noopener"><?= e($lang === 'ar' ? 'واتساب' : 'WhatsApp') ?></a>
-  <a class="share-btn s-x"  data-share="x"  href="<?= e('https://twitter.com/intent/tweet?text=' . rawurlencode($shareTxt . "\n\n" . '#كأس_العالم_2026 #FIFAWorldCup26 #wcup2026') . '&url=' . rawurlencode($shareUrl)) ?>" target="_blank" rel="noopener">𝕏</a>
-  <a class="share-btn s-tg" data-share="tg" href="<?= e('https://t.me/share/url?url=' . rawurlencode($shareUrl) . '&text=' . rawurlencode($shareTxt . ' ' . '#كأس_العالم_2026 #FIFAWorldCup26 #wcup2026')) ?>" target="_blank" rel="noopener"><?= e($lang === 'ar' ? 'تيليجرام' : 'Telegram') ?></a>
+  <a class="share-btn s-wa" data-share="wa" href="<?= e('https://wa.me/?text=' . rawurlencode($shareTxt . ' ' . '#كأس_العالم_2026 #FIFAWorldCup26 #footboll' . ' ' . $shareUrl)) ?>" target="_blank" rel="noopener"><?= e($lang === 'ar' ? 'واتساب' : 'WhatsApp') ?></a>
+  <a class="share-btn s-x"  data-share="x"  href="<?= e('https://twitter.com/intent/tweet?text=' . rawurlencode($shareTxt . "\n\n" . '#كأس_العالم_2026 #FIFAWorldCup26 #footboll') . '&url=' . rawurlencode($shareUrl)) ?>" target="_blank" rel="noopener">𝕏</a>
+  <a class="share-btn s-tg" data-share="tg" href="<?= e('https://t.me/share/url?url=' . rawurlencode($shareUrl) . '&text=' . rawurlencode($shareTxt . ' ' . '#كأس_العالم_2026 #FIFAWorldCup26 #footboll')) ?>" target="_blank" rel="noopener"><?= e($lang === 'ar' ? 'تيليجرام' : 'Telegram') ?></a>
   <button type="button" class="share-btn s-copy" data-share="copy" data-copied="<?= e(t('link_copied')) ?>"><?= e(t('copy_link')) ?></button>
 </div>
 

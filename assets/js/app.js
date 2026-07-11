@@ -180,8 +180,9 @@
     });
   })();
 
-  /* -------- 3) التحديث التلقائي -------- */
-  // يعمل فقط إذا كانت الصفحة فيها قسم data-autorefresh
+  /* -------- 3) التحديث التلقائي (اختياري — يُفعَّل من config.php) -------- */
+  // يعمل فقط إذا AUTO_REFRESH=true وكانت الصفحة فيها قسم data-autorefresh
+  if (!window.WC_AUTO_REFRESH) return;
   var hasLiveSection = document.querySelector('[data-autorefresh]');
   if (!hasLiveSection) return;
 

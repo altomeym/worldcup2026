@@ -16,8 +16,8 @@ $page_desc  = $tx(
     'API JSON gratuite et publique pour la Coupe du Monde 2026 : matchs, scores en direct, buts, statistiques officielles FIFA, buteurs et classements. Sans clé.'
 );
 $page_keywords = $tx(
-    'API كأس العالم 2026, واجهة برمجة كأس العالم, JSON API كرة قدم, نتائج مباشرة API, هدافون API, ترتيب المجموعات API, wcup2026 API',
-    'World Cup 2026 API, FIFA World Cup JSON API, free football API, soccer API, live scores API, top scorers API, standings API, no key football api, wcup2026 API'
+    'API كأس العالم 2026, واجهة برمجة foot-boll, JSON API كرة قدم, نتائج API, هدافون API, ترتيب المجموعات API, foot-boll API',
+    'World Cup 2026 API, foot-boll JSON API, free football API, soccer API, live scores API, top scorers API, standings API, no key football api'
 );
 
 // رابط الـAPI على نفس النطاق (آمن مع CSP connect-src 'self' → العرض الحيّ يعمل)

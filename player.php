@@ -39,6 +39,12 @@ $page_desc  = $L('الملفّ الفنّي الكامل لـ' . $pl['name'] . '
                  'Full technical profile of ' . $pl['name'] . ' at the FIFA World Cup 2026 — official FIFA data.');
 // معاينة المشاركة: بطاقة الملفّ المُولّدة (صورة + تقييم + نقاط الفئات) لا الصورة الخام
 $page_image = url('card_img.php', ['mode' => 'player', 'id' => $pid, 'd' => function_exists('card_rev') ? card_rev() : '1']);
+gtm_add([
+    'player_id'     => $pid,
+    'player_name'   => (string)$pl['name'],
+    'player_team'   => $teamLoc,
+    'content_group' => 'player_profile',
+]);
 tpl('header');
 
 /** رادار SVG: محاور [['label','pct'],…] بقيم 0-100. */

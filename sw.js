@@ -99,7 +99,7 @@ self.addEventListener('install', function (e) {
       return Promise.all(jobs);
     }).catch(function () {})
   );
-  self.skipWaiting();
+  // لا skipWaiting هنا — يُفعَّل فقط عند ضغط الزائر «تحديث» (SKIP_WAITING)
 });
 
 self.addEventListener('activate', function (e) {

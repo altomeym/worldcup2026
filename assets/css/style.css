@@ -224,6 +224,42 @@ img { display: block; max-width: 100%; }
 
 /* قسم «تفاعل مع المونديال» — إبراز الميزات على الرئيسية */
 .engage { margin-bottom: 34px; }
+
+/* ── Home intro (original editorial — AdSense) ── */
+.home-intro {
+  margin: 0 0 34px;
+  padding: 22px 24px;
+  background: var(--card, rgba(255,255,255,.04));
+  border: 1px solid var(--border, rgba(255,255,255,.08));
+  border-radius: 12px;
+  line-height: 1.85;
+}
+.home-intro h2 { margin: 0 0 12px; font-size: 1.25rem; }
+.home-intro p { margin: 0 0 14px; opacity: .92; }
+.home-intro-list {
+  margin: 0;
+  padding: 0 1.4em;
+  opacity: .9;
+}
+.home-intro-list li { margin: 6px 0; }
+
+/* ── News disclaimer (RSS policy) ── */
+.news-disclaimer {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  font-size: .9rem;
+  line-height: 1.7;
+  background: rgba(255, 193, 7, .08);
+  border: 1px solid rgba(255, 193, 7, .25);
+  border-radius: 8px;
+  opacity: .95;
+}
+.footer-tagline {
+  display: block;
+  font-size: .85rem;
+  opacity: .75;
+  margin-top: 4px;
+}
 .engage-head { text-align: center; margin-bottom: 18px; }
 .engage-head h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 4px; }
 .engage-grid {
@@ -1825,6 +1861,7 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .news-thumb-empty { font-size: 1.3rem; }
 .news-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .news-title { font-weight: 700; font-size: .96rem; line-height: 1.45; color: var(--text); }
+.news-teaser { font-size: .82rem; line-height: 1.5; color: var(--text-faint); }
 .news-meta {
   display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
   font-size: .78rem; color: var(--text-faint);

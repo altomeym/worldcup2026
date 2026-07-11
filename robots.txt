@@ -1,3 +1,9 @@
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
 User-agent: *
 Allow: /
 # تهدئة الزحف: ثانيتان بين الطلبات لتفادي إغراق الاستضافة المشتركة (يحترمها Bing وغيره).
@@ -12,4 +18,4 @@ Disallow: /admin.php
 Disallow: /cron/
 Disallow: /health.php
 
-Sitemap: /sitemap.xml
+Sitemap: https://foot-boll.com/sitemap.xml

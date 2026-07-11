@@ -50,13 +50,18 @@
         });
       }).catch(function () {});
 
-      // عند تفعيل العامل الجديد بعد SKIP_WAITING → أعد التحميل مرّة واحدة
+      // أعد التحميل فقط عندما يضغط الزائر «تحديث» — لا إعادة تحميل تلقائية
+      var pendingReload = false;
       var reloaded = false;
       navigator.serviceWorker.addEventListener('controllerchange', function () {
-        if (reloaded) return;
+        if (!pendingReload || reloaded) return;
         reloaded = true;
         window.location.reload();
       });
+      window.__wcPwaApplyUpdate = function (worker) {
+        pendingReload = true;
+        try { worker.postMessage('SKIP_WAITING'); } catch (e) { window.location.reload(); }
+      };
     });
   }
 
@@ -74,7 +79,8 @@
       'border-radius:8px;padding:6px 14px;cursor:pointer';
     btn.addEventListener('click', function () {
       btn.disabled = true;
-      try { worker.postMessage('SKIP_WAITING'); } catch (e) { window.location.reload(); }
+      if (window.__wcPwaApplyUpdate) window.__wcPwaApplyUpdate(worker);
+      else try { worker.postMessage('SKIP_WAITING'); } catch (e) { window.location.reload(); }
     });
     bar.appendChild(msg);
     bar.appendChild(btn);
@@ -147,10 +153,17 @@
   if (installBtn) installBtn.addEventListener('click', function () {
     if (!deferred) return;
     deferred.prompt();
-    deferred.userChoice.finally(function () { deferred = null; dismiss(); });
+    deferred.userChoice.then(function (choice) {
+      if (choice && choice.outcome === 'accepted' && window.WCAnalytics) {
+        window.WCAnalytics.pwa('install_accepted');
+      }
+    }).finally(function () { deferred = null; dismiss(); });
   });
 
-  window.addEventListener('appinstalled', function () { dismiss(); });
+  window.addEventListener('appinstalled', function () {
+    if (window.WCAnalytics) window.WCAnalytics.pwa('installed');
+    dismiss();
+  });
 
   // -------- iOS (Safari): لا يدعم beforeinstallprompt → إرشاد يدوي --------
   var ua = window.navigator.userAgent || '';

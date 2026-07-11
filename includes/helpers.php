@@ -198,6 +198,9 @@ function render_news_item(array $it): void {
       <?php endif; ?>
       <span class="news-body">
         <span class="news-title"><?= e($it['title'] ?? '') ?></span>
+        <?php if (!empty($it['context'])): ?>
+          <span class="news-teaser"><?= e(mb_strlen($it['context']) > 110 ? mb_substr($it['context'], 0, 107) . '…' : $it['context']) ?></span>
+        <?php endif; ?>
         <span class="news-meta">
           <?php if (!empty($it['source'])): ?><span class="news-source"><?= e($it['source']) ?></span><?php endif; ?>
           <?php if (!empty($it['ts'])): ?><span class="news-time"><?= local_dt((int)$it['ts'], 'datetime') ?></span><?php endif; ?>
@@ -216,7 +219,7 @@ function render_share(string $url, string $text, array $opts = []): void {
     $u = rawurlencode($url);
 
     // هاشتاقات أساسية: اسم الموقع + الوسوم الرسمية للبطولة + الـlatin (يستهدفهم Google/X)
-    $core    = ['كأس_العالم_2026', 'FIFAWorldCup2026', 'WeAre26', 'wcup2026'];
+    $core    = ['كأس_العالم_2026', 'FIFAWorldCup2026', 'WeAre26', 'footboll'];
     // الدول المستضيفة — تظهر دوماً (AR + EN)
     $hostsAr = ['كندا', 'المكسيك', 'أمريكا'];
     $hostsEn = ['Canada', 'Mexico', 'USA'];

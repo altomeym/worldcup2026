@@ -67,4 +67,8 @@ return [
     // ---------- Search engine verification (OPTIONAL) ----------
     'GOOGLE_SITE_VERIFICATION' => '',     // from Google Search Console
     'BING_SITE_VERIFICATION'   => '',     // from Bing Webmaster Tools
+
+    // ---------- Google Tag Manager & GA4 (OPTIONAL) ----------
+    'GTM_CONTAINER_ID'     => 'GTM-WS65HNSF',
+    'GA4_MEASUREMENT_ID'   => 'G-F7D1889PSV',   // configure as GA4 tag inside GTM
 ];

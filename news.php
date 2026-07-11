@@ -13,8 +13,10 @@ tpl('header');
 
 <div class="page-head">
   <h1>📰 <?= e(t('latest_news')) ?></h1>
-  <p class="muted"><?= e(t('site_desc')) ?></p>
+  <p class="muted"><?= e(t('news_intro')) ?></p>
 </div>
+
+<p class="news-disclaimer"><?= e(t('news_disclaimer')) ?></p>
 
 <?php if (!$items): ?>
   <p class="empty-note"><?= e(t('no_news')) ?></p>

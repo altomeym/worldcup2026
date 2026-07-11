@@ -49,6 +49,12 @@ define('CONTACT_PHONE', (string)cfg_secret('CONTACT_PHONE', '', $__local));
 define('GOOGLE_SITE_VERIFICATION', (string)cfg_secret('GOOGLE_SITE_VERIFICATION', '', $__local));
 define('BING_SITE_VERIFICATION', (string)cfg_secret('BING_SITE_VERIFICATION', '', $__local));
 
+// ---------- Google Tag Manager & Analytics ----------
+// GTM: الحاوية الرئيسية للوسوم. فارغ = لا GTM.
+// GA4_MEASUREMENT_ID: للمرجع في dataLayer — اربطه داخل GTM (GA4 Configuration tag).
+define('GTM_CONTAINER_ID', (string)cfg_secret('GTM_CONTAINER_ID', 'GTM-WS65HNSF', $__local));
+define('GA4_MEASUREMENT_ID', (string)cfg_secret('GA4_MEASUREMENT_ID', 'G-F7D1889PSV', $__local));
+
 // ---------- إعلانات Google AdSense ----------
 // معرّف الناشر (ca-pub-...). فارغ = لا إعلانات ولا أي تغيير في CSP.
 // عند ضبطه: يُحقن سكربت AdSense في <head> وتُوسَّع CSP لنطاقات جوجل تلقائياً.
@@ -68,6 +74,9 @@ define('FETCH_TIMEOUT', 5);
 // كاش الصفحات الكامل (ثواني): يخدم الزوّار/الزواحف من HTML جاهز بلا تشغيل PHP →
 // يتحمّل ضغطاً هائلاً على الاستضافة المشتركة. 0 = تعطيل. المستخدمون المسجّلون لا يُخزَّنون أبداً.
 define('PAGE_CACHE_TTL', 60);
+// تحديث تلقائي للنتائج في المتصفّح (بدون إعادة تحميل الصفحة).
+// false = معطّل — الزائر يحدّث يدوياً. true = يستطلع api/data.php أثناء المباريات المباشرة.
+define('AUTO_REFRESH', filter_var(cfg_secret('AUTO_REFRESH', false, $__local), FILTER_VALIDATE_BOOLEAN));
 
 // ---------- التوقيت ----------
 // التوقيت الذي تُعرض به مواعيد المباريات للزائر

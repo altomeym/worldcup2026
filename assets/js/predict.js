@@ -50,6 +50,7 @@
             if (welcomeName) welcomeName.textContent = res.nickname || name;
             if (joinBox) joinBox.hidden = true;
             if (welcomeBox) welcomeBox.hidden = false;
+            if (window.WCAnalytics) window.WCAnalytics.predict('register');
           } else {
             var key = (res && res.error) || '';
             showError(I18N[key] || I18N.invalid_nickname || 'Error');
@@ -92,15 +93,19 @@
     var sh = row.querySelector('.pred-share');
     if (sh) sh.addEventListener('click', function () {
       if (in1.value === '' || in2.value === '') { in1.focus(); return; }
+      var url = cardUrl(id, in1.value, in2.value, false);
+      if (window.WCAnalytics) window.WCAnalytics.share('whatsapp_predict', url);
       var ar = document.documentElement.lang === 'ar';
-      var msg = (ar ? 'توقّعي في كأس العالم 2026 🔮 — ' : 'My FIFA World Cup 2026 prediction 🔮 — ') + cardUrl(id, in1.value, in2.value, false);
+      var msg = (ar ? 'توقّعي في كأس العالم 2026 🔮 — ' : 'My FIFA World Cup 2026 prediction 🔮 — ') + url;
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
     });
 
     var brag = row.querySelector('.pred-brag');
     if (brag) brag.addEventListener('click', function () {
       if (in1.value === '' || in2.value === '') { in1.focus(); return; }
-      var msg = (FUN.bragText || 'I called it! — ') + cardUrl(id, in1.value, in2.value, true);
+      var url = cardUrl(id, in1.value, in2.value, true);
+      if (window.WCAnalytics) window.WCAnalytics.share('whatsapp_brag', url);
+      var msg = (FUN.bragText || 'I called it! — ') + url;
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
     });
   });
@@ -153,6 +158,7 @@
           if (res && res.ok) {
             row.classList.add('pred-saved');
             if (status) status.textContent = I18N.saved || 'Saved';
+            if (window.WCAnalytics) window.WCAnalytics.predict('save', id);
           } else {
             var key = (res && res.error) || '';
             if (key === 'locked') {

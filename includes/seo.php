@@ -125,7 +125,7 @@ function seo_sportsevent(array $m): void {
     if (!empty($m['group']))  { $bits[] = group_label($m['group']); }
     if (!empty($m['ground'])) { $bits[] = $m['ground']; }
     $desc = $name . ($bits ? ' — ' . implode(' · ', $bits) : '')
-          . ' — ' . ($ar ? 'كأس العالم 2026' : 'FIFA World Cup 2026');
+          . ' — ' . ($ar ? 'نتائج وإحصائيات كأس العالم 2026 على foot-boll.com' : 'World Cup 2026 scores and stats on foot-boll.com');
 
     // الفريقان (يُستخدمان في competitor الدقيق + performer الذي يطلبه Google)
     $teams = [
@@ -137,14 +137,10 @@ function seo_sportsevent(array $m): void {
         '@context'    => 'https://schema.org',
         '@type'       => 'SportsEvent',
         'name'        => $name,
-        'description' => $desc,                 // ← description
+        'description' => $desc,
         'sport'       => 'Football',
         'url'         => canonical_url(),
-        'image'       => [$image],              // ← image
-        // إشارات معياريّة: تغطية الموقع لهذه المباراة مجانية ومتاحة للعموم.
-        // تُخبر Google أن الحدث «مجاني المشاهدة عبر موقعنا» فلا يُطالب بـoffers.
-        'isAccessibleForFree' => true,
-        'publicAccess'        => true,
+        'image'       => [$image],
     ];
     if ($ts !== null) {
         $ld['startDate']   = gmdate('c', $ts);

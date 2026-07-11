@@ -28,6 +28,12 @@ $maps = Stadiums::mapsUrl($s);
 
 $page_title = $name;
 $page_desc  = $hist;
+gtm_add([
+    'stadium_id'    => $id,
+    'stadium_name'  => $name,
+    'stadium_city'  => $city,
+    'content_group' => 'stadium_detail',
+]);
 tpl('header');
 ?>
 
@@ -73,7 +79,9 @@ tpl('header');
     </section>
   <?php endif; ?>
 
-  <a class="btn btn-cta sd-maps" href="<?= e($maps) ?>" target="_blank" rel="noopener noreferrer">
+  <a class="btn btn-cta sd-maps" href="<?= e($maps) ?>" target="_blank" rel="noopener noreferrer"
+     data-gtm-event="stadium_directions"
+     data-gtm-stadium-id="<?= (int)$id ?>">
     🧭 <?= e(t('get_directions')) ?>
   </a>
 </article>

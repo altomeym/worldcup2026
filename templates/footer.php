@@ -7,6 +7,7 @@ $lastUpdate = DataService::lastUpdate();
 require_once __DIR__ . '/../includes/SponsorStore.php';
 $sponsors   = SponsorStore::all();
 $lang       = current_lang();
+$siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 ?>
 </main><!-- /.site-main -->
 
@@ -42,8 +43,9 @@ $lang       = current_lang();
       <div class="footer-brand">
         <span class="footer-mark" aria-hidden="true">26</span>
         <div class="footer-brand-text">
-          <strong> foot-boll.com</strong>
+          <strong><?= e($siteHost) ?></strong>
           <span><?= e($lang === 'ar' ? 'كأس العالم 2026 · كندا · المكسيك · أمريكا' : 'FIFA World Cup 2026 · Canada · Mexico · USA') ?></span>
+          <span class="footer-tagline"><?= e(t('footer_tagline')) ?></span>
           <span class="footer-brand-dates">📅 <?= e($lang === 'ar' ? '11 يونيو – 19 يوليو 2026' : 'June 11 – July 19, 2026') ?></span>
         </div>
       </div>
@@ -72,7 +74,9 @@ $lang       = current_lang();
         <li>
           <span class="li-ico">🔄</span>
           <span><?= e(t('last_update')) ?>: <strong><?= local_dt($lastUpdate, 'time') ?></strong>
+            <?php if (defined('AUTO_REFRESH') && AUTO_REFRESH): ?>
             <span class="auto-refresh-note">· <?= e(t('auto_refresh')) ?></span>
+            <?php endif; ?>
           </span>
         </li>
         <?php endif; ?>
@@ -166,11 +170,15 @@ $lang       = current_lang();
   <div class="footer-bottom">
     <div class="wrap footer-bottom-inner">
       <p class="copyright">
-        © <?= date('Y') ?> foot-boll.com
+        © <?= date('Y') ?> <?= e($siteHost) ?>
         <span class="dot">·</span>
         <?= e($lang === 'ar' ? 'صُنع بشغف لكرة القدم' : 'Built with love for football') ?>
       </p>
       <div class="footer-bottom-links">
+        <a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a>
+        <span class="dot">·</span>
+        <a href="<?= e(url('terms.php')) ?>"><?= e(t('terms_title')) ?></a>
+        <span class="dot">·</span>
         <a href="<?= e(url('matches.php')) ?>"><?= e(t('matches')) ?></a>
         <span class="dot">·</span>
         <a href="<?= e(url('groups.php')) ?>"><?= e(t('groups')) ?></a>
@@ -273,6 +281,7 @@ $lang       = current_lang();
           form.reset();
           form.hidden = true;
           if (success) success.hidden = false;
+          if (window.WCAnalytics) window.WCAnalytics.contact('sponsor');
         } else {
           result.hidden = false;
           result.textContent = MSG_ERR; result.className = 'contact-result err';
@@ -298,6 +307,7 @@ $lang       = current_lang();
 </div>
 
 <?php $jsBase = e(rtrim(SITE_URL,'/')); $appV = @filemtime(__DIR__ . '/../assets/js/app.js') ?: 1; $pwaV = @filemtime(__DIR__ . '/../assets/js/pwa.js') ?: 1; $cvV = @filemtime(__DIR__ . '/../assets/js/cardvote.js') ?: 1; $rmV = @filemtime(__DIR__ . '/../assets/js/reminders.js') ?: 1; ?>
+<script>window.WC_AUTO_REFRESH=<?= (defined('AUTO_REFRESH') && AUTO_REFRESH) ? 'true' : 'false' ?>;</script>
 <script src="<?= $jsBase ?>/assets/js/app.js?v=<?= $appV ?>" defer></script>
 <script src="<?= $jsBase ?>/assets/js/pwa.js?v=<?= $pwaV ?>" defer></script>
 <script>window.WC_POLL_API=<?= json_encode(rtrim(SITE_URL,'/') . '/api/poll.php', JSON_UNESCAPED_SLASHES) ?>;</script>

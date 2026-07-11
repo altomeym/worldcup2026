@@ -84,6 +84,18 @@ if ($finalM && isset($finalM['score']['ft'])) {
   <div class="sb-item"><span class="sb-num">3</span><span class="sb-lbl"><?= e($ar ? 'دول مضيفة' : 'Host nations') ?></span></div>
 </section>
 
+<!-- ============ مقدمة تحريرية (محتوى أصلي — AdSense) ============ -->
+<section class="home-intro">
+  <h2><?= e(t('home_intro_title')) ?></h2>
+  <p><?= e(t('home_intro_body')) ?></p>
+  <ul class="home-intro-list">
+    <li><?= e(t('home_intro_1')) ?></li>
+    <li><?= e(t('home_intro_2')) ?></li>
+    <li><?= e(t('home_intro_3')) ?></li>
+    <li><?= e(t('home_intro_4')) ?></li>
+  </ul>
+</section>
+
 <!-- ============ تفاعل مع المونديال (إبراز الميزات) ============ -->
 <section class="engage">
   <div class="engage-head">

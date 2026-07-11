@@ -1,7 +1,6 @@
 <?php
 /**
  * manifest.php — بيان تطبيق الويب (PWA) ديناميكي حسب اللغة والنطاق.
- * يجعل الموقع قابلاً للتثبيت على الهاتف كتطبيق بشعار «26».
  */
 require __DIR__ . '/includes/bootstrap.php';
 
@@ -9,12 +8,12 @@ header('Content-Type: application/manifest+json; charset=utf-8');
 header('Cache-Control: public, max-age=86400');
 
 $lang = current_lang();
-$base = rtrim(SITE_URL, '/');   // فارغ محلياً → مسارات من الجذر
+$base = rtrim(SITE_URL, '/');
 
 echo json_encode([
-    'name'             => $lang === 'ar' ? 'كأس العالم 2026' : 'FIFA World Cup 2026',
-    'short_name'       => $lang === 'ar' ? 'مونديال 2026' : 'WC 2026',
-    'description'      => $lang === 'ar' ? 'التغطية الكاملة واللحظية لكأس العالم 2026' : 'Full live FIFA World Cup 2026 coverage',
+    'name'             => t('site_title_suffix'),
+    'short_name'       => $lang === 'ar' ? 'مونديال 26' : 'WC 26',
+    'description'      => t('site_desc'),
     'lang'             => $lang,
     'dir'              => $lang === 'ar' ? 'rtl' : 'ltr',
     'start_url'        => $base . '/index.php?lang=' . $lang,

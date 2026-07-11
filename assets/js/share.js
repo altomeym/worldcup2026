@@ -3,7 +3,7 @@
  * ------------------------------------------------------------
  * يربط أي عنصر يحمل [data-share-url] (والاختياري [data-share-text]) بأزرار
  * المشاركة. الهاشتاقات تطابق render_share() في includes/helpers.php:
- *   #كأس_العالم_2026 #FIFAWorldCup26 #wcup2026
+ *   #كأس_العالم_2026 #FIFAWorldCup26 #footboll
  * يستخدم textContent فقط (لا innerHTML) — آمن ضد XSS.
  * ------------------------------------------------------------
  * الاستخدام في HTML (داخل عنصر الشريط):
@@ -18,7 +18,7 @@
 (function (global) {
   'use strict';
 
-  var TAGS = '#كأس_العالم_2026 #FIFAWorldCup26 #wcup2026';
+  var TAGS = '#كأس_العالم_2026 #FIFAWorldCup26 #footboll';
 
   function enc(s) { return encodeURIComponent(s == null ? '' : String(s)); }
 
@@ -84,11 +84,11 @@
   function handle(kind, el, ev) {
     var d = resolve(el);
     switch (kind) {
-      case 'wa':     if (ev) ev.preventDefault(); openShare(waUrl(d.text, d.url)); break;
-      case 'x':      if (ev) ev.preventDefault(); openShare(xUrl(d.text, d.url));  break;
-      case 'tg':     if (ev) ev.preventDefault(); openShare(tgUrl(d.text, d.url)); break;
-      case 'copy':   if (ev) ev.preventDefault(); copyLink(d.url, el); break;
-      case 'native': if (ev) ev.preventDefault(); nativeShare(d.text, d.url); break;
+      case 'wa':     if (ev) ev.preventDefault(); if (global.WCAnalytics) global.WCAnalytics.share('whatsapp', d.url); openShare(waUrl(d.text, d.url)); break;
+      case 'x':      if (ev) ev.preventDefault(); if (global.WCAnalytics) global.WCAnalytics.share('x', d.url); openShare(xUrl(d.text, d.url));  break;
+      case 'tg':     if (ev) ev.preventDefault(); if (global.WCAnalytics) global.WCAnalytics.share('telegram', d.url); openShare(tgUrl(d.text, d.url)); break;
+      case 'copy':   if (ev) ev.preventDefault(); if (global.WCAnalytics) global.WCAnalytics.share('copy', d.url); copyLink(d.url, el); break;
+      case 'native': if (ev) ev.preventDefault(); if (global.WCAnalytics) global.WCAnalytics.share('native', d.url); nativeShare(d.text, d.url); break;
     }
   }
 

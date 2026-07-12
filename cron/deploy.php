@@ -7,9 +7,10 @@
  * يعمل على أي استضافة: يجلب ملفّات assets/fifa/*.json عبر HTTP من GitHub (الريبو عام)
  * ويكتب الجديد/المتغيّر فقط. لا يحتاج git ولا exec ولا لوحة Hostinger.
  *
- * أضِفه في cron-job.org كل ساعة (مثل باقي مهامّك):
- *   /cron/deploy.php?token=INSTALL_TOKEN
- * محميّ بالتوكن. أمان: يكتب فقط ملفّات بنمط hash.json داخل assets/fifa (لا تجاوز مسار).
+ * أضِفه في Cron كل ساعة (إحصائيات FIFA فقط — لا ينشر الكود):
+ *   php /home/USER/public_html/cron/deploy.php
+ *   أو: curl "https://example.com/cron/deploy.php?token=INSTALL_TOKEN"
+ * نشر الكود الكامل من GitHub: أضف &code=1 (يدوياً فقط — ليس في Cron).
  * ============================================================
  */
 require __DIR__ . '/../includes/bootstrap.php';
@@ -48,27 +49,13 @@ foreach ($files as $f) {
 }
 echo "fifa sync — added/updated: $added, up-to-date: $skip\n";
 
-// ملفّات مفردة خارج مجلّد assets/fifa (صور اللاعبين + المقاييس الفنّيّة) — نجلب
-// كلّاً من GitHub raw على حدة (لا تدخل في حلقة المجلّد أعلاه).
-$RAW = 'https://raw.githubusercontent.com/salah23222/worldcup2026/main/assets/';
-foreach (['fifa-photos.json', 'fifa-metrics.json', 'fifa-motm.json'] as $single) {
-    $raw = http_get($RAW . $single, ['timeout' => 25, 'ua' => 'wcup2026-deploy', 'redirects' => true]);
-    if ($raw === null || json_decode($raw) === null) { echo "$single — fetch failed\n"; continue; }
-    $target = __DIR__ . '/../assets/' . $single;
-    clearstatcache(true, $target);
-    if (is_file($target) && (int)@filesize($target) === strlen($raw)) { echo "$single — up-to-date\n"; continue; }
-    if (@file_put_contents($target . '.tmp', $raw) !== false && @rename($target . '.tmp', $target)) {
-        echo "$single — updated (" . strlen($raw) . " bytes)\n";
-    } else {
-        echo "$single — write failed\n";
-    }
-}
+// ملاحظة: fifa-photos.json / fifa-metrics.json / fifa-motm.json تُحدَّث عبر cron/fifa-feed.php
+// (مصدر مباشر fifaphy) — لا تُسحَب هنا من GitHub لتجنّب التعارض.
 
-// ===== النشر الذاتي الكامل للكود (عند ?code=1 أو CLI) =====
+// ===== النشر الذاتي الكامل للكود (يدوياً فقط: ?code=1) =====
 // يسحب أرشيف الريبو من GitHub ويكتب الملفّات المتغيّرة فقط فوق جذر الموقع.
-// أمان صارم: لا يحذف أبداً · لا يلمس config.local.php ولا data/ (غير موجودَين في
-// الأرشيف أصلاً) · يرفض تجاوز المسار (..) · يكتب ذرّياً (tmp ثمّ rename).
-if ((PHP_SAPI === 'cli') || (($_GET['code'] ?? '') === '1')) {
+// لا يُفعَّل من CLI/Cron — FIFA sync أعلاه فقط. أمان: لا يحذف · لا يلمس config.local.php · لا data/
+if (($_GET['code'] ?? '') === '1') {
     echo deploy_pull_code() . "\n";
 }
 

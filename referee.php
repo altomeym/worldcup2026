@@ -60,7 +60,7 @@ tpl('header');
     <?php if (!empty($profile['photo'])): ?>
       <img src="<?= e($profile['photo']) ?>" alt="<?= e($name) ?>" loading="lazy">
     <?php elseif ($flag !== ''): ?>
-      <span class="ref-profile-flag"><img src="https://flagcdn.com/w160/<?= e($flag) ?>.png" alt="" loading="lazy"></span>
+      <span class="ref-profile-flag"><img src="<?= e(flag_url_iso($flag, 'w160')) ?>" alt="" loading="lazy"></span>
     <?php else: ?>
       <span class="ref-profile-empty">🧑‍⚖️</span>
     <?php endif; ?>
@@ -69,7 +69,7 @@ tpl('header');
     <h1><?= e($name) ?></h1>
     <p class="ref-profile-country">
       <?php if ($flag !== ''): ?>
-        <img class="flag" src="https://flagcdn.com/w40/<?= e($flag) ?>.png" alt="" loading="lazy" width="28" height="21">
+        <img class="flag" src="<?= e(flag_url_iso($flag, 'w40')) ?>" alt="" loading="lazy" width="28" height="21">
       <?php endif; ?>
       <span><?= e($country) ?></span>
     </p>

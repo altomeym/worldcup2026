@@ -24,9 +24,15 @@ $summary = (!empty($rich['desc']) && mb_strlen($rich['desc']) > mb_strlen($item[
          ? $rich['desc'] : ($item['summary'] ?? '');
 
 $page_title = $item['title'];
-$page_desc  = $summary !== '' ? mb_substr($summary, 0, 160) : ($item['title']);
+$page_desc  = !empty($item['context'])
+            ? mb_substr($item['context'], 0, 160)
+            : ($summary !== '' ? mb_substr($summary, 0, 160) : ($item['title']));
 $seo_type   = 'article';
-$page_robots = 'noindex,follow';
+$page_robots = !empty($item['context']) ? 'index,follow' : 'noindex,follow';
+$relatedMatch = null;
+if (!empty($item['match_index'])) {
+    $relatedMatch = DataService::matchByIndex((int)$item['match_index']);
+}
 gtm_add([
     'article_id'     => $id,
     'article_title'  => $item['title'],
@@ -37,8 +43,6 @@ tpl('header');
 ?>
 
 <a class="back-link" href="<?= e(url('news.php')) ?>">‹ <?= e(t('back_to_news')) ?></a>
-
-<p class="news-disclaimer"><?= e(t('news_disclaimer')) ?></p>
 
 <article class="article-view">
   <?php if ($heroImg !== ''): ?>
@@ -115,8 +119,8 @@ tpl('header');
     <h2><span class="section-bar"></span><?= e(t('latest_news')) ?></h2>
     <a class="section-link" href="<?= e(url('news.php')) ?>"><?= e(t('news_more')) ?> ›</a>
   </div>
-  <div class="news-list">
-    <?php foreach ($more as $it) render_news_item($it); ?>
+  <div class="news-list news-grid news-grid--sm">
+    <?php foreach ($more as $it) render_news_item($it, 'card'); ?>
   </div>
 </section>
 <?php endif; ?>

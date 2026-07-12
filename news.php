@@ -16,13 +16,11 @@ tpl('header');
   <p class="muted"><?= e(t('news_intro')) ?></p>
 </div>
 
-<p class="news-disclaimer"><?= e(t('news_disclaimer')) ?></p>
-
 <?php if (!$items): ?>
   <p class="empty-note"><?= e(t('no_news')) ?></p>
 <?php else: ?>
-  <div class="news-list">
-    <?php foreach ($items as $it) render_news_item($it); ?>
+  <div class="news-list news-grid">
+    <?php foreach ($items as $it) render_news_item($it, 'card'); ?>
   </div>
 <?php endif; ?>
 

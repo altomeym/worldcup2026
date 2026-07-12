@@ -73,45 +73,81 @@ tpl('header');
 ?>
 
 <style>
-/* تنسيق محلّي خفيف يتناغم مع ثيم الموقع الكحلي (لا يلمس style.css) */
-.today-hero{background:linear-gradient(135deg,#0e1d36,#13233d);border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;padding:22px 20px;margin:6px 0 18px}
-.today-hero .greet{font-size:1.5rem;font-weight:900;margin:0 0 4px}
-.today-hero .date{opacity:.78;margin:0;font-size:.98rem}
-.today-grid{display:grid;gap:16px;grid-template-columns:1fr}
-@media(min-width:760px){.today-grid{grid-template-columns:1fr 1fr}}
-.today-card{background:#0e1d36;border:1px solid rgba(255,255,255,.08);border-radius:14px;
-  padding:18px;display:flex;flex-direction:column}
-.today-card h2{font-size:1.05rem;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-.today-card .tc-cta{margin-top:auto;padding-top:12px}
-.today-span2{grid-column:1/-1}
-.today-stat{display:flex;align-items:baseline;gap:8px;margin:0 0 6px}
-.today-stat b{font-size:1.7rem;font-weight:900;color:#36c08f}
-.today-muted{opacity:.78;line-height:1.7;margin:0 0 10px}
-.today-tag{display:inline-block;font-size:.8rem;padding:2px 10px;border-radius:999px;
-  background:rgba(54,192,143,.15);color:#36c08f;font-weight:700}
-.today-tag.live{background:rgba(231,76,60,.18);color:#ff7a6b}
-.today-story{white-space:pre-line;line-height:1.9}
-.today-mod-link{align-self:flex-start}
+/* today.php — ثيم فاتح متناسق مع style.css */
+.today-hero {
+  background: linear-gradient(145deg, var(--surface), var(--bg-2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin: 6px 0 18px;
+  box-shadow: var(--shadow-card);
+}
+.today-hero .greet { font-size: 1.5rem; font-weight: 900; margin: 0 0 4px; color: var(--text); }
+.today-hero .date { color: var(--text-dim); margin: 0; font-size: .98rem; }
+.today-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .today-grid { grid-template-columns: 1fr 1fr; } }
+.today-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-card);
+}
+.today-card h2 {
+  font-size: 1.05rem; margin: 0 0 12px;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--text);
+}
+.today-card .tc-cta { margin-top: auto; padding-top: 12px; }
+.today-span2 { grid-column: 1 / -1; }
+.today-stat { display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px; }
+.today-stat b { font-size: 1.7rem; font-weight: 900; color: var(--accent-readable); }
+.today-muted { color: var(--text-dim); line-height: 1.7; margin: 0 0 10px; }
+.today-tag {
+  display: inline-block; font-size: .8rem; padding: 2px 10px; border-radius: 999px;
+  background: rgba(124, 245, 255, .25); color: var(--accent-readable); font-weight: 700;
+  border: 1px solid rgba(0, 122, 153, .15);
+}
+.today-tag.live {
+  background: rgba(220, 38, 38, .1); color: var(--live);
+  border-color: rgba(220, 38, 38, .25);
+}
+.today-story { white-space: pre-line; line-height: 1.9; }
+.today-mod-link { align-self: flex-start; }
 /* أداة الاستطلاع */
-[data-poll] .poll-card{margin:0}
-.poll-q{font-size:1.02rem;margin:0 0 14px}
-.poll-options{display:flex;flex-direction:column;gap:8px}
-.poll-opt{font:inherit;text-align:start;background:#13233d;color:#eef2f7;border:1px solid rgba(255,255,255,.12);
-  border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:600}
-.poll-opt:hover{border-color:#36c08f}
-.poll-opt:disabled{opacity:.55;cursor:default}
-.poll-result{position:relative;border-radius:10px;overflow:hidden;background:#13233d;
-  border:1px solid rgba(255,255,255,.10);padding:11px 14px;display:flex;align-items:center;gap:10px}
-.poll-result.is-choice{border-color:#36c08f}
-.poll-bar{position:absolute;inset-inline-start:0;top:0;bottom:0;background:rgba(54,192,143,.22);width:0;z-index:0}
-.poll-label,.poll-pct{position:relative;z-index:1}
-.poll-label{flex:1}
-.poll-pct{font-weight:800;color:#36c08f}
-.poll-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;
-  font-size:.85rem;opacity:.85}
-.poll-note{color:#36c08f;font-weight:700}
-.poll-msg{opacity:.75;margin:0}
+[data-poll] .poll-card { margin: 0; }
+.poll-q { font-size: 1.02rem; margin: 0 0 14px; color: var(--text); }
+.poll-options { display: flex; flex-direction: column; gap: 8px; }
+.poll-opt {
+  font: inherit; text-align: start;
+  background: var(--bg-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 11px 14px; cursor: pointer; font-weight: 600;
+  transition: border-color .15s, background .15s;
+}
+.poll-opt:hover { border-color: var(--accent); background: rgba(124, 245, 255, .12); }
+.poll-opt:disabled { opacity: .55; cursor: default; }
+.poll-result {
+  position: relative; border-radius: 10px; overflow: hidden;
+  background: var(--bg-2); border: 1px solid var(--border);
+  padding: 11px 14px; display: flex; align-items: center; gap: 10px;
+}
+.poll-result.is-choice { border-color: var(--accent); }
+.poll-bar {
+  position: absolute; inset-inline-start: 0; top: 0; bottom: 0;
+  background: rgba(124, 245, 255, .3); width: 0; z-index: 0;
+}
+.poll-label, .poll-pct { position: relative; z-index: 1; }
+.poll-label { flex: 1; color: var(--text); }
+.poll-pct { font-weight: 800; color: var(--accent-readable); }
+.poll-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 12px; font-size: .85rem; color: var(--text-dim);
+}
+.poll-note { color: var(--accent-readable); font-weight: 700; }
+.poll-msg { color: var(--text-faint); margin: 0; }
 </style>
 
 <div class="today-hero">

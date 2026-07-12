@@ -77,7 +77,7 @@ class Stickers
                 'id'      => 'ct_' . $i,
                 'name_ar' => $ar,
                 'name_en' => $en,
-                'img'     => 'https://flagcdn.com/w160/' . $host . '.png',
+                'img'     => flag_url_iso($host, 'w160'),
                 'emoji'   => '',
                 'rarity'  => 'common',
                 'set'     => 'cities',

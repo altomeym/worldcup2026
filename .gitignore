@@ -14,6 +14,8 @@
 !/cache/ratelimit/.gitkeep
 /cache/stadiums/*
 !/cache/stadiums/.gitkeep
+/cache/flags/*
+!/cache/flags/.gitkeep
 
 # ===== Runtime user data / بيانات المستخدمين وقت التشغيل =====
 /data/users/*

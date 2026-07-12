@@ -181,7 +181,10 @@
   })();
 
   /* -------- 3) التحديث التلقائي (اختياري — يُفعَّل من config.php) -------- */
-  // يعمل فقط إذا AUTO_REFRESH=true وكانت الصفحة فيها قسم data-autorefresh
+  // يعمل فقط إذا AUTO_REFRESH=true وكانت الصفحة فيها قسم data-autorefresh.
+  // AdSense: ممنوع auto-refresh للصفحة أو عناصر الإعلانات بدون طلب المستخدم
+  // (support.google.com/adsense/answer/1346295). softReload يستبدل أقسام المحتوى
+  // فقط — لا location.reload() ولا adsbygoogle.push() — فلا تضخيم للمشاهدات/الحملات.
   if (!window.WC_AUTO_REFRESH) return;
   var hasLiveSection = document.querySelector('[data-autorefresh]');
   if (!hasLiveSection) return;
@@ -233,14 +236,20 @@
   }
 
   /**
-   * إعادة تحميل خفيفة: تجلب الصفحة نفسها وتستبدل شبكات
-   * المباريات فقط — بدون وميض الصفحة كاملة.
+   * إعادة تحميل خفيفة: fetch + استبدال أقسام المحتوى فقط (لا الصفحة كاملة).
    */
   function softReload() {
     fetch(window.location.href, { cache: 'no-store' })
       .then(function (r) { return r.text(); })
       .then(function (html) {
         var doc = new DOMParser().parseFromString(html, 'text/html');
+        // صفحة مباراة مباشرة — النتيجة والأحداث والإحصائيات (ليس الإعلانات)
+        var oldMd = document.querySelector('.match-detail.md2.status-live[data-autorefresh]');
+        var newMd = doc.querySelector('.match-detail.md2.status-live[data-autorefresh]');
+        if (oldMd && newMd) {
+          oldMd.className = newMd.className;
+          oldMd.innerHTML = newMd.innerHTML;
+        }
         // استبدل كل شبكة مباريات بالمحتوى الجديد
         var oldGrids = document.querySelectorAll('.match-grid');
         var newGrids = doc.querySelectorAll('.match-grid');

@@ -354,7 +354,7 @@ html, body {
           <?php foreach (array_slice($titleCounts, 0, 8) as $row):
             $name = $ar ? $row['ar'] : $row['en'] ?? $row['ar'];
             $flag = $row['flag'] ?? '';
-            $url  = $flag ? 'https://flagcdn.com/w40/' . $flag . '.png' : '';
+            $url  = $flag ? flag_url_iso($flag, 'w40') : '';
             $dots = str_repeat('★', (int)$row['titles']);
           ?>
           <tr>
@@ -373,7 +373,7 @@ html, body {
         <table class="mini-list">
           <?php foreach (array_slice($goldenBoots, 0, 7) as $s):
             $name = $s['name'];
-            $url  = !empty($s['flag']) ? 'https://flagcdn.com/w40/' . $s['flag'] . '.png' : '';
+            $url  = !empty($s['flag']) ? flag_url_iso($s['flag'], 'w40') : '';
           ?>
           <tr>
             <td class="yr"><?= (int)$s['year'] ?></td>

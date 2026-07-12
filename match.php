@@ -116,13 +116,21 @@ gtm_add([
     'content_group'=> 'match_detail',
 ]);
 
+$autoRefresh = ($status === 'live')
+    || ($status !== 'finished' && $ts !== null && time() >= ($ts - 30 * 60));
+
 tpl('header');
 seo_sportsevent($m);
+seo_breadcrumb([
+    ['name' => t('home'),    'url' => url('index.php')],
+    ['name' => t('matches'), 'url' => url('matches.php')],
+    ['name' => team_name($t1) . ' ' . t('vs') . ' ' . team_name($t2)],
+]);
 ?>
 
 <a class="back-link" href="<?= e(url('matches.php')) ?>">‹ <?= e(t('matches')) ?></a>
 
-<article class="match-detail md2 status-<?= e($status) ?>">
+<article class="match-detail md2 status-<?= e($status) ?>"<?= $autoRefresh ? ' data-autorefresh="1"' : '' ?>>
 
   <!-- ============ Hero بطولي ============ -->
   <header class="md-hero">
@@ -140,7 +148,7 @@ seo_sportsevent($m);
     <div class="md-scoreline">
       <div class="md-team md-team-home">
         <?= flag_img($t1, 'w160') ?>
-        <h2><?= e(team_name($t1)) ?></h2>
+        <h2><?php if (is_real_team($t1)): ?><a href="<?= e(url('team.php', ['team' => $t1])) ?>"><?= e(team_name($t1)) ?></a><?php else: ?><?= e(team_name($t1)) ?><?php endif; ?></h2>
         <?php if ($mr1 = Rankings::of($t1)): ?><span class="md-rank"><?= e(t('fifa_rank')) ?> #<?= (int)$mr1 ?></span><?php endif; ?>
       </div>
 
@@ -173,7 +181,7 @@ seo_sportsevent($m);
 
       <div class="md-team md-team-away">
         <?= flag_img($t2, 'w160') ?>
-        <h2><?= e(team_name($t2)) ?></h2>
+        <h2><?php if (is_real_team($t2)): ?><a href="<?= e(url('team.php', ['team' => $t2])) ?>"><?= e(team_name($t2)) ?></a><?php else: ?><?= e(team_name($t2)) ?><?php endif; ?></h2>
         <?php if ($mr2 = Rankings::of($t2)): ?><span class="md-rank"><?= e(t('fifa_rank')) ?> #<?= (int)$mr2 ?></span><?php endif; ?>
       </div>
     </div>
@@ -183,6 +191,41 @@ seo_sportsevent($m);
       <?php if ($ts !== null): ?><span class="md-hf">📅 <?= local_dt($ts, 'datetime') ?></span><?php endif; ?>
     </div>
   </header>
+
+  <?php
+  $watchData = LiveWatch::forMatch($m, $id);
+  if ($watchData && LiveWatch::shouldShow($m, $ts)):
+  ?>
+  <section class="md-section watch-live-box">
+    <h3 class="section-head">📺 <?= e(t('watch_live')) ?></h3>
+    <?php if (!empty($watchData['embed'])): ?>
+      <div class="video-embed">
+        <iframe src="<?= e($watchData['embed']) ?>"
+                title="<?= e(t('watch_live')) ?>"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="video-credit"><?= e(t('watch_live_embed_note')) ?></p>
+    <?php endif; ?>
+    <div class="watch-live-btns">
+      <?php foreach ($watchData['links'] as $wl): ?>
+        <a class="btn btn-sm watch-live-btn<?= !empty($wl['paid']) ? ' watch-live-paid' : ' watch-live-free' ?>"
+           href="<?= e($wl['url']) ?>" target="_blank" rel="noopener noreferrer"
+           data-gtm-event="watch_live" data-gtm-match-id="<?= (int)$id ?>"
+           data-gtm-watch-id="<?= e($wl['id']) ?>">
+          <?= e($wl['label']) ?>
+          <?php if (!empty($wl['paid'])): ?>
+            <span class="watch-live-tag"><?= e(t('watch_live_paid')) ?></span>
+          <?php else: ?>
+            <span class="watch-live-tag watch-live-tag-free"><?= e(t('watch_live_free')) ?></span>
+          <?php endif; ?>
+          <span aria-hidden="true"> ↗</span>
+        </a>
+      <?php endforeach; ?>
+    </div>
+    <p class="watch-live-note"><?= e(t('watch_live_note')) ?></p>
+  </section>
+  <?php endif; ?>
 
   <?php if ($demoMode): ?>
     <p class="md-demo-banner">🧪
@@ -270,17 +313,6 @@ seo_sportsevent($m);
       </span>
       <span class="fifa-rep-go" aria-hidden="true">›</span>
     </a>
-    <style>
-    .fifa-rep{display:flex;align-items:center;gap:13px;margin:6px 0 14px;padding:13px 16px;
-      background:linear-gradient(135deg,rgba(255,200,70,.14),rgba(255,200,70,.05));
-      border:1px solid rgba(255,200,70,.34);border-radius:14px;text-decoration:none;color:inherit;transition:.15s}
-    .fifa-rep:hover{background:linear-gradient(135deg,rgba(255,200,70,.22),rgba(255,200,70,.08));border-color:rgba(255,200,70,.55)}
-    .fifa-rep-ic{font-size:1.7rem;flex:0 0 auto}
-    .fifa-rep-t{display:flex;flex-direction:column;line-height:1.25;min-width:0}
-    .fifa-rep-t b{font-size:1rem}
-    .fifa-rep-t small{font-size:.8rem;opacity:.75}
-    .fifa-rep-go{margin-inline-start:auto;font-size:1.5rem;color:#ffc846;font-weight:800}
-    </style>
   <?php elseif ($hasScore && $fifaStatsHtml === ''): /* انتهت لكن تقرير FIFA لم يُنشَر بعد → ملاحظة بدل فراغ */ ?>
     <div class="fifa-pending">
       <span class="fifa-pending-ic">📄</span>
@@ -289,14 +321,6 @@ seo_sportsevent($m);
         <small><?= e($L('يصدر عادةً خلال يوم من المباراة، ويظهر هنا تلقائياً فور نشره.', 'Usually published within a day of the match — it will appear here automatically once released.')) ?></small>
       </span>
     </div>
-    <style>
-    .fifa-pending{display:flex;align-items:center;gap:13px;margin:6px 0 14px;padding:13px 16px;
-      background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.2);border-radius:14px;color:inherit}
-    .fifa-pending-ic{font-size:1.5rem;flex:0 0 auto;opacity:.7}
-    .fifa-pending-t{display:flex;flex-direction:column;line-height:1.3;min-width:0}
-    .fifa-pending-t b{font-size:.95rem}
-    .fifa-pending-t small{font-size:.8rem;opacity:.72}
-    </style>
   <?php endif; ?>
 
   <!-- ============ رجل المباراة (أعلى تقييم) ============ -->
@@ -319,23 +343,6 @@ seo_sportsevent($m);
       </span>
       <span class="motm-rating">★ <?= number_format((float)($motm['rating'] ?? 0), 1) ?></span>
     </a>
-    <style>
-    .motm-card{display:flex;align-items:center;gap:14px;margin:6px 0 14px;padding:14px 18px;position:relative;
-      background:linear-gradient(135deg,rgba(255,200,70,.16),rgba(38,206,168,.06));
-      border:1px solid rgba(255,200,70,.40);border-radius:16px;text-decoration:none;color:inherit;transition:.15s}
-    .motm-card:hover{border-color:rgba(255,200,70,.7);background:linear-gradient(135deg,rgba(255,200,70,.24),rgba(38,206,168,.10))}
-    .motm-badge{position:absolute;top:-10px;inset-inline-start:16px;background:#ffc846;color:#0a1626;font-weight:800;
-      font-size:.74rem;padding:3px 11px;border-radius:20px}
-    .motm-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:top center;
-      background:#0e1b34;border:2px solid #ffc846;flex:0 0 auto;margin-top:4px}
-    .motm-photo.off{display:none}
-    .motm-info{display:flex;flex-direction:column;gap:4px;min-width:0;margin-top:4px}
-    .motm-name{font-size:1.15rem;line-height:1.1}
-    .motm-team{display:flex;align-items:center;gap:7px;opacity:.9;font-size:.9rem}
-    .motm-team .flag{width:24px;height:auto;border-radius:3px}
-    .motm-rating{margin-inline-start:auto;background:#ffc846;color:#0a1626;font-weight:800;font-size:1.15rem;
-      padding:6px 14px;border-radius:14px;margin-top:4px}
-    </style>
   <?php endif; ?>
 
   <!-- ============ الأحداث (خط زمني موحّد) ============ -->
@@ -497,7 +504,7 @@ seo_sportsevent($m);
 
   $renderOff = function(?array $o) use ($ar): string {
       if (!$o || empty($o['name'])) return '';
-      $flag = !empty($o['flag']) ? '<img src="https://flagcdn.com/w20/'.e($o['flag']).'.png" alt="" class="ref-flag" loading="lazy"> ' : '';
+      $flag = !empty($o['flag']) ? '<img src="'.e(flag_url_iso($o['flag'], 'w20')).'" alt="" class="ref-flag" loading="lazy"> ' : '';
       $cn   = !empty($o['country_ar']) ? ' <small class="ref-country">('.e($o['country_ar']).')</small>' : '';
       return $flag . e($o['name']) . $cn;
   };

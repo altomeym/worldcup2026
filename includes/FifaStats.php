@@ -187,7 +187,7 @@ class FifaStats
                       : 'Source: FIFA Training Centre — Post-Match Summary (value in parentheses = on target / completed / direct).';
         $sub = fn(string $h): string => '<h4 class="fstat-sub">' . e($h) . '</h4>';
 
-        $out = '<section class="md-section fifa-stats">' . self::css()
+        $out = '<section class="md-section fifa-stats">'
             . '<h3 class="section-head">' . e($title) . '</h3>'
             . '<div class="fstat-head"><span>' . e($t1) . '</span><span class="fstat-form">' . $form . '</span><span>' . e($t2) . '</span></div>';
         if ($statsHtml !== '') $out .= $sub($ar ? 'الإحصائيات' : 'Statistics') . $statsHtml;
@@ -279,44 +279,6 @@ class FifaStats
                   . e($ar ? '📋 الملفّ الفنّي الكامل' : '📋 Full technical profile') . '</a>';
         }
         return '<details class="fpc"><summary>' . $head . '</summary><div class="fpc-body">' . $body . $prof . '</div></details>';
-    }
-
-    private static function css(): string
-    {
-        return '<style>'
-            . '.fifa-stats .fstat-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin:6px 0;color:var(--accent,#fff)}'
-            . '.fifa-stats .fstat-form{font-size:.8em;font-weight:700;opacity:.85;color:#ffc846}'
-            . '.fifa-stats .fstat-sub{margin:18px 0 4px;font-size:.95em;opacity:.9;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:6px}'
-            . '.fifa-stats .fstat-phint{margin:18px 0 8px;font-size:.9em;opacity:.85;color:#ffc846}'
-            . '.fifa-stats .fstat-players2{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;align-items:start}'
-            . '.fifa-stats .fstat-pcol{min-width:0}'
-            . '.fifa-stats .fstat-pcol .fstat-sub{margin-top:0}'
-            . '@media(max-width:560px){.fifa-stats .fstat-players2{grid-template-columns:1fr}}'
-            . '.fifa-stats .fstat-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:9px 0}'
-            . '.fifa-stats .fstat-v{font-weight:800;font-variant-numeric:tabular-nums}'
-            . '.fifa-stats .fstat-v:first-child{text-align:right}.fifa-stats .fstat-v:nth-child(3){text-align:left}'
-            . '.fifa-stats .fstat-label{font-size:.82em;opacity:.8;text-align:center;white-space:nowrap}'
-            . '.fifa-stats .fstat-bar{grid-column:1/-1;display:flex;height:6px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,.08)}'
-            . '.fifa-stats .fstat-bar i{background:#ffc846}.fifa-stats .fstat-bar b{background:#a8cdf5}'
-            . '.fifa-stats .fstat-hl{text-align:center;font-size:.85em;color:#ffc846;margin:8px 0 0}'
-            . '.fifa-stats .fpc{margin:6px 0;border:1px solid rgba(255,255,255,.09);border-radius:10px;overflow:hidden}'
-            . '.fifa-stats .fpc>summary{cursor:pointer;padding:10px 12px;font-weight:700;display:flex;justify-content:space-between;gap:8px;align-items:center;list-style:none}'
-            . '.fifa-stats .fpc>summary::-webkit-details-marker{display:none}'
-            . '.fifa-stats .fpc-id{display:flex;align-items:center;gap:9px;min-width:0}'
-            . '.fifa-stats .fpc-photo{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:top center;background:#0e1b34;border:1.5px solid rgba(255,255,255,.18);flex:0 0 auto}'
-            . '.fifa-stats .fpc-photo.is-off{display:none}'
-            . '.fifa-stats .fpc-q{font-weight:700;font-size:.78em;color:#ffc846;white-space:nowrap}'
-            . '.fifa-stats .fpc-body{padding:2px 12px 12px}'
-            . '.fifa-stats .fpc-profile{display:block;width:max-content;margin:12px auto 2px;background:#ffc846;color:#0a1626;font-weight:800;border-radius:20px;padding:7px 18px;text-decoration:none;font-size:.86em}'
-            . '.fifa-stats .fpc-cat{font-size:.78em;opacity:.7;margin:12px 0 6px}'
-            . '.fifa-stats .fpc-grid{display:flex;flex-wrap:wrap;gap:8px}'
-            . '.fifa-stats .fpc-chip{background:rgba(255,255,255,.06);border-radius:8px;padding:6px 12px;text-align:center;min-width:62px}'
-            . '.fifa-stats .fpc-chip b{display:block;font-size:1.05em;font-variant-numeric:tabular-nums}'
-            . '.fifa-stats .fpc-chip span{display:block;font-size:.68em;opacity:.7}'
-            . '.fifa-stats .fpc-line{font-size:.8em;opacity:.85;margin:7px 0 0}'
-            . '.fifa-stats .fpc-zones{display:flex;height:8px;border-radius:5px;overflow:hidden;margin:8px 0 2px}'
-            . '.fifa-stats .fpc-zones i{display:block;height:100%}'
-            . '</style>';
     }
 
     // ───────────────────── الاستخلاص (محليّ فقط) ─────────────────────

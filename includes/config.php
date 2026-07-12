@@ -71,11 +71,16 @@ define('CACHE_DIR', __DIR__ . '/../cache/');
 define('CACHE_TTL', 300);
 // مهلة الاتصال بالمصدر بالثواني (قصيرة: طلب واحد فقط يجلب، والبقية تُقدَّم لها النسخة المخزّنة)
 define('FETCH_TIMEOUT', 5);
+// بروكسي الأعلام — يخدم الصور من نفس النطاق (flagcdn قد يُحجَب عند الزائر).
+define('FLAG_PROXY', filter_var(cfg_secret('FLAG_PROXY', true, $__local), FILTER_VALIDATE_BOOLEAN));
+// مدة كاش الأعلام بالثواني (2592000 = 30 يوم).
+define('FLAG_CACHE_TTL', (int)cfg_secret('FLAG_CACHE_TTL', 2592000, $__local));
 // كاش الصفحات الكامل (ثواني): يخدم الزوّار/الزواحف من HTML جاهز بلا تشغيل PHP →
 // يتحمّل ضغطاً هائلاً على الاستضافة المشتركة. 0 = تعطيل. المستخدمون المسجّلون لا يُخزَّنون أبداً.
 define('PAGE_CACHE_TTL', 60);
 // تحديث تلقائي للنتائج في المتصفّح (بدون إعادة تحميل الصفحة).
 // false = معطّل — الزائر يحدّث يدوياً. true = يستطلع api/data.php أثناء المباريات المباشرة.
+// AdSense: softReload يستبدل محتوى المباريات فقط — لا يعيد تحميل الصفحة ولا adsbygoogle.
 define('AUTO_REFRESH', filter_var(cfg_secret('AUTO_REFRESH', false, $__local), FILTER_VALIDATE_BOOLEAN));
 
 // ---------- التوقيت ----------
@@ -105,6 +110,9 @@ define('LIVE_CACHE_TTL', 120);
 // قائمة يوتيوب الرسميّة لملخّصات المباريات (beIN SPORTS بالعربية).
 // تُضمَّن تلقائياً على صفحة كل مباراة منتهية فور نشر FIFA/beIN للملخّص.
 define('HIGHLIGHTS_PLAYLIST', 'PLczz3UIGL1Xro9H31oiYmQviSBosVdclk');
+
+// رابط احتياطي لقسم «شاهد البث» إن لم يُعرَّف في data/watch-links.json.
+define('WATCH_DEFAULT_URL', (string)cfg_secret('WATCH_DEFAULT_URL', '', $__local));
 
 // نموذج تقرير ما بعد المباراة (الأدقّ): 104 تقريراً فقط طوال البطولة،
 // والتكلفة الإجماليّة ~2$ — الدقّة الرقميّة فيه أهمّ من الفرق السعري.

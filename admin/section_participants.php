@@ -86,7 +86,7 @@ if (!$users) {
           <td><?= e((string)($u['email'] ?? '')) ?></td>
           <td>
             <?php if (preg_match('/^[A-Za-z]{2}$/', $cc)): ?>
-              <img src="https://flagcdn.com/w20/<?= e(strtolower($cc)) ?>.png" width="20" height="15" alt=""> <?= e(strtoupper($cc)) ?>
+              <img src="<?= e(flag_url_iso(strtolower($cc), 'w20')) ?>" width="20" height="15" alt=""> <?= e(strtoupper($cc)) ?>
             <?php else: ?>
               &mdash;
             <?php endif; ?>

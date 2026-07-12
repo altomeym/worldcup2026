@@ -20,6 +20,11 @@ return [
     // Empty if served from the domain root. For a subfolder/production set the full URL.
     'SITE_URL' => '',                    // e.g. https://example.com  |  http://localhost/worldcup2026
 
+    // ---------- Flag proxy / بروكسي الأعلام ----------
+    // true = serve flags via /flag.php (when flagcdn.com is blocked for visitors).
+    'FLAG_PROXY'     => true,
+    'FLAG_CACHE_TTL' => 2592000,         // 30 days
+
     // ---------- MySQL — accounts & predictions (OPTIONAL) ----------
     // Only needed for user accounts. Leave DB_ENABLED=false to run in file-only mode.
     // مطلوبة فقط لنظام الحسابات. اتركها false للعمل بنظام الملفات.
@@ -31,7 +36,16 @@ return [
 
     // ---------- Live scores — API-Football (OPTIONAL) ----------
     // Free tier = 100 requests/day. Get a key: https://dashboard.api-football.com
+    //
+    // ⚠️ هذا المفتاح يفعّل النتائج والإحصائيات المباشرة فقط (أهداف، بطاقات،
+    //    تشكيلات، دقيقة المباراة) — وليس بث فيديو المباراة. البث المرئي يُضبط
+    //    عبر data/watch-links.json (روابط beIN / FIFA+ الرسمية).
     'APIFOOTBALL_KEY' => '',
+
+    // ---------- Live watch links — بث الفيديو (OPTIONAL) ----------
+    // روابط المشاهدة الرسمية في data/watch-links.json (beIN، FIFA+، إلخ).
+    // WATCH_DEFAULT_URL = رابط احتياطي إن لم يُعرَّف في JSON.
+    'WATCH_DEFAULT_URL' => '',
 
     // ---------- AI content — Anthropic Claude (OPTIONAL) ----------
     // Powers match previews/summaries & the heartbreak roast (Arabic dialects).
@@ -57,6 +71,7 @@ return [
 
     // ---------- Installer guard / حماية أداة التثبيت ----------
     // Protects install.php & db_selftest.php from public access. Use 32+ random chars.
+    // Also required for /cron/api-check.php in the browser (CLI works without token).
     'INSTALL_TOKEN' => '',
 
     // ---------- Telegram bot (OPTIONAL) ----------

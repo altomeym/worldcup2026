@@ -55,7 +55,7 @@ tpl('header');
   <?php foreach ($countries as $cc => $cname): if (!$byCountry[$cc]) continue; ?>
     <section class="hm-city-col">
       <h2 class="hm-city-head">
-        <img class="flag" src="https://flagcdn.com/w40/<?= e($cc) ?>.png" alt="" width="28" height="21">
+        <img class="flag" src="<?= e(flag_url_iso($cc, 'w40')) ?>" alt="" width="28" height="21">
         <?= e($cname) ?>
       </h2>
       <ul class="hm-city-list">

@@ -99,11 +99,10 @@ $lang = current_lang();
 
   <div class="fut-grid">
     <?php foreach ($history as $h):
-      $flagUrl = 'https://flagcdn.com/%s/' . strtolower($h['flag']) . '.png';
       render_scorer_card([
         'name'  => $h['name'],
-        'photo' => fut_photo_html($h['name'], sprintf($flagUrl, 'w160')),
-        'flag'  => '<img class="flag" src="' . e(sprintf($flagUrl, 'w40')) . '" alt="" loading="lazy" width="28" height="21">',
+        'photo' => fut_photo_html($h['name'], flag_url_iso($h['flag'], 'w160')),
+        'flag'  => flag_img_iso($h['flag'], 'w40'),
         'label' => $lang === 'ar' ? $h['country_ar'] : $h['country_en'],
         'goals' => (int)$h['goals'],
         'badge' => (int)$h['year'],

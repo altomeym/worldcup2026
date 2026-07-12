@@ -28,7 +28,7 @@ tpl('header');
 $lang = current_lang();
 $cflag = fn(string $code) => $code === ''
     ? ''
-    : '<img class="flag" src="https://flagcdn.com/w40/' . e($code) . '.png" alt="" loading="lazy" width="28" height="21">';
+    : '<img class="flag" src="' . e(flag_url_iso($code, 'w40')) . '" alt="" loading="lazy" width="28" height="21">';
 ?>
 
 <!-- ============ سجل كل الأبطال (1930 → 2022) ============ -->

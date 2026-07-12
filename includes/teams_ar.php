@@ -236,12 +236,30 @@ function team_flag(string $raw): string {
 }
 
 /**
- * flag_url() — رابط صورة العلم من CDN مجاني.
+ * flag_url() — رابط صورة العلم.
+ * مع FLAG_PROXY=true يُخدم من flag.php (نفس النطاق) لتجاوز حجب flagcdn.com.
  */
 function flag_url(string $raw, string $size = 'w80'): string {
     $code = team_flag($raw);
     if ($code === '') return '';
+    if (defined('FLAG_PROXY') && FLAG_PROXY) {
+        require_once __DIR__ . '/FlagProxy.php';
+        return flag_proxy_url($code, $size);
+    }
     return 'https://flagcdn.com/' . $size . '/' . strtolower($code) . '.png';
+}
+
+/**
+ * flag_url_iso() — رابط علم من رمز ISO مباشرة (de, gb-eng, …).
+ */
+function flag_url_iso(string $iso, string $size = 'w80'): string {
+    require_once __DIR__ . '/FlagProxy.php';
+    $code = flag_valid_code($iso);
+    if ($code === '') return '';
+    if (defined('FLAG_PROXY') && FLAG_PROXY) {
+        return flag_proxy_url($code, $size);
+    }
+    return 'https://flagcdn.com/' . $size . '/' . $code . '.png';
 }
 
 /** هل هذا الاسم منتخب حقيقي (وليس placeholder)؟ */

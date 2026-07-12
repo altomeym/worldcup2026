@@ -1,6 +1,6 @@
 <?php
 /**
- * terms.php — شروط الاستخدام (متطلب AdSense — إخلاء مسؤولية بث).
+ * terms.php — شروط الاستخدام.
  */
 require __DIR__ . '/includes/bootstrap.php';
 
@@ -10,8 +10,8 @@ $host = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 
 $page_title = t('terms_title');
 $page_desc  = $L(
-    'شروط استخدام foot-boll.com — نتائج وإحصائيات وتوقعات، بدون بث مباشر.',
-    'Terms of use for foot-boll.com — scores, stats, and predictions, no live streaming.'
+    'شروط استخدام foot-boll.com — نتائج، بث مباشر، إحصائيات، وتوقعات.',
+    'Terms of use for foot-boll.com — scores, live streaming, stats, and predictions.'
 );
 
 tpl('header');
@@ -31,8 +31,8 @@ tpl('header');
 
   <h2><?= e($L('١. طبيعة الخدمة', '1. Nature of the service')) ?></h2>
   <p><?= e($L(
-    'الموقع يعرض معلومات رياضية: جداول، نتائج، إحصائيات، ومسابقات توقع. لا نبث المباريات ولا نروّج لخدمات بث غير رسمية. أي روابط خارجية للأخبار تؤدي إلى مواقع الناشرين الأصليين.',
-    'The site displays sports information: schedules, results, statistics, and prediction games. We do not stream matches or promote unofficial streaming. External news links lead to original publishers.'
+    'الموقع يعرض معلومات رياضية: جداول، نتائج، إحصائيات، بث مباشر مُضمّن، ومسابقات توقع. روابط الأخبار الخارجية تؤدي إلى مواقع الناشرين الأصليين.',
+    'The site displays sports information: schedules, results, statistics, embedded live streaming, and prediction games. External news links lead to original publishers.'
   )) ?></p>
 
   <h2><?= e($L('٢. مسابقات التوقعات', '2. Prediction games')) ?></h2>
@@ -43,8 +43,8 @@ tpl('header');
 
   <h2><?= e($L('٣. المحتوى والحقوق', '3. Content and rights')) ?></h2>
   <p><?= e($L(
-    'بيانات الجدول من openfootball (ملك عام). شعارات المنتخبات والصور من مصادر طرف ثالث. مقالات RSS: نعرض العنوان والملخّص فقط — المحتوى الكامل على موقع الناشر.',
-    'Schedule data from openfootball (public domain). Team logos and images from third parties. RSS: we show title and snippet only — full content stays on the publisher\'s site.'
+    'بيانات الجدول من openfootball (ملك عام). شعارات المنتخبات والصور من مصادر طرف ثالث. الأخبار: عنوان وسياق تحريري مع رابط للمصدر — المحتوى الكامل على موقع الناشر.',
+    'Schedule data from openfootball (public domain). Team logos and images from third parties. News: headline and editorial context with a link to the source — full content stays on the publisher\'s site.'
   )) ?></p>
 
   <h2><?= e($L('٤. الحسابات', '4. Accounts')) ?></h2>

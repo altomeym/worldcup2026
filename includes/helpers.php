@@ -184,27 +184,42 @@ function score_text(array $m): string {
     return '–';
 }
 
-/** كرت خبر واحد: صورة المصدر + العنوان + المصدر/الوقت. الضغط يفتح صفحة الخبر الداخلية. */
-function render_news_item(array $it): void {
+/** كرت خبر واحد: صورة المصدر + العنوان + المصدر/الوقت. $layout = card (مربّع) | row (أفقي). */
+function render_news_item(array $it, string $layout = 'card'): void {
     $href = url('article.php', ['i' => $it['id'] ?? '']);
     $thumb = !empty($it['image']) ? $it['image'] : ($it['logo'] ?? '');
     $isPhoto = !empty($it['image']);
+    $cls = ($layout === 'card') ? 'news-item news-card' : 'news-item';
     ?>
-    <a class="news-item" href="<?= e($href) ?>">
+    <a class="<?= e($cls) ?>" href="<?= e($href) ?>">
       <?php if ($thumb !== ''): ?>
-        <span class="news-thumb <?= $isPhoto ? 'news-thumb-photo' : '' ?>"><img src="<?= e($thumb) ?>" alt="<?= e($it['source'] ?? '') ?>" loading="lazy"></span>
+        <span class="news-thumb <?= $isPhoto ? 'news-thumb-photo' : 'news-thumb-logo' ?>">
+          <img src="<?= e($thumb) ?>" alt="<?= e($it['title'] ?? ($it['source'] ?? '')) ?>" loading="lazy">
+        </span>
       <?php else: ?>
         <span class="news-thumb news-thumb-empty" aria-hidden="true">📰</span>
       <?php endif; ?>
       <span class="news-body">
+        <?php if ($layout === 'card'): ?>
+          <span class="news-meta news-meta-card">
+            <?php if (!empty($it['ts'])): ?>
+              <span class="news-date"><?= local_dt((int)$it['ts'], 'date_short') ?></span>
+            <?php endif; ?>
+            <?php if (!empty($it['source'])): ?>
+              <span class="news-source"><?= e($it['source']) ?></span>
+            <?php endif; ?>
+          </span>
+        <?php endif; ?>
         <span class="news-title"><?= e($it['title'] ?? '') ?></span>
-        <?php if (!empty($it['context'])): ?>
+        <?php if ($layout !== 'card' && !empty($it['context'])): ?>
           <span class="news-teaser"><?= e(mb_strlen($it['context']) > 110 ? mb_substr($it['context'], 0, 107) . '…' : $it['context']) ?></span>
         <?php endif; ?>
-        <span class="news-meta">
-          <?php if (!empty($it['source'])): ?><span class="news-source"><?= e($it['source']) ?></span><?php endif; ?>
-          <?php if (!empty($it['ts'])): ?><span class="news-time"><?= local_dt((int)$it['ts'], 'datetime') ?></span><?php endif; ?>
-        </span>
+        <?php if ($layout !== 'card'): ?>
+          <span class="news-meta">
+            <?php if (!empty($it['source'])): ?><span class="news-source"><?= e($it['source']) ?></span><?php endif; ?>
+            <?php if (!empty($it['ts'])): ?><span class="news-time"><?= local_dt((int)$it['ts'], 'datetime') ?></span><?php endif; ?>
+          </span>
+        <?php endif; ?>
       </span>
     </a>
     <?php
@@ -292,6 +307,15 @@ function flag_img(string $team, string $size = 'w40'): string {
     }
     return '<img class="flag" src="' . e($u) . '" alt="" loading="lazy" '
          . 'width="32" height="24">';
+}
+
+/** صورة العلم من رمز ISO (de, sa, gb-eng, …) */
+function flag_img_iso(string $iso, string $size = 'w40'): string {
+    $u = function_exists('flag_url_iso') ? flag_url_iso($iso, $size) : '';
+    if ($u === '') {
+        return '<span class="flag flag-tbd" aria-hidden="true">?</span>';
+    }
+    return '<img class="flag" src="' . e($u) . '" alt="" loading="lazy" width="28" height="21">';
 }
 
 /**

@@ -73,7 +73,7 @@ function render_match_card(array $m): void {
       <div class="mc-ref">
         <span class="mc-ref-lbl"><?= e($ar ? 'الحكم:' : 'Referee:') ?></span>
         <?php if ($refFlag !== ''): ?>
-          <img class="mc-ref-flag" src="https://flagcdn.com/w20/<?= e($refFlag) ?>.png"
+          <img class="mc-ref-flag" src="<?= e(flag_url_iso($refFlag, 'w20')) ?>"
                alt="" width="18" height="13" loading="lazy">
         <?php endif; ?>
         <span class="mc-ref-name"><?= e(mb_convert_case(mb_strtolower($refName, 'UTF-8'), MB_CASE_TITLE, 'UTF-8')) ?></span>

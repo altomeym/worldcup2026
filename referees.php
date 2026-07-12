@@ -345,7 +345,7 @@ $strictOf = function (float $avg) use ($lang): array {
           <td class="rst-rank"><?= $i + 1 ?></td>
           <td class="rst-name">
             <a href="<?= e(url('referee.php', ['i' => $s['idx']])) ?>">
-              <?php if ($s['flag'] !== ''): ?><img src="https://flagcdn.com/w20/<?= e($s['flag']) ?>.png" alt="" loading="lazy" width="20" height="15"> <?php endif; ?>
+              <?php if ($s['flag'] !== ''): ?><img src="<?= e(flag_url_iso($s['flag'], 'w20')) ?>" alt="" loading="lazy" width="20" height="15"> <?php endif; ?>
               <?= e($s['name']) ?>
             </a>
           </td>
@@ -508,7 +508,7 @@ if ($dTotal > 0):
         ?>
           <a class="ref-item" href="<?= e($href) ?>">
             <?php if ($flag !== ''): ?>
-              <img class="flag" src="https://flagcdn.com/w40/<?= e($flag) ?>.png"
+              <img class="flag" src="<?= e(flag_url_iso($flag, 'w40')) ?>"
                    alt="" loading="lazy" width="32" height="24">
             <?php endif; ?>
             <div class="ref-meta">

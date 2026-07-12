@@ -36,20 +36,21 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 <?php endif; ?>
 
 <footer class="site-footer">
-  <div class="wrap footer-grid">
 
-    <!-- ──────── العمود 1: الهوية + الأرقام ──────── -->
-    <div class="footer-col footer-col-brand">
+  <!-- ──────── شريط الهوية + أرقام البطولة ──────── -->
+  <div class="footer-hero">
+    <div class="wrap footer-hero-inner">
       <div class="footer-brand">
-        <span class="footer-mark" aria-hidden="true">26</span>
+        <span class="footer-mark" aria-hidden="true">
+          <img class="footer-logo" src="<?= e(rtrim(SITE_URL, '/') . '/assets/img/logo.png') ?>" alt="foot-boll.com" width="140" height="36" loading="lazy">
+        </span>
         <div class="footer-brand-text">
-          <strong><?= e($siteHost) ?></strong>
-          <span><?= e($lang === 'ar' ? 'كأس العالم 2026 · كندا · المكسيك · أمريكا' : 'FIFA World Cup 2026 · Canada · Mexico · USA') ?></span>
+          <span class="footer-brand-event"><?= e($lang === 'ar' ? 'كأس العالم 2026 · كندا · المكسيك · أمريكا' : 'FIFA World Cup 2026 · Canada · Mexico · USA') ?></span>
           <span class="footer-tagline"><?= e(t('footer_tagline')) ?></span>
           <span class="footer-brand-dates">📅 <?= e($lang === 'ar' ? '11 يونيو – 19 يوليو 2026' : 'June 11 – July 19, 2026') ?></span>
         </div>
       </div>
-      <div class="footer-numbers">
+      <div class="footer-numbers" aria-label="<?= e($lang === 'ar' ? 'أرقام البطولة' : 'Tournament stats') ?>">
         <div class="num-pill">
           <span class="num-val">104</span>
           <span class="num-lbl"><?= e($lang === 'ar' ? 'مباراة' : 'matches') ?></span>
@@ -64,12 +65,38 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- ──────── العمود 2: المصدر والبيانات ──────── -->
+  <!-- ──────── شبكة المحتوى: 4 أعمدة ──────── -->
+  <div class="wrap footer-grid">
+
     <div class="footer-col">
-      <h4 class="footer-h"><?= e($lang === 'ar' ? 'البيانات والمصدر' : 'Data & source') ?></h4>
+      <h4 class="footer-h"><?= e($lang === 'ar' ? 'استكشف' : 'Explore') ?></h4>
+      <ul class="footer-nav">
+        <li><a href="<?= e(url('matches.php')) ?>"><?= e(t('matches')) ?></a></li>
+        <li><a href="<?= e(url('today.php')) ?>"><?= e($lang === 'ar' ? 'اليوم' : 'Today') ?></a></li>
+        <li><a href="<?= e(url('groups.php')) ?>"><?= e(t('groups')) ?></a></li>
+        <li><a href="<?= e(url('stats.php')) ?>"><?= e(t('stats') ?: ($lang === 'ar' ? 'الإحصائيات' : 'Stats')) ?></a></li>
+        <li><a href="<?= e(url('predict.php')) ?>"><?= e($lang === 'ar' ? 'التوقّعات' : 'Predict') ?></a></li>
+        <li><a href="<?= e(url('news.php')) ?>"><?= e(t('news')) ?></a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-h"><?= e($lang === 'ar' ? 'البطولة' : 'Tournament') ?></h4>
+      <ul class="footer-nav">
+        <li><a href="<?= e(url('knockout.php')) ?>"><?= e(t('knockout')) ?></a></li>
+        <li><a href="<?= e(url('teams.php')) ?>"><?= e(t('teams')) ?></a></li>
+        <li><a href="<?= e(url('stadiums.php')) ?>"><?= e(t('stadiums')) ?></a></li>
+        <li><a href="<?= e(url('map.php')) ?>"><?= e(t('host_map')) ?></a></li>
+        <li><a href="<?= e(url('fanguide.php')) ?>"><?= e(t('fan_guide')) ?></a></li>
+        <li><a href="<?= e(url('install-app.php')) ?>"><?= e($lang === 'ar' ? 'حمّل التطبيق' : 'Get app') ?></a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-h"><?= e($lang === 'ar' ? 'البيانات والأدوات' : 'Data & tools') ?></h4>
       <ul class="footer-list">
-     
         <?php if ($lastUpdate): ?>
         <li>
           <span class="li-ico">🔄</span>
@@ -88,40 +115,44 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
           <span class="li-ico">🧩</span>
           <a href="<?= e(url('embed.php')) ?>"><?= e(t('embed_widget')) ?></a>
         </li>
-    
       </ul>
     </div>
 
-    <!-- ──────── العمود 3: المجتمع والتواصل ──────── -->
-    <div class="footer-col">
+    <div class="footer-col footer-col-connect">
       <h4 class="footer-h"><?= e($lang === 'ar' ? 'المجتمع والتواصل' : 'Community & contact') ?></h4>
 
-      <div class="footer-visitors-card">
-        <span class="visitor-ico" aria-hidden="true">👁️</span>
-        <span class="visitor-num" id="visitorCount">—</span>
-        <span class="visitor-lbl"><?= e(t('visitors')) ?></span>
-      </div>
-
-      <div class="footer-rate" id="footerRate"
-           data-api="<?= e(rtrim(SITE_URL,'/') . '/api/rate.php') ?>"
-           data-thanks="<?= e(t('rate_thanks')) ?>"
-           data-satisfied="<?= e(t('rate_satisfied')) ?>">
-        <span class="rate-q"><?= e(t('rate_q')) ?></span>
-        <div class="rate-faces">
-          <button type="button" data-face="happy"   aria-label="<?= e(t('rate_good')) ?>">😊</button>
-          <button type="button" data-face="neutral" aria-label="<?= e(t('rate_ok')) ?>">😐</button>
-          <button type="button" data-face="sad"     aria-label="<?= e(t('rate_bad')) ?>">😞</button>
+      <div class="footer-connect-panel">
+        <div class="footer-visitors-card">
+          <span class="visitor-ico" aria-hidden="true">👁️</span>
+          <div class="visitor-body">
+            <span class="visitor-num" id="visitorCount">—</span>
+            <span class="visitor-lbl"><?= e(t('visitors')) ?></span>
+          </div>
         </div>
-        <p class="rate-result" id="rateResult" hidden></p>
-      </div>
 
-      <div class="footer-actions">
-        <a class="footer-action" href="mailto:<?= e(CONTACT_EMAIL) ?>">
-          <span class="li-ico">✉️</span> <?= e(CONTACT_EMAIL) ?>
-        </a>
-        <button type="button" class="footer-action footer-action-cta" data-contact-open>
-          <span class="li-ico">💬</span> <?= e(t('contact_title')) ?>
-        </button>
+        <div class="footer-rate" id="footerRate"
+             data-api="<?= e(rtrim(SITE_URL,'/') . '/api/rate.php') ?>"
+             data-thanks="<?= e(t('rate_thanks')) ?>"
+             data-satisfied="<?= e(t('rate_satisfied')) ?>">
+          <span class="rate-q"><?= e(t('rate_q')) ?></span>
+          <div class="rate-faces">
+            <button type="button" data-face="happy"   aria-label="<?= e(t('rate_good')) ?>">😊</button>
+            <button type="button" data-face="neutral" aria-label="<?= e(t('rate_ok')) ?>">😐</button>
+            <button type="button" data-face="sad"     aria-label="<?= e(t('rate_bad')) ?>">😞</button>
+          </div>
+          <p class="rate-result" id="rateResult" hidden></p>
+        </div>
+
+        <div class="footer-actions">
+          <a class="footer-action footer-action-mail" href="mailto:<?= e(CONTACT_EMAIL) ?>" title="<?= e(CONTACT_EMAIL) ?>">
+            <span class="li-ico">✉️</span>
+            <span class="footer-action-text"><?= e(CONTACT_EMAIL) ?></span>
+          </a>
+          <button type="button" class="footer-action footer-action-cta" data-contact-open>
+            <span class="li-ico">💬</span>
+            <span class="footer-action-text"><?= e(t('contact_title')) ?></span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -136,35 +167,7 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
               ? 'مرحباً، شفت موقع foot-boll.com وحاب أطلب موقعاً مشابهاً 👋'
               : 'Hi! I saw foot-boll.com and would like to order a similar site 👋');
   ?>
-  <!-- <div class="hire-bar">
-    <div class="wrap hire-bar-inner">
-      <div class="hire-bar-content">
-        <span class="hire-bar-icon" aria-hidden="true">💼</span>
-        <div class="hire-bar-text">
-          <strong><?= e($lang === 'ar' ? 'تريد موقعاً مثل هذا؟' : 'Want a website like this?') ?></strong>
-          <span><?= e($lang === 'ar'
-                ? 'مواقع رياضيّة وتجاريّة احترافيّة · ذكاء اصطناعي · نشر تلقائي على X · بميزانية معقولة'
-                : 'Professional sports & business sites · AI · auto-publishing on X · affordable') ?></span>
-        </div>
-      </div>
-      <div class="hire-bar-actions">
-        <?php if ($waNum !== ''): ?>
-          <a class="hire-btn hire-btn-wa" href="https://wa.me/<?= e($waNum) ?>?text=<?= $waMsg ?>" target="_blank" rel="noopener" aria-label="WhatsApp">
-            <span aria-hidden="true">💬</span>
-            <span><?= e($lang === 'ar' ? 'واتساب' : 'WhatsApp') ?></span>
-          </a>
-        <?php endif; ?>
-        <a class="hire-btn hire-btn-mail" href="mailto:<?= e($cMail) ?>?subject=<?= rawurlencode($lang === 'ar' ? 'طلب موقع' : 'Website request') ?>">
-          <span aria-hidden="true">✉️</span>
-          <span><?= e($lang === 'ar' ? 'بريد إلكتروني' : 'Email') ?></span>
-        </a>
-        <button type="button" class="hire-btn hire-btn-cta" data-contact-open>
-          <span aria-hidden="true">🚀</span>
-          <span><?= e($lang === 'ar' ? 'اطلب موقعك الآن' : 'Order your site') ?></span>
-        </button>
-      </div>
-    </div>
-  </div> -->
+ 
 
   <!-- ──────── شريط حقوق سفلي ──────── -->
   <div class="footer-bottom">
@@ -174,21 +177,11 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
         <span class="dot">·</span>
         <?= e($lang === 'ar' ? 'صُنع بشغف لكرة القدم' : 'Built with love for football') ?>
       </p>
-      <div class="footer-bottom-links">
+      <nav class="footer-bottom-links" aria-label="<?= e($lang === 'ar' ? 'روابط قانونية' : 'Legal links') ?>">
         <a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a>
-        <span class="dot">·</span>
         <a href="<?= e(url('terms.php')) ?>"><?= e(t('terms_title')) ?></a>
-        <span class="dot">·</span>
-        <a href="<?= e(url('matches.php')) ?>"><?= e(t('matches')) ?></a>
-        <span class="dot">·</span>
-        <a href="<?= e(url('groups.php')) ?>"><?= e(t('groups')) ?></a>
-        <span class="dot">·</span>
-        <a href="<?= e(url('stats.php')) ?>"><?= e(t('stats') ?: ($lang==='ar'?'الإحصائيات':'Stats')) ?></a>
-        <span class="dot">·</span>
-        <a href="<?= e(url('predict.php')) ?>"><?= e($lang === 'ar' ? 'التوقّعات' : 'Predict') ?></a>
-        <span class="dot">·</span>
         <a href="<?= e(url('privacy.php')) ?>"><?= e($lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy') ?></a>
-      </div>
+      </nav>
     </div>
   </div>
 </footer>

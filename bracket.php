@@ -25,6 +25,7 @@ $roundTitles = [
 
 /** يرسم خانة واحدة (مقعد دور 32 بقائمة منسدلة، أو خانة تُملأ تلقائياً). */
 function bk_slot(array $slot, int $num, int $idx): void {
+    $lang   = current_lang();
     $isSeed = ($slot['type'] ?? '') === 'seed';
     ?>
     <div class="bk-slot" data-num="<?= (int)$num ?>" data-slot="<?= (int)$idx ?>">

@@ -6,6 +6,7 @@
  *  page_url_lang()   : رابط الصفحة الحالية بلغة محددة (لبدائل hreflang)
  *  seo_head()        : يطبع canonical + hreflang + Open Graph/Twitter + JSON-LD عام
  *  seo_sportsevent() : JSON-LD لمباراة واحدة (SportsEvent)
+ *  seo_breadcrumb()  : JSON-LD مسار تنقّل (BreadcrumbList)
  * ------------------------------------------------------------
  */
 if (!defined('WC2026')) { exit('Access denied'); }
@@ -109,11 +110,14 @@ function seo_head(array $opts = []): void {
  * seo_sportsevent() — JSON-LD لمباراة (نوع SportsEvent) لتحسين ظهورها.
  */
 function seo_sportsevent(array $m): void {
-    $ts = DataService::matchTimestamp($m);
-    $t1 = team_name(trim($m['team1'] ?? ''));
-    $t2 = team_name(trim($m['team2'] ?? ''));
-    $name = $t1 . ' ' . t('vs') . ' ' . $t2;
-    $ar  = (current_lang() === 'ar');
+    $ts     = DataService::matchTimestamp($m);
+    $raw1   = trim($m['team1'] ?? '');
+    $raw2   = trim($m['team2'] ?? '');
+    $t1     = team_name($raw1);
+    $t2     = team_name($raw2);
+    $name   = $t1 . ' ' . t('vs') . ' ' . $t2;
+    $ar     = (current_lang() === 'ar');
+    $status = $m['_status'] ?? DataService::matchStatus($m);
 
     // صورة المباراة: نفس بطاقة المشاركة المُولّدة التي تستخدمها صفحة match.php
     $idx   = (int)($m['_index'] ?? 0);
@@ -128,10 +132,14 @@ function seo_sportsevent(array $m): void {
           . ' — ' . ($ar ? 'نتائج وإحصائيات كأس العالم 2026 على foot-boll.com' : 'World Cup 2026 scores and stats on foot-boll.com');
 
     // الفريقان (يُستخدمان في competitor الدقيق + performer الذي يطلبه Google)
-    $teams = [
-        ['@type' => 'SportsTeam', 'name' => $t1],
-        ['@type' => 'SportsTeam', 'name' => $t2],
-    ];
+    $teamLd = static function (string $raw, string $display): array {
+        $entry = ['@type' => 'SportsTeam', 'name' => $display];
+        if ($raw !== '' && is_real_team($raw)) {
+            $entry['url'] = url('team.php', ['team' => $raw]);
+        }
+        return $entry;
+    };
+    $teams = [$teamLd($raw1, $t1), $teamLd($raw2, $t2)];
 
     $ld = [
         '@context'    => 'https://schema.org',
@@ -143,9 +151,11 @@ function seo_sportsevent(array $m): void {
         'image'       => [$image],
     ];
     if ($ts !== null) {
-        $ld['startDate']   = gmdate('c', $ts);
-        $ld['endDate']     = gmdate('c', $ts + 7200);   // ← endDate (~ساعتان مدّة المباراة)
-        $ld['eventStatus'] = 'https://schema.org/EventScheduled';
+        $ld['startDate'] = gmdate('c', $ts);
+        $ld['endDate']   = gmdate('c', $ts + 7200);   // ~ساعتان مدّة المباراة
+        if ($status === 'upcoming' || $status === 'live') {
+            $ld['eventStatus'] = 'https://schema.org/EventScheduled';
+        }
     }
     if (!empty($m['ground'])) {
         $ld['location'] = [
@@ -175,6 +185,36 @@ function seo_sportsevent(array $m): void {
     ];
 
     // JSON_HEX_TAG/AMP يهرّبان < > & (إلى \u00XX) فيستحيل الخروج من وسم <script> مهما كانت البيانات.
+    echo '<script type="application/ld+json">'
+       . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP)
+       . '</script>' . "\n";
+}
+
+/**
+ * seo_breadcrumb() — JSON-LD مسار تنقّل (BreadcrumbList).
+ * $items: [['name'=>..., 'url'=>...?], ...] — العنصر الأخير بلا url = الصفحة الحالية.
+ */
+function seo_breadcrumb(array $items): void {
+    if (count($items) < 2) {
+        return;
+    }
+    $list = [];
+    foreach ($items as $i => $item) {
+        $entry = [
+            '@type'    => 'ListItem',
+            'position' => $i + 1,
+            'name'     => (string)($item['name'] ?? ''),
+        ];
+        if (!empty($item['url'])) {
+            $entry['item'] = (string)$item['url'];
+        }
+        $list[] = $entry;
+    }
+    $ld = [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'BreadcrumbList',
+        'itemListElement' => $list,
+    ];
     echo '<script type="application/ld+json">'
        . json_encode($ld, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP)
        . '</script>' . "\n";

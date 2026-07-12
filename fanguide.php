@@ -88,7 +88,7 @@ tpl('header');
     <?php foreach ($countries as $c): ?>
       <div class="guide-card">
         <div class="guide-card-head">
-          <img class="flag" src="https://flagcdn.com/w80/<?= e($c['flag']) ?>.png" alt="" loading="lazy" width="40" height="30">
+          <img class="flag" src="<?= e(flag_url_iso($c['flag'], 'w80')) ?>" alt="" loading="lazy" width="40" height="30">
           <div>
             <span class="guide-name"><?= e($c['name']) ?></span>
             <span class="guide-cities"><?= e($c['cities']) ?></span>

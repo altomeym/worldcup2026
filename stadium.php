@@ -22,7 +22,7 @@ $lang = current_lang();
 $name = $lang === 'ar' ? $s['nameAr'] : $s['nameEn'];
 $city = $lang === 'ar' ? $s['cityAr'] : $s['cityEn'];
 $hist = $lang === 'ar' ? $s['histAr'] : $s['histEn'];
-$flag = 'https://flagcdn.com/w40/' . $s['country'] . '.png';
+$flag = flag_url_iso($s['country'], 'w40');
 $img  = Stadiums::image($id);
 $maps = Stadiums::mapsUrl($s);
 

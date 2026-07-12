@@ -1,0 +1,57 @@
+{
+  "_note": "Official watch links for match.php — edit links per region. embed = YouTube iframe URL (official broadcasters only; beIN blocks embed).",
+  "default": {
+    "links": [
+      {
+        "id": "bein",
+        "paid": true,
+        "ar": {
+          "label": "شاهد البث الكامل — beIN CONNECT",
+          "url": "https://www.beinsports.com/"
+        },
+        "en": {
+          "label": "Full live stream — beIN CONNECT",
+          "url": "https://www.beinsports.com/"
+        }
+      },
+      {
+        "id": "tod",
+        "paid": true,
+        "ar": {
+          "label": "شاهد على TOD",
+          "url": "https://www.tod.tv/"
+        },
+        "en": {
+          "label": "Watch on TOD",
+          "url": "https://www.tod.tv/"
+        }
+      },
+      {
+        "id": "fifa_plus",
+        "paid": false,
+        "ar": {
+          "label": "FIFA+ — highlights ومحتوى مجاني",
+          "url": "https://www.fifa.com/fifa-plus/"
+        },
+        "en": {
+          "label": "FIFA+ — free highlights & clips",
+          "url": "https://www.fifa.com/fifa-plus/"
+        }
+      },
+      {
+        "id": "fifa_where",
+        "paid": false,
+        "ar": {
+          "label": "أين تشاهد — FIFA الرسمي",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026"
+        },
+        "en": {
+          "label": "Where to watch — official FIFA",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026"
+        }
+      }
+    ]
+  },
+  "_note_embed": "Per-match YouTube iframe: by_match.0.embed = https://www.youtube-nocookie.com/embed/VIDEO_ID",
+  "by_match": {}
+}

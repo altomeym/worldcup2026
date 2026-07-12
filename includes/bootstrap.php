@@ -6,6 +6,9 @@
  * كل صفحة تبدأ بـ: require __DIR__ . '/includes/bootstrap.php';
  * ============================================================
  */
+if (defined('WC2026')) {
+    return;
+}
 define('WC2026', true);
 
 // التقط أي إخراج عارض من ملفات الإعداد (BOM/مسافة قبل <?php) في مخزّن مؤقت،
@@ -39,6 +42,7 @@ require __DIR__ . '/Stickers.php';
 require __DIR__ . '/Stadiums.php';
 require __DIR__ . '/AiContent.php';
 require __DIR__ . '/Highlights.php';
+require __DIR__ . '/LiveWatch.php';
 require __DIR__ . '/RateLimiter.php';
 require __DIR__ . '/Database.php';
 require __DIR__ . '/Auth.php';

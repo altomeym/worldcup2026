@@ -24,7 +24,7 @@ tpl('header');
 
 <div class="stadiums-grid">
   <?php foreach ($stadiums as $i => $s):
-    $flag = 'https://flagcdn.com/w40/' . $s['country'] . '.png';
+    $flag = flag_url_iso($s['country'], 'w40');
   ?>
   <a class="stadium-card" href="<?= e(url('stadium.php', ['id' => $s['id']])) ?>">
     <div class="st-num"><?= $i + 1 ?></div>

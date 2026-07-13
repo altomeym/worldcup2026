@@ -69,22 +69,25 @@ function security_init(): void
 
     // CSP: يسمح بالخطوط (Google Fonts) والصور الخارجية (أعلام/ويكيبيديا/أخبار).
     // 'unsafe-inline' للنصوص البرمجية المضمّنة (الإخراج كله مُهرَّب أصلاً).
-    // عند تفعيل AdSense (ADSENSE_CLIENT) تُضاف نطاقات جوجل الإعلانية المطلوبة
+    // عند تفعيل AdSense تُضاف نطاقات جوجل الإعلانية المطلوبة
     // (سكربت + إطارات الإعلانات + اتصالات القياس) — بدونها يحجب المتصفح الإعلانات.
-    $adsOn   = defined('ADSENSE_CLIENT') && ADSENSE_CLIENT !== '';
+    $adsOn   = defined('USE_ADSENSE') && USE_ADSENSE;
+    $pmOn    = defined('USE_PM_ADS') && USE_PM_ADS;
     $adHosts = ' https://*.googlesyndication.com https://*.doubleclick.net'
              . ' https://*.google.com https://*.gstatic.com'
              . ' https://*.adtrafficquality.google https://fundingchoicesmessages.google.com';
+    // Progress Magnify (popunder / social bar / banner)
+    $pmHosts = $pmOn ? ' https://progressmagnify.com https://*.progressmagnify.com' : '';
     $gaHosts = ' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com';
     $csp = "default-src 'self'; "
-         . "script-src 'self' 'unsafe-inline'" . $gaHosts . ($adsOn ? $adHosts : '') . "; "
+         . "script-src 'self' 'unsafe-inline'" . $gaHosts . $pmHosts . ($adsOn ? $adHosts : '') . "; "
          . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
          . "font-src 'self' https://fonts.gstatic.com; "
          . "img-src 'self' data: https:" . $gaHosts . "; "
-         . "connect-src 'self'" . $gaHosts . ($adsOn ? $adHosts : '') . "; "
+         . "connect-src 'self'" . $gaHosts . $pmHosts . ($adsOn ? $adHosts : '') . "; "
          // youtube-nocookie: تضمين ملخّصات المباريات (وضع الخصوصيّة المعزّز)
          // googletagmanager.com: GTM noscript iframe
-         . "frame-src 'self' https://www.googletagmanager.com https://www.youtube-nocookie.com https://www.youtube.com" . ($adsOn ? $adHosts : '') . "; "
+         . "frame-src 'self' https://www.googletagmanager.com https://www.youtube-nocookie.com https://www.youtube.com" . $pmHosts . ($adsOn ? $adHosts : '') . "; "
          . "object-src 'none'; "
          . "base-uri 'self'; "
          . "form-action 'self'; "

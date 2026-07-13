@@ -62,6 +62,11 @@ return [
     'SMTP_SECURE' => 'ssl',               // 'ssl' or 'tls'
     'MAIL_SECRET' => '',                  // random string for signing unsubscribe links (optional)
 
+    // ---------- Ads network / شبكة الإعلانات ----------
+    // 'adsense' | 'progressmagnify' | 'both_safe' | 'both'
+    // both_safe = AdSense + بانر + Smartlink (موصى به — بدون Popunder)
+    'AD_NETWORK'               => 'both_safe',
+
     // ---------- Contact / التواصل ----------
     'CONTACT_EMAIL' => 'info@example.com',
     'CONTACT_PHONE' => '',                // intl format e.g. +10000000000 (shows Call + WhatsApp)

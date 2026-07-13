@@ -114,7 +114,7 @@ seo_head([
 
 ?>
 
-<?php if (defined('ADSENSE_CLIENT') && ADSENSE_CLIENT !== ''): ?>
+<?php if (defined('USE_ADSENSE') && USE_ADSENSE): ?>
 
 <meta name="google-adsense-account" content="<?= e(ADSENSE_CLIENT) ?>">
 
@@ -140,6 +140,14 @@ seo_head([
 
 
 <?php require __DIR__ . '/gtm-head.php'; ?>
+
+<?php if (defined('USE_PM_INTRUSIVE') && USE_PM_INTRUSIVE): ?>
+<!-- Progress Magnify: Popunder -->
+<script src="https://progressmagnify.com/cb/85/7d/cb857d5bdd937e17cdff184a4d15dfdc.js"></script>
+<!-- Progress Magnify: SocialBar -->
+<script src="https://progressmagnify.com/34/ad/66/34ad66547e3de315588954e4ad7e9e60.js"></script>
+<?php endif; ?>
+<?php $pm_smartlink = (defined('USE_PM_ADS') && USE_PM_ADS && defined('PM_SMARTLINK')) ? PM_SMARTLINK : ''; ?>
 
 </head>
 
@@ -421,7 +429,20 @@ seo_head([
 
 </header>
 
-
+<?php if (defined('USE_PM_ADS') && USE_PM_ADS): ?>
+<div class="fb-ad-banner fb-ad-728 wrap" aria-hidden="true">
+<script>
+  atOptions = {
+    'key' : '9058e7285569e66bf269adf50a7cd4f1',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://progressmagnify.com/9058e7285569e66bf269adf50a7cd4f1/invoke.js"></script>
+</div>
+<?php endif; ?>
 
 <main class="wrap fb-page">
 

@@ -60,6 +60,18 @@ define('GA4_MEASUREMENT_ID', (string)cfg_secret('GA4_MEASUREMENT_ID', 'G-F7D1889
 // عند ضبطه: يُحقن سكربت AdSense في <head> وتُوسَّع CSP لنطاقات جوجل تلقائياً.
 define('ADSENSE_CLIENT', (string)cfg_secret('ADSENSE_CLIENT', 'ca-pub-4205749747374725', $__local));
 
+// ---------- شبكة الإعلانات ----------
+// 'adsense'         = Google AdSense فقط
+// 'progressmagnify' = كل وحدات Progress Magnify (بما فيها Popunder) — بدون AdSense
+// 'both_safe'       = AdSense + بانر + Smartlink فقط (موصى به عند الجمع — بدون Popunder/SocialBar)
+// 'both'            = AdSense + كل وحدات PM (مخاطرة عالية: Popunder غالباً يرفض AdSense)
+define('AD_NETWORK', (string)cfg_secret('AD_NETWORK', 'both_safe', $__local));
+define('USE_ADSENSE', in_array(AD_NETWORK, ['adsense', 'both', 'both_safe'], true) && ADSENSE_CLIENT !== '');
+define('USE_PM_ADS', in_array(AD_NETWORK, ['progressmagnify', 'both', 'both_safe'], true));
+// الوحدات العدوانية: لا تُفعَّل مع AdSense إلا في وضع 'both' الصريح
+define('USE_PM_INTRUSIVE', in_array(AD_NETWORK, ['progressmagnify', 'both'], true));
+define('PM_SMARTLINK', 'https://progressmagnify.com/enjyk190?key=eb484111a71e15fa9db991cda83f2eed');
+
 // ---------- مصدر البيانات (مجاني 100% — بدون مفتاح API) ----------
 // openfootball: بيانات ملكية عامة، بدون حد طلبات، بدون تسجيل
 define('DATA_SOURCE', 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');

@@ -11,6 +11,27 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 ?>
 </main><!-- /.fb-page -->
 
+<?php
+  $pm_smartlink = (defined('USE_PM_ADS') && USE_PM_ADS && defined('PM_SMARTLINK'))
+      ? PM_SMARTLINK
+      : '';
+?>
+<?php if ($pm_smartlink !== ''): ?>
+<!-- ============ عرض Smartlink (نقر طوعي موضّح كإعلان) ============ -->
+<aside class="fb-offer-strip" aria-label="<?= e(t('offer_strip_lbl')) ?>">
+  <div class="wrap fb-offer-strip-in">
+    <div class="fb-offer-copy">
+      <span class="fb-offer-badge"><?= e(t('offer_strip_lbl')) ?></span>
+      <p class="fb-offer-title"><?= e(t('offer_strip_title')) ?></p>
+    </div>
+    <a class="fb-offer-cta"
+       href="<?= e($pm_smartlink) ?>"
+       target="_blank"
+       rel="sponsored noopener noreferrer nofollow"><?= e(t('offer_strip_cta')) ?></a>
+  </div>
+</aside>
+<?php endif; ?>
+
 <!-- ============ الرعاة (يظهر فقط عند وجود رعاة فعليين — لا خانات «شعارك هنا») ============ -->
 <?php if (!empty($sponsors)): ?>
 <section class="sponsors">
@@ -152,6 +173,15 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
             <span class="li-ico">💬</span>
             <span class="footer-action-text"><?= e(t('contact_title')) ?></span>
           </button>
+          <?php if ($pm_smartlink !== ''): ?>
+          <a class="footer-action footer-action-offer"
+             href="<?= e($pm_smartlink) ?>"
+             target="_blank"
+             rel="sponsored noopener noreferrer nofollow">
+            <span class="li-ico">🎁</span>
+            <span class="footer-action-text"><?= e(t('offer_strip_cta')) ?></span>
+          </a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -183,6 +213,9 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
         <a href="<?= e(url('insights.php')) ?>"><?= e($lang === 'ar' ? 'تحليلات' : 'Insights') ?></a>
         <a href="<?= e(url('terms.php')) ?>"><?= e(t('terms_title')) ?></a>
         <a href="<?= e(url('privacy.php')) ?>"><?= e($lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy') ?></a>
+        <?php if ($pm_smartlink !== ''): ?>
+        <a href="<?= e($pm_smartlink) ?>" target="_blank" rel="sponsored noopener noreferrer nofollow"><?= e(t('offer_footer_link')) ?></a>
+        <?php endif; ?>
       </nav>
     </div>
   </div>

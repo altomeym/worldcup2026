@@ -114,12 +114,12 @@ tpl('header');
 <!-- أخبار أخرى -->
 <?php $more = array_slice(array_filter(News::latest(7), fn($n) => ($n['id'] ?? '') !== $id), 0, 5); ?>
 <?php if ($more): ?>
-<section class="section" style="margin-top:30px">
-  <div class="section-head">
-    <h2><span class="section-bar"></span><?= e(t('latest_news')) ?></h2>
-    <a class="section-link" href="<?= e(url('news.php')) ?>"><?= e(t('news_more')) ?> ›</a>
+<section class="fb-block" style="margin-top:30px">
+  <div class="fb-block-head">
+    <h2><span class="fb-block-bar"></span><?= e(t('latest_news')) ?></h2>
+    <a class="fb-block-link" href="<?= e(url('news.php')) ?>"><?= e(t('news_more')) ?> ›</a>
   </div>
-  <div class="news-list news-grid news-grid--sm">
+  <div class="fb-feed fb-feed-grid fb-feed-grid--sm">
     <?php foreach ($more as $it) render_news_item($it, 'card'); ?>
   </div>
 </section>

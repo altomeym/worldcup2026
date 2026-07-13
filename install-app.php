@@ -21,10 +21,10 @@ tpl('header');
 <!-- ════════════════ Hero ════════════════ -->
 <section class="ia-hero">
   <div class="ia-hero-mark" aria-hidden="true">26</div>
-  <h1 class="ia-hero-title">
+  <h1 class="ia-fb-hero-heading">
     <?= e($ar ? 'تطبيق كأس العالم 2026' : 'FIFA World Cup 2026 App') ?>
   </h1>
-  <p class="ia-hero-sub">
+  <p class="ia-fb-hero-lead">
     <?= e($ar
       ? 'مجاناً · بدون App Store · بدون انتظار · يعمل بدون إنترنت'
       : 'Free · No App Store · No waiting · Works offline') ?>

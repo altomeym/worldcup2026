@@ -37,9 +37,21 @@ if ($group) {
     }
 }
 
-$page_title = team_name($teamRaw);
-$page_desc  = team_name($teamRaw) . ' — ' . ($group ? group_label($group) . ' · ' : '')
-            . t('fifa_rank') . ($rank ? ' #' . (int)$rank : '');
+$tn = team_name($teamRaw);
+$page_title = $tn;
+if ($ar) {
+    $page_desc = "ملف {$tn} في كأس العالم 2026"
+        . ($group ? ' — ' . group_label($group) : '')
+        . ($rank ? " · ترتيب FIFA #{$rank}" : '')
+        . ' — مباريات، ترتيب المجموعة، وإحصائيات على foot-boll.';
+    $page_keywords = "{$tn}, كأس العالم 2026, foot-boll" . ($group ? ', ' . group_label($group) : '');
+} else {
+    $page_desc = "{$tn} at World Cup 2026"
+        . ($group ? ' — ' . group_label($group) : '')
+        . ($rank ? " · FIFA rank #{$rank}" : '')
+        . ' — fixtures, group standing, and stats on foot-boll.';
+    $page_keywords = "{$tn}, World Cup 2026, foot-boll" . ($group ? ', ' . group_label($group) : '');
+}
 $seo_type   = 'article';
 if (!empty($about['crest'])) { $page_image = $about['crest']; }
 
@@ -71,8 +83,8 @@ tpl('header');
 
 <!-- ============ نبذة (ويكيبيديا) ============ -->
 <?php if (!empty($about['bio'])): ?>
-<section class="section">
-  <h2 class="section-title"><?= e($ar ? 'نبذة' : 'About') ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title"><?= e($ar ? 'نبذة' : 'About') ?></h2>
   <p class="ref-bio"><?= e($about['bio']) ?></p>
   <?php if (!empty($about['url'])): ?>
     <p class="ref-bio-src">
@@ -98,19 +110,19 @@ tpl('header');
 
 <!-- ============ ترتيب المجموعة ============ -->
 <?php if ($group && $groupRows): ?>
-<section class="section">
-  <h2 class="section-title"><?= e($ar ? 'ترتيب المجموعة' : 'Group standing') ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title"><?= e($ar ? 'ترتيب المجموعة' : 'Group standing') ?></h2>
   <?php render_group_table($group, $groupRows); ?>
 </section>
 <?php endif; ?>
 
 <!-- ============ مباريات المنتخب ============ -->
-<section class="section">
-  <div class="section-head">
-    <h2><span class="section-bar"></span><?= e(t('matches')) ?></h2>
+<section class="fb-block">
+  <div class="fb-block-head">
+    <h2><span class="fb-block-bar"></span><?= e(t('matches')) ?></h2>
   </div>
   <?php if ($matches): ?>
-    <div class="match-grid">
+    <div class="fb-matches">
       <?php foreach ($matches as $m) render_match_card($m); ?>
     </div>
   <?php else: ?>

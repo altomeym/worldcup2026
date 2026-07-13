@@ -11,8 +11,10 @@ $L    = fn(string $a, string $e): string => $ar ? $a : $e;
 // → تتجاوز تذبذب الخادم/كاش SW وتُحمّل دائماً. لا حساب ثقيل هنا.
 
 $page_title = $L('البيانات البدنيّة', 'Physical data');
-$page_desc  = $L('أرقام اللاعبين البدنيّة في كأس العالم 2026 — المسافة، العَدْوات، السرعة القصوى، رتّب وقارن.',
-                 'Player physical numbers at the FIFA World Cup 2026 — distance, sprints, top speed.');
+$page_desc  = $L('أرقام اللاعبين البدنية في كأس العالم 2026 على foot-boll — المسافة، العَدْوات، السرعة القصوى. رتّب وقارن وافتح الملف التقني.',
+                 'Player physical data at World Cup 2026 on foot-boll — distance, sprints, top speed. Sort, compare, and open full profiles.');
+$page_keywords = $L('بيانات بدنية, لاعبين, FIFA, foot-boll, 2026',
+                    'physical data, players, FIFA, foot-boll, World Cup 2026');
 tpl('header');
 ?>
 

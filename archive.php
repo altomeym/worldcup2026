@@ -14,8 +14,14 @@ if (!ArchiveService::isValidYear($year)) {
 $byRound  = ArchiveService::byRound($year);
 $champion = ArchiveService::champion($year);
 
+$ar = (current_lang() === 'ar');
 $page_title = t('archive') . ' ' . $year;
-$page_desc  = t('archive_intro');
+$page_desc  = $ar
+    ? "أرشيف كأس العالم {$year} على foot-boll — النتائج الكاملة، البطل، وجميع المباريات مرتّبة حسب الدور."
+    : "World Cup {$year} archive on foot-boll — full results, champion, and every match by stage.";
+$page_keywords = $ar
+    ? "أرشيف {$year}, كأس العالم, foot-boll, نتائج"
+    : "World Cup {$year} archive, foot-boll, results, champion";
 tpl('header');
 ?>
 
@@ -89,10 +95,10 @@ $cflag = fn(string $code) => $code === ''
 </div>
 
 <?php if ($champion && is_real_team($champion)): ?>
-<section class="champion-banner champion-sm">
-  <span class="champion-trophy">🏆</span>
-  <p class="champion-label"><?= e(t('final_winner')) ?> <?= (int)$year ?></p>
-  <div class="champion-name">
+<section class="fb-winner champion-sm">
+  <span class="fb-winner-trophy">🏆</span>
+  <p class="fb-winner-label"><?= e(t('final_winner')) ?> <?= (int)$year ?></p>
+  <div class="fb-winner-name">
     <?= flag_img($champion, 'w80') ?>
     <h2><?= e(team_name($champion)) ?></h2>
   </div>

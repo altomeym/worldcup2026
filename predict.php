@@ -34,8 +34,14 @@ foreach ($open as $m) {
     $byDate[$key][] = $m;
 }
 
+$ar = (current_lang() === 'ar');
 $page_title = t('competition');
-$page_desc  = t('comp_intro');
+$page_desc  = $ar
+    ? 'مسابقة توقعات كأس العالم 2026 المجانية على foot-boll — توقّع النتائج، اجمع النقاط، ونافس على الصدارة العالمية. ليست مراهنة بمال حقيقي.'
+    : 'Free World Cup 2026 prediction game on foot-boll — predict scores, earn points, and compete on the global leaderboard. Not real-money gambling.';
+$page_keywords = $ar
+    ? 'توقعات مونديال, مسابقة, foot-boll, صدارة'
+    : 'World Cup predictions, game, foot-boll, leaderboard';
 tpl('header');
 ?>
 

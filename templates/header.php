@@ -149,11 +149,11 @@ seo_head([
 
 
 
-<header class="site-header">
+<header class="fb-topbar">
 
-  <div class="wrap header-shell">
+  <div class="wrap fb-topbar-wrap">
 
-    <div class="header-top">
+    <div class="fb-topbar-row">
 
       <a class="brand" href="<?= e(url('index.php')) ?>">
 
@@ -169,7 +169,7 @@ seo_head([
 
 
 
-      <div class="header-utils">
+      <div class="fb-topbar-tools">
 
         <a class="nav-app-btn<?= nav_active('install-app.php') ?>" href="<?= e(url('install-app.php')) ?>">
 
@@ -231,41 +231,29 @@ seo_head([
 
 
 
-    <div class="header-nav-row">
+    <div class="fb-topbar-subrow">
 
-      <nav class="main-nav" id="mainNav">
+      <nav class="fb-topnav" id="mainNav">
 
         <a href="<?= e(url('index.php')) ?>"<?= nav_active('index.php') ?>><?= e(t('home')) ?></a>
-
-        <a href="<?= e(url('today.php')) ?>"<?= nav_active('today.php') ?>><?= e($lang === 'ar' ? 'اليوم' : 'Today') ?></a>
-
-        <a href="<?= e(url('matches.php')) ?>"<?= nav_active('matches.php') ?>><?= e(t('matches')) ?></a>
 
 
 
         <div class="nav-group">
 
-          <button type="button" class="nav-group-btn<?= nav_group_active(['predict.php','bracket.php','leaderboard.php','leagues.php','league.php','stickers.php','trivia.php','promote.php']) ?>">
+          <button type="button" class="nav-group-btn<?= nav_group_active(['today.php','matches.php','match.php','knockout.php']) ?>">
 
-            <?= e(t('predict')) ?><i class="nav-caret">▾</i>
+            <?= e(t('nav_matches')) ?><i class="nav-caret">▾</i>
 
           </button>
 
           <div class="nav-drop">
 
-            <a href="<?= e(url('predict.php')) ?>"<?= nav_active('predict.php') ?>><?= e($lang === 'ar' ? 'توقّع المباريات' : 'Predict matches') ?></a>
+            <a href="<?= e(url('today.php')) ?>"<?= nav_active('today.php') ?>><?= e(t('nav_today')) ?></a>
 
-            <a href="<?= e(url('bracket.php')) ?>"<?= nav_active('bracket.php') ?>><?= e(t('bracket')) ?></a>
+            <a href="<?= e(url('matches.php')) ?>"<?= nav_active('matches.php') ?>><?= e(t('all_matches')) ?></a>
 
-            <a href="<?= e(url('leaderboard.php')) ?>"<?= nav_active('leaderboard.php') ?>><?= e(t('leaderboard')) ?></a>
-
-            <a href="<?= e(url('leagues.php')) ?>"<?= nav_active('leagues.php') ?>><?= e($lang === 'ar' ? 'المجلس' : 'My Leagues') ?></a>
-
-            <a href="<?= e(url('stickers.php')) ?>"<?= nav_active('stickers.php') ?>><?= e(t('stickers')) ?></a>
-
-            <a href="<?= e(url('trivia.php')) ?>"<?= nav_active('trivia.php') ?>><?= e(t('trivia')) ?></a>
-
-            <a href="<?= e(url('promote.php')) ?>"<?= nav_active('promote.php') ?>>📣 <?= e(t('promote_title')) ?></a>
+            <a href="<?= e(url('knockout.php')) ?>"<?= nav_active('knockout.php') ?>><?= e(t('knockout')) ?></a>
 
           </div>
 
@@ -273,33 +261,53 @@ seo_head([
 
 
 
-        <a href="<?= e(url('news.php')) ?>"<?= nav_active('news.php') ?>><?= e(t('news')) ?></a>
-
-
-
         <div class="nav-group">
 
-          <button type="button" class="nav-group-btn<?= nav_group_active(['groups.php','knockout.php','teams.php','squads.php','stadiums.php','map.php','fanguide.php','archive.php']) ?>">
+          <button type="button" class="nav-group-btn<?= nav_group_active(['dashboard.php','compare.php','stats.php','physical.php','motm.php','topscorers.php','bookings.php','referees.php']) ?>">
 
-            <?= e(t('nav_tournament')) ?><i class="nav-caret">▾</i>
+            <?= e(t('nav_analytics')) ?><i class="nav-caret">▾</i>
 
           </button>
 
           <div class="nav-drop">
 
-            <a href="<?= e(url('groups.php')) ?>"<?= nav_active('groups.php') ?>><?= e(t('groups')) ?></a>
+            <a href="<?= e(url('dashboard.php')) ?>"<?= nav_active('dashboard.php') ?>><?= e(t('nav_dashboard')) ?></a>
 
-            <a href="<?= e(url('knockout.php')) ?>"<?= nav_active('knockout.php') ?>><?= e(t('knockout')) ?></a>
+            <a href="<?= e(url('compare.php')) ?>"<?= nav_active('compare.php') ?>><?= e(t('nav_compare')) ?></a>
 
-            <a href="<?= e(url('teams.php')) ?>"<?= nav_active('teams.php') ?>><?= e(t('teams')) ?></a>
+            <a href="<?= e(url('stats.php')) ?>"<?= nav_active('stats.php') ?>><?= e(t('stats')) ?></a>
 
-            <a href="<?= e(url('squads.php')) ?>"<?= nav_active('squads.php') ?>><?= e(t('squads')) ?></a>
+            <a href="<?= e(url('physical.php')) ?>"<?= nav_active('physical.php') ?>><?= e(t('nav_physical')) ?></a>
 
-            <a href="<?= e(url('stadiums.php')) ?>"<?= nav_active('stadiums.php') ?>><?= e(t('stadiums')) ?></a>
+            <a href="<?= e(url('motm.php')) ?>"<?= nav_active('motm.php') ?>><?= e(t('nav_motm')) ?></a>
 
-            <a href="<?= e(url('map.php')) ?>"<?= nav_active('map.php') ?>><?= e(t('host_map')) ?></a>
+            <a href="<?= e(url('topscorers.php')) ?>"<?= nav_active('topscorers.php') ?>><?= e(t('top_scorers')) ?></a>
 
-            <a href="<?= e(url('fanguide.php')) ?>"<?= nav_active('fanguide.php') ?>><?= e(t('fan_guide')) ?></a>
+            <a href="<?= e(url('bookings.php')) ?>"<?= nav_active('bookings.php') ?>><?= e(t('bookings')) ?></a>
+
+            <a href="<?= e(url('referees.php')) ?>"<?= nav_active('referees.php') ?>><?= e(t('referees')) ?></a>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="nav-group">
+
+          <button type="button" class="nav-group-btn<?= nav_group_active(['insights.php','insight.php','featured.php','news.php','archive.php']) ?>">
+
+            <?= e(t('nav_editorial')) ?><i class="nav-caret">▾</i>
+
+          </button>
+
+          <div class="nav-drop">
+
+            <a href="<?= e(url('insights.php')) ?>"<?= nav_active('insights.php') ?>><?= e(t('nav_insights')) ?></a>
+
+            <a href="<?= e(url('featured.php')) ?>"<?= nav_active('featured.php') ?>><?= e(t('nav_featured')) ?></a>
+
+            <a href="<?= e(url('news.php')) ?>"<?= nav_active('news.php') ?>><?= e(t('news')) ?></a>
 
             <a href="<?= e(url('archive.php')) ?>"<?= nav_active('archive.php') ?>><?= e(t('archive')) ?></a>
 
@@ -311,27 +319,55 @@ seo_head([
 
         <div class="nav-group">
 
-          <button type="button" class="nav-group-btn<?= nav_group_active(['stats.php','topscorers.php','bookings.php','referees.php','physical.php','dashboard.php','motm.php']) ?>">
+          <button type="button" class="nav-group-btn<?= nav_group_active(['predict.php','bracket.php','leaderboard.php','leagues.php','league.php','stickers.php','trivia.php','promote.php']) ?>">
 
-            <?= e(t('nav_numbers')) ?><i class="nav-caret">▾</i>
+            <?= e(t('nav_play')) ?><i class="nav-caret">▾</i>
 
           </button>
 
           <div class="nav-drop">
 
-            <a href="<?= e(url('dashboard.php')) ?>"<?= nav_active('dashboard.php') ?>>📊 <?= e(current_lang() === 'ar' ? 'لوحة الإحصائيّات' : (current_lang() === 'fr' ? 'Tableau de bord' : 'Stats dashboard')) ?></a>
+            <a href="<?= e(url('predict.php')) ?>"<?= nav_active('predict.php') ?>><?= e(t('nav_predict_item')) ?></a>
 
-            <a href="<?= e(url('stats.php')) ?>"<?= nav_active('stats.php') ?>><?= e(t('stats')) ?></a>
+            <a href="<?= e(url('bracket.php')) ?>"<?= nav_active('bracket.php') ?>><?= e(t('bracket')) ?></a>
 
-            <a href="<?= e(url('physical.php')) ?>"<?= nav_active('physical.php') ?>>🏃 <?= e(current_lang() === 'ar' ? 'البيانات البدنيّة' : (current_lang() === 'fr' ? 'Données physiques' : 'Physical data')) ?></a>
+            <a href="<?= e(url('leaderboard.php')) ?>"<?= nav_active('leaderboard.php') ?>><?= e(t('leaderboard')) ?></a>
 
-            <a href="<?= e(url('motm.php')) ?>"<?= nav_active('motm.php') ?>>🌟 <?= e(current_lang() === 'ar' ? 'رجل المباراة' : (current_lang() === 'fr' ? 'Homme du match' : 'Player of the Match')) ?></a>
+            <a href="<?= e(url('leagues.php')) ?>"<?= nav_active('leagues.php') ?>><?= e(t('nav_leagues')) ?></a>
 
-            <a href="<?= e(url('topscorers.php')) ?>"<?= nav_active('topscorers.php') ?>><?= e(t('top_scorers')) ?></a>
+            <a href="<?= e(url('stickers.php')) ?>"<?= nav_active('stickers.php') ?>><?= e(t('stickers')) ?></a>
 
-            <a href="<?= e(url('bookings.php')) ?>"<?= nav_active('bookings.php') ?>><?= e(t('bookings')) ?></a>
+            <a href="<?= e(url('trivia.php')) ?>"<?= nav_active('trivia.php') ?>><?= e(t('trivia')) ?></a>
 
-            <a href="<?= e(url('referees.php')) ?>"<?= nav_active('referees.php') ?>><?= e(t('referees')) ?></a>
+            <a href="<?= e(url('promote.php')) ?>"<?= nav_active('promote.php') ?>><?= e(t('promote_title')) ?></a>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="nav-group">
+
+          <button type="button" class="nav-group-btn<?= nav_group_active(['groups.php','teams.php','team.php','squads.php','stadiums.php','map.php','fanguide.php']) ?>">
+
+            <?= e(t('nav_tournament')) ?><i class="nav-caret">▾</i>
+
+          </button>
+
+          <div class="nav-drop">
+
+            <a href="<?= e(url('groups.php')) ?>"<?= nav_active('groups.php') ?>><?= e(t('groups')) ?></a>
+
+            <a href="<?= e(url('teams.php')) ?>"<?= nav_active('teams.php') ?>><?= e(t('teams')) ?></a>
+
+            <a href="<?= e(url('squads.php')) ?>"<?= nav_active('squads.php') ?>><?= e(t('squads')) ?></a>
+
+            <a href="<?= e(url('stadiums.php')) ?>"<?= nav_active('stadiums.php') ?>><?= e(t('stadiums')) ?></a>
+
+            <a href="<?= e(url('map.php')) ?>"<?= nav_active('map.php') ?>><?= e(t('host_map')) ?></a>
+
+            <a href="<?= e(url('fanguide.php')) ?>"<?= nav_active('fanguide.php') ?>><?= e(t('fan_guide')) ?></a>
 
           </div>
 
@@ -387,5 +423,5 @@ seo_head([
 
 
 
-<main class="wrap site-main">
+<main class="wrap fb-page">
 

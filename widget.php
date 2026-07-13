@@ -26,6 +26,7 @@ $home  = base_url();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title><?= e($site) ?></title>
 <style>
   :root { color-scheme: dark; }

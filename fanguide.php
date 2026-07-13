@@ -11,8 +11,11 @@ $ar   = ($lang === 'ar');
 
 $page_title = $ar ? 'دليل المشجّع' : 'Fan Guide';
 $page_desc  = $ar
-    ? 'كل ما يحتاجه المشجّع لحضور كأس العالم 2026: الدخول، التنقّل، المدن، ومناطق المشجّعين — مع روابط رسمية.'
-    : 'Everything a fan needs for the 2026 World Cup: entry, getting around, host cities and fan zones — with official links.';
+    ? 'دليل المشجّع العربي لكأس العالم 2026 على foot-boll — التأشيرات، التنقّل، المدن الـ16، ومناطق المشجّعين مع روابط رسمية.'
+    : 'Arabic fan guide for World Cup 2026 on foot-boll — visas, travel, 16 host cities, and fan zones with official links.';
+$page_keywords = $ar
+    ? 'دليل المشجّع, سفر, foot-boll, كأس العالم 2026'
+    : 'fan guide, travel, foot-boll, World Cup 2026';
 
 // الدول المستضيفة الثلاث — حقائق ثابتة + برامج الدخول الرسمية + روابط حكومية موثوقة.
 $countries = [
@@ -82,8 +85,8 @@ tpl('header');
     : 'Entry and visa requirements vary by nationality and may change. This is general guidance only — always verify with the official embassy or government site before booking.') ?>
 </div>
 
-<section class="section">
-  <h2 class="section-title">🌎 <?= e($ar ? 'الدول المستضيفة والدخول' : 'Host countries & entry') ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title">🌎 <?= e($ar ? 'الدول المستضيفة والدخول' : 'Host countries & entry') ?></h2>
   <div class="guide-grid">
     <?php foreach ($countries as $c): ?>
       <div class="guide-card">
@@ -109,8 +112,8 @@ tpl('header');
   </div>
 </section>
 
-<section class="section">
-  <h2 class="section-title">🧳 <?= e($ar ? 'نصائح عملية' : 'Practical tips') ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title">🧳 <?= e($ar ? 'نصائح عملية' : 'Practical tips') ?></h2>
   <div class="guide-grid">
     <?php foreach ($tips as [$icon, $title, $body]): ?>
       <div class="guide-tip">
@@ -125,7 +128,7 @@ tpl('header');
 </section>
 
 <section class="section guide-cta-sec">
-  <h2 class="section-title">🏟️ <?= e($ar ? 'المدن والملاعب' : 'Cities & stadiums') ?></h2>
+  <h2 class="fb-block-title">🏟️ <?= e($ar ? 'المدن والملاعب' : 'Cities & stadiums') ?></h2>
   <p class="muted"><?= e($ar
     ? 'استكشف المدن الـ16 المستضيفة وملاعبها، مع الصور وطريقة الوصول.'
     : 'Explore all 16 host cities and their stadiums, with photos and directions.') ?></p>

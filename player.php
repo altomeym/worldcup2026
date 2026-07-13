@@ -34,9 +34,20 @@ $rating  = $pl['r'] ?? null;
 $macro   = FifaMetrics::macro($pl, $lg);
 $cats    = FifaMetrics::activeCats($pl);
 
-$page_title = $pl['name'] . ' — ' . $L('إحصائيّات', 'Stats');
-$page_desc  = $L('الملفّ الفنّي الكامل لـ' . $pl['name'] . ' في كأس العالم 2026 — من بيانات FIFA الرسميّة.',
-                 'Full technical profile of ' . $pl['name'] . ' at the FIFA World Cup 2026 — official FIFA data.');
+$pname = (string)$pl['name'];
+$page_title = $pname . ' — ' . $L('إحصائيّات', 'Stats');
+$ratingTxt = $rating !== null ? (string)(int)$rating : '';
+if ($ar) {
+    $page_desc = "الملف التقني لـ {$pname} ({$teamLoc}) في مونديال 2026"
+        . ($ratingTxt !== '' ? " — تقييم FIFA {$ratingTxt}" : '')
+        . ' — رادار الأداء، إحصائيات مفصّلة، وبيانات بدنية على foot-boll.';
+    $page_keywords = "{$pname}, {$teamLoc}, كأس العالم 2026, FIFA, foot-boll, إحصائيات لاعب";
+} else {
+    $page_desc = "Technical profile of {$pname} ({$teamLoc}) at World Cup 2026"
+        . ($ratingTxt !== '' ? " — FIFA rating {$ratingTxt}" : '')
+        . ' — performance radar, detailed stats, and physical data on foot-boll.';
+    $page_keywords = "{$pname}, {$teamLoc}, World Cup 2026, FIFA, foot-boll, player stats";
+}
 // معاينة المشاركة: بطاقة الملفّ المُولّدة (صورة + تقييم + نقاط الفئات) لا الصورة الخام
 $page_image = url('card_img.php', ['mode' => 'player', 'id' => $pid, 'd' => function_exists('card_rev') ? card_rev() : '1']);
 gtm_add([

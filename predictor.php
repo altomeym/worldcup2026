@@ -21,7 +21,7 @@ tpl('header');
 <div class="page-head">
   <h1>🎯 <?= e($L('توقّعات', 'Predictions') . ($data ? ' · ' . $data['nickname'] : '')) ?></h1>
   <p class="muted">
-    <a class="section-link" href="<?= e(url('leaderboard.php')) ?>"><?= e($L('الصدارة', 'Leaderboard')) ?> ›</a>
+    <a class="fb-block-link" href="<?= e(url('leaderboard.php')) ?>"><?= e($L('الصدارة', 'Leaderboard')) ?> ›</a>
   </p>
 </div>
 

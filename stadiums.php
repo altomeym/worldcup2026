@@ -7,6 +7,13 @@ require __DIR__ . '/includes/bootstrap.php';
 
 $page_title = t('stadiums');
 $lang = current_lang();
+$ar = ($lang === 'ar');
+$page_desc  = $ar
+    ? 'الملاعب الـ16 والمدن المستضيفة لكأس العالم 2026 على foot-boll — كندا، المكسيك، والولايات المتحدة مع السعة والموقع.'
+    : 'All 16 World Cup 2026 stadiums and host cities on foot-boll — Canada, Mexico, and the USA with capacity and location.';
+$page_keywords = $ar
+    ? 'ملاعب 2026, مدن مستضيفة, foot-boll, كأس العالم'
+    : 'World Cup 2026 stadiums, host cities, foot-boll';
 
 $stadiums = Stadiums::all();
 

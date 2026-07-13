@@ -4,7 +4,14 @@
  */
 require __DIR__ . '/includes/bootstrap.php';
 
+$ar = (current_lang() === 'ar');
 $page_title = t('teams');
+$page_desc  = $ar
+    ? 'دليل المنتخبات الـ48 في كأس العالم 2026 — مجموعات، أعلام، وروابط لملفات كل منتخب على foot-boll.'
+    : 'Guide to all 48 World Cup 2026 teams — groups, flags, and links to each national team profile on foot-boll.';
+$page_keywords = $ar
+    ? 'منتخبات 2026, كأس العالم, foot-boll, المجموعات'
+    : 'World Cup 2026 teams, groups, foot-boll, national teams';
 
 // المنتخبات مع مجموعاتها
 $teams = DataService::allTeams();   // [team => group]

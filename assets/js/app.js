@@ -142,7 +142,7 @@
   (function () {
     if (!('IntersectionObserver' in window)) return;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var els = document.querySelectorAll('.section, .day-block, .hero-banner, .ref-section, .sticker-set, .lineup-box, .lb-wrap');
+    var els = document.querySelectorAll('.fb-block, .day-block, .fb-hero-banner, .ref-section, .sticker-set, .lineup-box, .lb-wrap');
     if (!els.length) return;
     document.body.classList.add('reveal-on');
     var io = new IntersectionObserver(function (entries) {
@@ -251,8 +251,8 @@
           oldMd.innerHTML = newMd.innerHTML;
         }
         // استبدل كل شبكة مباريات بالمحتوى الجديد
-        var oldGrids = document.querySelectorAll('.match-grid');
-        var newGrids = doc.querySelectorAll('.match-grid');
+        var oldGrids = document.querySelectorAll('.fb-matches');
+        var newGrids = doc.querySelectorAll('.fb-matches');
         oldGrids.forEach(function (grid, i) {
           if (newGrids[i]) grid.innerHTML = newGrids[i].innerHTML;
         });

@@ -24,8 +24,18 @@ if ($gParam !== '') {
     $gL = $gParam;
     $page_title = t('group') . ' ' . $gL . ' — ' . t('standings');
     $page_desc  = current_lang() === 'ar'
-        ? ('ترتيب المجموعة ' . $gL . ' في كأس العالم 2026 — النقاط والفارق والنتائج محدّثة.')
-        : ('Group ' . $gL . ' standings at the FIFA World Cup 2026 — live points, goal difference and results.');
+        ? ('ترتيب المجموعة ' . $gL . ' في كأس العالم 2026 على foot-boll — النقاط والفارق والنتائج محدّثة.')
+        : ('Group ' . $gL . ' standings at World Cup 2026 on foot-boll — live points, goal difference and results.');
+    $page_keywords = current_lang() === 'ar'
+        ? 'المجموعة ' . $gL . ', ترتيب, foot-boll, كأس العالم 2026'
+        : 'Group ' . $gL . ', standings, foot-boll, World Cup 2026';
+} else {
+    $page_desc  = current_lang() === 'ar'
+        ? 'جداول ترتيب المجموعات الـ12 في كأس العالم 2026 على foot-boll — نقاط، فارق أهداف، وترتيب أفضل ثالث.'
+        : 'All 12 group standings tables for World Cup 2026 on foot-boll — points, goal difference, and third-place ranking.';
+    $page_keywords = current_lang() === 'ar'
+        ? 'مجموعات 2026, ترتيب, foot-boll, كأس العالم'
+        : 'World Cup 2026 groups, standings, foot-boll';
 }
 
 tpl('header');

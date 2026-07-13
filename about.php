@@ -4,14 +4,18 @@
  */
 require __DIR__ . '/includes/bootstrap.php';
 
-$ar = (current_lang() === 'ar');
-$L  = fn(string $a, string $e) => $ar ? $a : $e;
+$ar   = (current_lang() === 'ar');
+$L    = fn(string $a, string $e) => $ar ? $a : $e;
 $host = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 
 $page_title = t('about_title');
 $page_desc  = $L(
-    'تعرّف على foot-boll.com — منصّة مستقلّة لكأس العالم 2026: نتائج، روابط بث رسمية، إحصائيات FIFA، توقعات مجانية، وAPI.',
-    'About foot-boll.com — an independent World Cup 2026 hub: scores, official watch links, FIFA stats, free predictions, and API.'
+    'foot-boll منصّة عربية تحليلية مستقلة لكأس العالم 2026 — نبني طبقة أصلية فوق البيانات الرياضية: تحليلات FIFA، ملفات لاعبين، توقعات تفاعلية، وAPI للمطوّرين.',
+    'foot-boll is an independent Arabic analytics platform for World Cup 2026 — we build an original layer on sports data: FIFA analytics, player profiles, interactive predictions, and a developer API.'
+);
+$page_keywords = $L(
+    'foot-boll, من نحن, كأس العالم 2026, منصة تحليلية, محتوى أصلي',
+    'foot-boll, about us, World Cup 2026, analytics platform, original content'
 );
 
 tpl('header');
@@ -25,33 +29,45 @@ tpl('header');
 <div class="prose" style="max-width:780px;margin:0 auto;line-height:2">
 
   <p><?= e($L(
-    'foot-boll.com منصّة مستقلّة لكأس العالم 2026 (كندا · المكسيك · الولايات المتحدة). نقدّم تجربة غنية بالأرقام والتفاعل مع روابط بث رسمية لكل مباراة.',
-    'foot-boll.com is an independent platform for the FIFA World Cup 2026 (Canada · Mexico · USA). We focus on numbers, interactivity, and official watch links for every match.'
+    'foot-boll ليس موقع نتائج تقليدياً. نحن منصّة عربية مستقلة بُنيت خصيصاً لكأس العالم 2026 في كندا والمكسيك والولايات المتحدة، تجمع بين دقة البيانات الرياضية وطبقة تحليلية أصلية لا تقتصر على عرض النتيجة والوقت.',
+    'foot-boll is not a traditional scores site. We are an independent Arabic platform built specifically for the 2026 World Cup in Canada, Mexico, and the USA — combining accurate sports data with an original analytics layer that goes far beyond showing the score and kick-off time.'
   )) ?></p>
 
-  <h2><?= e($L('ماذا نقدّم', 'What we offer')) ?></h2>
+  <h2><?= e($L('رسالتنا', 'Our mission')) ?></h2>
+  <p><?= e($L(
+    'نوفّر للمشجّع العربي مركزاً واحداً يجمع النتائج المحدّثة، التحليلات التقنية، التوقعات التفاعلية، وملفات اللاعبين — بلغة عربية وبتجربة مصمّمة لجمهورنا، لا منسوخة من قوالب جاهزة.',
+    'We give Arabic-speaking fans a single hub for live scores, technical analytics, interactive predictions, and player profiles — in Arabic, with an experience designed for our audience, not copied from off-the-shelf templates.'
+  )) ?></p>
+
+  <h2><?= e($L('ما يميّزنا عن مواقع النتائج التقليدية', 'What sets us apart from score-only sites')) ?></h2>
   <ul>
-    <li><?= e($L('روابط بث رسمية (beIN / TOD / FIFA+) على صفحة كل مباراة.', 'Official watch links (beIN / TOD / FIFA+) on every match page.')) ?></li>
-    <li><?= e($L('جدول المباريات والنتائج المحدّثة من مصادر مفتوحة (openfootball).', 'Match schedule and updated results from open data (openfootball).')) ?></li>
-    <li><?= e($L('ملفات لاعبين تقنية بتقييمات وبيانات FIFA الرسمية حيث تتوفر.', 'Technical player profiles with official FIFA ratings and metrics where available.')) ?></li>
-    <li><?= e($L('لوحة إحصائيات، بيانات بدنية، هدّافون، بطاقات، وحكّام.', 'Stats dashboard, physical data, top scorers, cards, and referees.')) ?></li>
-    <li><?= e($L('مسابقات توقع مجانية — نقاط وصدارة، وليست مراهنة بمال حقيقي.', 'Free prediction games with points and leaderboards — not real-money gambling.')) ?></li>
-    <li><?= e($L('واجهة API مجانية (JSON) للمطورين.', 'Free JSON API for developers.')) ?></li>
-    <li><?= e($L('أخبار مع سياق تحريري يربط كل خبر بمنتخبات ومباريات البطولة.', 'News with editorial context linking each story to tournament teams and matches.')) ?></li>
+    <li><?= e($L('تحليلات ما قبل وبعد المباراة مولّدة بعناية لكل لقاء — وليس مجرد جدول نتائج.', 'Carefully crafted pre- and post-match analysis for every fixture — not just a results table.')) ?></li>
+    <li><?= e($L('تقارير FIFA التفصيلية: استحواذ، تسديدات، xG، وتمريرات حيث تتوفر البيانات.', 'Detailed FIFA reports: possession, shots, xG, and passes where data is available.')) ?></li>
+    <li><?= e($L('ملفات لاعبين تقنية بتقييمات FIFA الرسمية وبيانات بدنية.', 'Technical player profiles with official FIFA ratings and physical data.')) ?></li>
+    <li><?= e($L('لوحة إحصائيات تفاعلية، هدّافون، بطاقات، حكّام، ورجل المباراة.', 'Interactive stats dashboard, top scorers, bookings, referees, and player of the match.')) ?></li>
+    <li><?= e($L('مسابقات توقع مجانية بنقاط وصدارة — ترفيه رياضي وليس مراهنة بمال حقيقي.', 'Free prediction games with points and leaderboards — sports entertainment, not real-money gambling.')) ?></li>
+    <li><?= e($L('أخبار مع سياق تحريري يربط كل خبر بمنتخبات ومباريات البطولة على foot-boll.', 'News with editorial context linking each story to tournament teams and matches on foot-boll.')) ?></li>
+    <li><?= e($L('واجهة API مجانية (JSON) للمطوّرين والمواقع الرياضية.', 'Free JSON API for developers and sports websites.')) ?></li>
   </ul>
 
-  <h2><?= e($L('مصادر البيانات', 'Data sources')) ?></h2>
+  <h2><?= e($L('منهجية البيانات والمحتوى الأصلي', 'Data methodology and original content')) ?></h2>
   <p><?= e($L(
-    'جدول المباريات والنتائج الأساسية من openfootball (ملك عام). إحصائيات المباريات المتقدمة من بيانات FIFA حيث تُفعَّل. الأخبار: عناوين مختارة مع سياق foot-boll.com ورابط للمصدر.',
-    'Core schedule and results from openfootball (public domain). Advanced match metrics from FIFA data where enabled. News: curated headlines with foot-boll.com context and links to publishers.'
+    'جدول المباريات والنتائج الأساسية من مصادر مفتوحة (openfootball). الإحصائيات المتقدمة وتقارير FIFA من بيانات رسمية حيث تُفعَّل. النصوص التحليلية والسياق التحريري يُنتَجان بواسطة فريق foot-boll ولا يُنسَخان من مواقع أخرى. عند استخدام عناوين أخبار خارجية، نضيف سياقاً أصلياً يربط الخبر ببطولة 2026 ونُحيل إلى المصدر.',
+    'Core schedules and results come from open data (openfootball). Advanced stats and FIFA reports use official data where enabled. Analytical text and editorial context are produced by the foot-boll team and are not copied from other sites. When we use external news headlines, we add original context linking the story to the 2026 tournament and cite the source.'
   )) ?></p>
 
-  <h2><?= e($L('تواصل', 'Contact')) ?></h2>
-  <p><?= $ar
-    ? 'للاستفسارات والرعاية: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — أو استخدم نموذج «تواصل معنا» في أسفل أي صفحة.'
-    : 'For inquiries and sponsorship: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — or use the contact form in the site footer.' ?></p>
+  <h2><?= e($L('الامتثال والشفافية', 'Compliance and transparency')) ?></h2>
+  <p><?= e($L(
+    'نحترم حقوق النشر للمحتوى الإخباري ونربط دائماً بالمصدر الأصلي. لا نقدّم مراهنة بمال حقيقي. بيانات المباريات حقائق رياضية عامة؛ القيمة التي نضيفها هي التحليل والتفاعل والتجربة العربية الأصيلة.',
+    'We respect news publishers\' rights and always link to original sources. We do not offer real-money gambling. Match data is public sports fact; our added value is analysis, interactivity, and an authentic Arabic experience.'
+  )) ?></p>
 
-  <p class="muted"><?= e($host) ?> · <?= e($L('صُنع بشغف لكرة القدم', 'Built with love for football')) ?></p>
+  <h2><?= e($L('تواصل معنا', 'Contact us')) ?></h2>
+  <p><?= $ar
+    ? 'للاستفسارات، الرعاية، والشراكات: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — أو استخدم نموذج «تواصل معنا» في أسفل أي صفحة.'
+    : 'For inquiries, sponsorship, and partnerships: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — or use the contact form in the site footer.' ?></p>
+
+  <p class="muted"><?= e($host) ?> · <?= e($L('أُعدّ بعناية لعشّاق كرة القدم العرب', 'Crafted for Arabic football fans')) ?></p>
 
 </div>
 

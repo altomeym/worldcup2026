@@ -27,7 +27,13 @@ $img  = Stadiums::image($id);
 $maps = Stadiums::mapsUrl($s);
 
 $page_title = $name;
-$page_desc  = $hist;
+$ar = ($lang === 'ar');
+$page_desc  = $ar
+    ? "ملعب {$name} في {$city} — أحد ملاعب كأس العالم 2026 على foot-boll. السعة: " . number_format((int)$s['capacity']) . " متفرج."
+    : "{$name} in {$city} — a World Cup 2026 venue on foot-boll. Capacity: " . number_format((int)$s['capacity']) . " spectators.";
+$page_keywords = $ar
+    ? "{$name}, {$city}, ملعب, foot-boll, 2026"
+    : "{$name}, {$city}, stadium, foot-boll, World Cup 2026";
 gtm_add([
     'stadium_id'    => $id,
     'stadium_name'  => $name,

@@ -16,6 +16,7 @@ $code = '<iframe src="' . $base . '/widget.php?lang=' . $lang . '" '
 
 $page_title = t('embed_widget');
 $page_desc  = t('embed_intro');
+$page_robots = 'noindex,follow';
 tpl('header');
 ?>
 

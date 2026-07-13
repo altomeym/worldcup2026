@@ -8,8 +8,14 @@ require __DIR__ . '/includes/bootstrap.php';
 $lang  = current_lang();
 $total = Stickers::total();
 
+$ar = (current_lang() === 'ar');
 $page_title = t('sticker_album');
-$page_desc  = t('album_intro');
+$page_desc  = $ar
+    ? 'ألبوم ملصقات كأس العالم 2026 الافتراضي على foot-boll — اجمع الملصقات، افتح باقة مجانية يومياً، وأكمل مجموعتك.'
+    : 'Virtual World Cup 2026 sticker album on foot-boll — collect stickers, open a free daily pack, and complete your set.';
+$page_keywords = $ar
+    ? 'ملصقات, ألبوم, foot-boll, كأس العالم 2026'
+    : 'stickers, album, foot-boll, World Cup 2026';
 tpl('header');
 
 /** يرسم خانة ملصق واحدة (مقفلة افتراضياً حتى يفتحها JS) */

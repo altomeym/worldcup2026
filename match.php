@@ -78,8 +78,63 @@ if ($id === 0 && !$hasScore && $isLocalDev) {
 }
 
 $page_title = team_name($t1) . ' ' . t('vs') . ' ' . team_name($t2);
-$page_desc  = $page_title . ' — ' . round_label($m['round'] ?? '')
-            . (!empty($m['ground']) ? ' · ' . $m['ground'] : '');
+
+$roundLbl = round_label($m['round'] ?? '');
+$ground   = trim((string)($m['ground'] ?? ''));
+$tn1      = team_name($t1);
+$tn2      = team_name($t2);
+
+if ($ar) {
+    if ($status === 'finished' && $hasScore) {
+        [$g1, $g2] = $m['score']['ft'];
+        $page_desc = "نتيجة {$tn1} {$g1}-{$g2} {$tn2} في {$roundLbl}"
+            . ($ground !== '' ? " بملعب {$ground}" : '')
+            . " — تحليل foot-boll: إحصائيات FIFA، أحداث المباراة، التشكيلة، والحكّام.";
+    } elseif ($status === 'live') {
+        $liveMin = !empty($m['_live_minute']) ? (int)$m['_live_minute'] : null;
+        $scoreTxt = $hasScore
+            ? ' (' . (int)$m['score']['ft'][0] . '-' . (int)$m['score']['ft'][1] . ')'
+            : '';
+        $page_desc = "مباشر: {$tn1} × {$tn2}{$scoreTxt} — {$roundLbl}"
+            . ($liveMin ? " الدقيقة {$liveMin}" : '')
+            . ($ground !== '' ? " · {$ground}" : '')
+            . ' — تابع الأحداث والإحصائيات لحظياً على foot-boll.';
+    } else {
+        $kickStr = $ts ? local_dt($ts, 'datetime') : '';
+        $page_desc = "موعد مباراة {$tn1} و{$tn2} — {$roundLbl}"
+            . ($kickStr !== '' ? " · {$kickStr}" : '')
+            . ($ground !== '' ? " · {$ground}" : '')
+            . ' — توقّعات، تحليل ما قبل المباراة، وروابط البث على foot-boll.';
+    }
+    $page_keywords = "{$tn1}, {$tn2}, كأس العالم 2026, {$roundLbl}, foot-boll, نتائج مباشرة";
+} else {
+    if ($status === 'finished' && $hasScore) {
+        [$g1, $g2] = $m['score']['ft'];
+        $page_desc = "{$tn1} {$g1}-{$g2} {$tn2} — {$roundLbl}"
+            . ($ground !== '' ? " at {$ground}" : '')
+            . '. foot-boll analysis: FIFA stats, match events, lineups, and officials.';
+    } elseif ($status === 'live') {
+        $liveMin = !empty($m['_live_minute']) ? (int)$m['_live_minute'] : null;
+        $scoreTxt = $hasScore
+            ? ' (' . (int)$m['score']['ft'][0] . '-' . (int)$m['score']['ft'][1] . ')'
+            : '';
+        $page_desc = "Live: {$tn1} vs {$tn2}{$scoreTxt} — {$roundLbl}"
+            . ($liveMin ? " · {$liveMin}'" : '')
+            . ($ground !== '' ? " · {$ground}" : '')
+            . '. Follow events and stats on foot-boll.';
+    } else {
+        $kickStr = $ts ? local_dt($ts, 'datetime') : '';
+        $page_desc = "Fixture: {$tn1} vs {$tn2} — {$roundLbl}"
+            . ($kickStr !== '' ? " · {$kickStr}" : '')
+            . ($ground !== '' ? " · {$ground}" : '')
+            . '. Predictions, pre-match analysis, and watch links on foot-boll.';
+    }
+    $page_keywords = "{$tn1}, {$tn2}, World Cup 2026, {$roundLbl}, foot-boll, live scores";
+}
+
+$aiType = $hasScore ? 'summary' : 'preview';
+$aiText = AiContent::enabled() ? AiContent::forMatch($m, $aiType) : null;
+
 $seo_type   = 'article';
 $page_image = base_url() . '/card.php?id=' . (int)$id . '&mode=match&v=3';
 
@@ -192,12 +247,26 @@ seo_breadcrumb([
     </div>
   </header>
 
+  <?php if ($aiText !== null): ?>
+    <section class="ai-content ai-content-featured md-section">
+      <div class="ai-content-head">
+        <h3>🧠 <?= e($hasScore ? t('ai_summary') : t('ai_preview')) ?></h3>
+        <span class="ai-badge"><?= e($L('تحليل foot-boll', 'foot-boll analysis')) ?></span>
+      </div>
+      <div class="ai-flags"><?= flag_img($t1, 'w40') ?><span class="ai-vs"><?= e(t('vs')) ?></span><?= flag_img($t2, 'w40') ?></div>
+      <?php foreach (preg_split('/\n+/', $aiText) as $para): if (trim($para) === '') continue; ?>
+        <p><?= e($para) ?></p>
+      <?php endforeach; ?>
+      <p class="ai-note"><?= e(t('ai_note')) ?></p>
+    </section>
+  <?php endif; ?>
+
   <?php
   $watchData = LiveWatch::forMatch($m, $id);
   if ($watchData && LiveWatch::shouldShow($m, $ts)):
   ?>
   <section class="md-section watch-live-box">
-    <h3 class="section-head">📺 <?= e(t('watch_live')) ?></h3>
+    <h3 class="fb-block-head">📺 <?= e(t('watch_live')) ?></h3>
     <?php if (!empty($watchData['embed'])): ?>
       <div class="video-embed">
         <iframe src="<?= e($watchData['embed']) ?>"
@@ -243,7 +312,7 @@ seo_breadcrumb([
         <li>
           <span class="md-info-k">🏟 <?= e(t('stadium')) ?></span>
           <span class="md-info-v">
-            <?php if ($st): ?><a class="section-link" href="<?= e(url('stadium.php', ['id' => $st['id']])) ?>"><?= e($m['ground']) ?></a>
+            <?php if ($st): ?><a class="fb-block-link" href="<?= e(url('stadium.php', ['id' => $st['id']])) ?>"><?= e($m['ground']) ?></a>
             <?php else: ?><?= e($m['ground']) ?><?php endif; ?>
           </span>
         </li>
@@ -258,27 +327,12 @@ seo_breadcrumb([
     </div>
   </section>
 
-  <!-- ============ معاينة/ملخّص الذكاء (إن وُجد) ============ -->
-  <?php if (AiContent::enabled()):
-      $aiType = $hasScore ? 'summary' : 'preview';
-      $aiText = AiContent::forMatch($m, $aiType);
-      if ($aiText !== null): ?>
-    <section class="ai-content md-section">
-      <h3>🧠 <?= e($hasScore ? t('ai_summary') : t('ai_preview')) ?></h3>
-      <div class="ai-flags"><?= flag_img($t1, 'w40') ?><span class="ai-vs"><?= e(t('vs')) ?></span><?= flag_img($t2, 'w40') ?></div>
-      <?php foreach (preg_split('/\n+/', $aiText) as $para): if (trim($para) === '') continue; ?>
-        <p><?= e($para) ?></p>
-      <?php endforeach; ?>
-      <p class="ai-note"><?= e(t('ai_note')) ?></p>
-    </section>
-  <?php endif; endif; ?>
-
   <!-- ============ 🎬 ملخّص الفيديو الرسمي (beIN عبر يوتيوب) ============ -->
   <?php
   $video = $hasScore ? Highlights::forMatch($m) : null;
   if ($video): ?>
     <section class="md-section video-box">
-      <h3 class="section-head">🎬 <?= e($L('ملخّص المباراة (فيديو)','Match highlights (video)')) ?></h3>
+      <h3 class="fb-block-head">🎬 <?= e($L('ملخّص المباراة (فيديو)','Match highlights (video)')) ?></h3>
       <?php
       // beIN يحظر تضمين فيديوهاته (سياسة الشريك على يوتيوب) — لذا نعرض
       // بطاقة بصورة الفيديو الرسمية وزرّ تشغيل يفتح يوتيوب في تبويب جديد.
@@ -348,7 +402,7 @@ seo_breadcrumb([
   <!-- ============ الأحداث (خط زمني موحّد) ============ -->
   <?php if (!empty($events)): ?>
     <section class="md-section">
-      <h3 class="section-head">⚡ <?= e($L('أحداث المباراة','Match events')) ?></h3>
+      <h3 class="fb-block-head">⚡ <?= e($L('أحداث المباراة','Match events')) ?></h3>
       <ol class="md-timeline">
         <?php foreach ($events as $ev):
           $home  = ($ev['side'] === 1);
@@ -382,7 +436,7 @@ seo_breadcrumb([
   <?php if ($fifaStatsHtml === ''): ?>
   <?php if (!empty($m['stats']) && is_array($m['stats'])): ?>
     <section class="md-section">
-      <h3 class="section-head">📊 <?= e($L('الإحصائيات','Statistics')) ?></h3>
+      <h3 class="fb-block-head">📊 <?= e($L('الإحصائيات','Statistics')) ?></h3>
       <div class="md-stats-head">
         <span><?= e(team_name($t1)) ?></span>
         <span><?= e(team_name($t2)) ?></span>
@@ -410,7 +464,7 @@ seo_breadcrumb([
     </section>
   <?php else: ?>
     <section class="md-section">
-      <h3 class="section-head">📊 <?= e($L('الإحصائيات','Statistics')) ?></h3>
+      <h3 class="fb-block-head">📊 <?= e($L('الإحصائيات','Statistics')) ?></h3>
       <p class="md-stat-note">
         <?= e($L('إحصائيات الاستحواذ والتسديدات والأخطاء تظهر هنا تلقائياً وقت المباراة.',
                 'Possession, shots and fouls stats appear here automatically during the match.')) ?>
@@ -433,10 +487,10 @@ seo_breadcrumb([
   ?>
   <?php if ($foldLineup): ?>
   <details class="lineup-box md-section lineup-fold">
-    <summary class="section-head">👕 <?= e(t('lineup')) ?> <span class="fold-hint">· <?= e($ar ? 'اضغط للعرض' : 'tap to view') ?></span></summary>
+    <summary class="fb-block-head">👕 <?= e(t('lineup')) ?> <span class="fold-hint">· <?= e($ar ? 'اضغط للعرض' : 'tap to view') ?></span></summary>
   <?php else: ?>
   <section class="lineup-box md-section">
-    <h3 class="section-head">👕 <?= e(t('lineup')) ?></h3>
+    <h3 class="fb-block-head">👕 <?= e(t('lineup')) ?></h3>
   <?php endif; ?>
     <?php
     // تشكيلة يدوية متوقعة (قبل الإعلان الرسمي) → وسم توضيحي فوق اللوحة
@@ -550,7 +604,7 @@ seo_breadcrumb([
   $groupTxt = trim((string)($m['group']  ?? $m['round'] ?? ''));
   ?>
   <section class="md-section">
-    <h3 class="section-head">📋 <?= e($L('طاقم التحكيم والمعلومات الموسّعة','Match officials & info')) ?></h3>
+    <h3 class="fb-block-head">📋 <?= e($L('طاقم التحكيم والمعلومات الموسّعة','Match officials & info')) ?></h3>
 
     <?php if ($matchStatus === 'upcoming' && $countdown): ?>
     <div class="md-countdown-banner">

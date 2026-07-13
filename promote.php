@@ -78,7 +78,7 @@ tpl('header');
 
   <!-- قواعد -->
   <div class="promote-rules">
-    <h2 class="section-head">📜 <?= e(t('how_it_works')) ?></h2>
+    <h2 class="fb-block-head">📜 <?= e(t('how_it_works')) ?></h2>
     <ul>
       <li>✅ <?= e(sprintf(t('rule_points'),   Referrals::POINTS_PER)) ?></li>
       <li>📅 <?= e(sprintf(t('rule_daily'),    Referrals::DAILY_CAP,    Referrals::DAILY_CAP    * Referrals::POINTS_PER)) ?></li>
@@ -89,12 +89,12 @@ tpl('header');
 
   <?php if (!empty($recent)): ?>
   <div class="promote-recent">
-    <h2 class="section-head">🎯 <?= e(t('your_recent_refs')) ?></h2>
+    <h2 class="fb-block-head">🎯 <?= e(t('your_recent_refs')) ?></h2>
     <ul class="ref-list">
       <?php foreach ($recent as $r): ?>
         <li>
           <strong><?= e($r['display_name'] ?? $r['username']) ?></strong>
-          <span class="muted"><?= e(local_dt((int)$r['created_at'], 'date_short')) ?></span>
+          <span class="muted"><?= local_dt((int)$r['created_at'], 'date_short') ?></span>
           <?php if ((int)$r['counted']): ?>
             <span class="badge badge-done">+<?= Referrals::POINTS_PER ?> ⭐</span>
           <?php else: ?>
@@ -108,7 +108,7 @@ tpl('header');
 
   <?php if (!empty($top)): ?>
   <div class="promote-top">
-    <h2 class="section-head">🏆 <?= e(t('top_promoters')) ?></h2>
+    <h2 class="fb-block-head">🏆 <?= e(t('top_promoters')) ?></h2>
     <ol class="top-list">
       <?php foreach ($top as $i => $r): ?>
         <li class="<?= ($r['referrer_user_id'] ?? 0) == $uid ? 'is-me' : '' ?>">
@@ -214,7 +214,7 @@ tpl('header');
   unset($t);
   ?>
   <div class="marketing-kit">
-    <h2 class="section-head">🧰 <?= e($isAr ? 'صندوق التسويق — قوالب جاهزة' : 'Marketing Kit — Ready-to-Post Templates') ?></h2>
+    <h2 class="fb-block-head">🧰 <?= e($isAr ? 'صندوق التسويق — قوالب جاهزة' : 'Marketing Kit — Ready-to-Post Templates') ?></h2>
     <p class="muted" style="margin-bottom:14px">
       <?php if ($hasRef): ?>
         <?= e($isAr

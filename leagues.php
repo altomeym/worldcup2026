@@ -16,8 +16,10 @@ $L  = fn(string $a, string $e) => $ar ? $a : $e;
 $myLeagues = $user ? Leagues::myLeagues() : [];
 
 $page_title = $L('المجلس', 'My Leagues');
-$page_desc  = $L('أنشئ دوريّة توقّعات خاصّة بأصدقائك وعائلتك وزملائك — بلوحة صدارة خاصّة بكم.',
-                 'Create a private predictions league with your friends, family and coworkers — with your own leaderboard.');
+$page_desc  = $L('أنشئ دوريّة توقّعات خاصّة على foot-boll لأصدقائك وعائلتك — بلوحة صدارة خاصّة بكم منفصلة عن الترتيب العالمي.',
+                 'Create a private predictions league on foot-boll for friends and family — your own leaderboard separate from the global ranking.');
+$page_keywords = $L('دوري توقعات, مجلس, foot-boll, كأس العالم',
+                    'predictions league, private, foot-boll, World Cup');
 tpl('header');
 ?>
 

@@ -34,7 +34,22 @@ $posMap = [
 ];
 
 $page_title = $selValid ? (team_name($sel) . ' — ' . $L['squad']) : $L['title'];
-$page_desc  = $L['intro'];
+if ($selValid) {
+    $tn = team_name($sel);
+    $page_desc = $lang === 'ar'
+        ? "قائمة لاعبي {$tn} في كأس العالم 2026 على foot-boll — المراكز والأرقام عند الإعلان الرسمي."
+        : "{$tn} squad for World Cup 2026 on foot-boll — positions and shirt numbers when officially announced.";
+    $page_keywords = $lang === 'ar'
+        ? "{$tn}, قائمة لاعبين, foot-boll, 2026"
+        : "{$tn}, squad, foot-boll, World Cup 2026";
+} else {
+    $page_desc = $lang === 'ar'
+        ? 'قوائم المنتخبات الـ48 في كأس العالم 2026 على foot-boll — لاعبو كل فريق عند الإعلان الرسمي.'
+        : 'All 48 World Cup 2026 team squads on foot-boll — player lists when officially announced.';
+    $page_keywords = $lang === 'ar'
+        ? 'قوائم منتخبات, لاعبين, foot-boll, مونديال 2026'
+        : 'team squads, players, foot-boll, World Cup 2026';
+}
 tpl('header');
 ?>
 

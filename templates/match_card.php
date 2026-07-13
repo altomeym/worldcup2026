@@ -20,10 +20,10 @@ function render_match_card(array $m): void {
     $poll = class_exists('Polls') ? Polls::card($m) : null;
     if ($poll !== null && !empty($poll['closed'])) { $poll = null; }
     ?>
-    <div class="mc-wrap">
-    <a class="match-card status-<?= e($status) ?>" href="<?= e($detailUrl) ?>">
-      <div class="mc-top">
-        <span class="mc-round"><?= e(round_label($m['round'] ?? '')) ?></span>
+    <div class="fb-mc-wrap">
+    <a class="fb-match status-<?= e($status) ?>" href="<?= e($detailUrl) ?>">
+      <div class="fb-mc-top">
+        <span class="fb-mc-round"><?= e(round_label($m['round'] ?? '')) ?></span>
         <?php if ($status === 'live' && !empty($m['_live_minute'])): ?>
           <span class="badge badge-live">
             <span class="live-dot"></span><?= (int)$m['_live_minute'] ?>'
@@ -33,34 +33,34 @@ function render_match_card(array $m): void {
         <?php endif; ?>
       </div>
 
-      <div class="mc-body">
-        <div class="mc-team mc-team-1">
+      <div class="fb-mc-body">
+        <div class="fb-mc-team fb-mc-team-a">
           <?= flag_img($t1, 'w80') ?>
-          <span class="mc-team-name"><?= e(team_name($t1)) ?></span>
-          <?php if ($r1 = Rankings::of($t1)): ?><span class="mc-rank">#<?= (int)$r1 ?></span><?php endif; ?>
+          <span class="fb-mc-team-name"><?= e(team_name($t1)) ?></span>
+          <?php if ($r1 = Rankings::of($t1)): ?><span class="fb-mc-rank">#<?= (int)$r1 ?></span><?php endif; ?>
         </div>
 
-        <div class="mc-score">
+        <div class="fb-mc-score">
           <?php if ($hasScore): ?>
-            <span class="mc-score-num"><?= (int)$m['score']['ft'][0] ?></span>
-            <span class="mc-score-sep">:</span>
-            <span class="mc-score-num"><?= (int)$m['score']['ft'][1] ?></span>
+            <span class="fb-mc-score-n"><?= (int)$m['score']['ft'][0] ?></span>
+            <span class="fb-mc-score-sep">:</span>
+            <span class="fb-mc-score-n"><?= (int)$m['score']['ft'][1] ?></span>
           <?php else: ?>
-            <span class="mc-time"><?= local_dt($ts, 'time') ?></span>
+            <span class="fb-mc-time"><?= local_dt($ts, 'time') ?></span>
           <?php endif; ?>
         </div>
 
-        <div class="mc-team mc-team-2">
+        <div class="fb-mc-team fb-mc-team-b">
           <?= flag_img($t2, 'w80') ?>
-          <span class="mc-team-name"><?= e(team_name($t2)) ?></span>
-          <?php if ($r2 = Rankings::of($t2)): ?><span class="mc-rank">#<?= (int)$r2 ?></span><?php endif; ?>
+          <span class="fb-mc-team-name"><?= e(team_name($t2)) ?></span>
+          <?php if ($r2 = Rankings::of($t2)): ?><span class="fb-mc-rank">#<?= (int)$r2 ?></span><?php endif; ?>
         </div>
       </div>
 
-      <div class="mc-foot">
-        <span class="mc-date"><?= local_dt($ts, 'date_short') ?></span>
+      <div class="fb-mc-foot">
+        <span class="fb-mc-date"><?= local_dt($ts, 'date_short') ?></span>
         <?php if (!empty($m['ground'])): ?>
-          <span class="mc-ground">📍 <?= e($m['ground']) ?></span>
+          <span class="fb-mc-ground">📍 <?= e($m['ground']) ?></span>
         <?php endif; ?>
       </div>
 
@@ -70,29 +70,29 @@ function render_match_card(array $m): void {
       $refFlag = strtolower(trim((string)($m['officials']['main']['flag'] ?? '')));
       ?>
       <?php if ($refName !== ''): ?>
-      <div class="mc-ref">
-        <span class="mc-ref-lbl"><?= e($ar ? 'الحكم:' : 'Referee:') ?></span>
+      <div class="fb-mc-ref">
+        <span class="fb-mc-ref-lbl"><?= e($ar ? 'الحكم:' : 'Referee:') ?></span>
         <?php if ($refFlag !== ''): ?>
-          <img class="mc-ref-flag" src="<?= e(flag_url_iso($refFlag, 'w20')) ?>"
+          <img class="fb-mc-ref-flag" src="<?= e(flag_url_iso($refFlag, 'w20')) ?>"
                alt="" width="18" height="13" loading="lazy">
         <?php endif; ?>
-        <span class="mc-ref-name"><?= e(mb_convert_case(mb_strtolower($refName, 'UTF-8'), MB_CASE_TITLE, 'UTF-8')) ?></span>
+        <span class="fb-mc-ref-name"><?= e(mb_convert_case(mb_strtolower($refName, 'UTF-8'), MB_CASE_TITLE, 'UTF-8')) ?></span>
       </div>
       <?php endif; ?>
     </a>
     <?php if ($canRemind): ?>
-      <button type="button" class="mc-remind" data-remind
+      <button type="button" class="fb-mc-remind" data-remind
               data-id="<?= (int)($m['_index'] ?? 0) ?>"
               data-ts="<?= (int)$ts ?>"
               data-teams="<?= e(team_name($t1) . ' ' . ($ar ? '×' : 'vs') . ' ' . team_name($t2)) ?>"
               data-url="<?= e($detailUrl) ?>"
               aria-pressed="false">
-        <span class="mc-remind-ico" aria-hidden="true">🔔</span>
-        <span class="mc-remind-txt"><?= e($ar ? 'ذكّرني' : 'Remind me') ?></span>
+        <span class="fb-mc-remind-ico" aria-hidden="true">🔔</span>
+        <span class="fb-mc-remind-txt"><?= e($ar ? 'ذكّرني' : 'Remind me') ?></span>
       </button>
     <?php endif; ?>
     <?php if ($poll !== null) render_match_poll($poll); ?>
-    </div><!-- /.mc-wrap -->
+    </div><!-- /.fb-mc-wrap -->
     <?php
 }
 
@@ -110,14 +110,14 @@ function render_match_poll(array $p): void {
     $choice = $p['choice'];
     $ar     = (current_lang() === 'ar');
     ?>
-    <div class="mc-poll<?= $voted ? ' is-voted' : '' ?>" data-poll="<?= e($p['id']) ?>" data-opts="<?= count($opts) ?>"
+    <div class="fb-mc-poll<?= $voted ? ' is-voted' : '' ?>" data-poll="<?= e($p['id']) ?>" data-opts="<?= count($opts) ?>"
          data-voted="<?= $voted ? '1' : '0' ?>" data-choice="<?= ($choice === null) ? '-1' : (int)$choice ?>">
-      <div class="mc-poll-q"><?= e($ar ? 'توقّعك؟' : 'Your call?') ?></div>
-      <div class="mc-poll-list">
+      <div class="fb-mc-poll-q"><?= e($ar ? 'توقّعك؟' : 'Your call?') ?></div>
+      <div class="fb-mc-poll-list">
         <?php foreach ($opts as $i => $label):
           $pct  = ($voted && $total > 0) ? (int)round(100 * $counts[$i] / $total) : 0;
           $mine = ($choice !== null && (int)$choice === (int)$i); ?>
-          <button type="button" class="mc-poll-opt<?= $mine ? ' is-mine' : '' ?>" data-opt="<?= (int)$i ?>"<?= $voted ? ' disabled' : '' ?>>
+          <button type="button" class="fb-mc-poll-opt<?= $mine ? ' is-mine' : '' ?>" data-opt="<?= (int)$i ?>"<?= $voted ? ' disabled' : '' ?>>
             <i class="mcp-bar" style="width:<?= $pct ?>%"></i>
             <span class="mcp-lbl"><?= e($label) ?></span>
             <span class="mcp-pct"><?= $voted ? $pct . '%' : '' ?></span>

@@ -61,19 +61,19 @@ img { display: block; max-width: 100%; }
 /* ============================================================
    الهيدر
    ============================================================ */
-.site-header {
+.fb-topbar {
   position: sticky; top: 0; z-index: 100;
   background: color-mix(in srgb, var(--surface) 94%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 1px 0 rgba(0,40,80,.04);
 }
-.header-shell { display: flex; flex-direction: column; }
-.header-top {
+.fb-topbar-wrap { display: flex; flex-direction: column; }
+.fb-topbar-row {
   display: flex; align-items: center; justify-content: space-between;
   height: var(--header-h); gap: 12px;
 }
-.header-nav-row {
+.fb-topbar-subrow {
   border-top: 1px solid var(--border);
   padding: 6px 0 8px;
 }
@@ -83,7 +83,7 @@ img { display: block; max-width: 100%; }
   object-fit: contain; flex-shrink: 0;
 }
 .brand-text small { display: block; color: var(--text-dim); font-size: .68rem; white-space: nowrap; }
-.header-utils {
+.fb-topbar-tools {
   display: flex; align-items: center; gap: 6px; flex-shrink: 0;
 }
 .brand-mark {
@@ -98,17 +98,17 @@ img { display: block; max-width: 100%; }
 }
 .brand-text strong { display: block; font-size: 1.02rem; font-weight: 800; }
 
-.main-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.main-nav a,
-.main-nav .nav-group-btn {
+.fb-topnav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.fb-topnav a,
+.fb-topnav .nav-group-btn {
   padding: 8px 13px; border-radius: 9px;
   font-size: .92rem; font-weight: 600; color: var(--text-dim);
   transition: .18s;
   border-bottom: 2px solid transparent;
 }
-.main-nav a:hover,
+.fb-topnav a:hover,
 .nav-group-btn:hover { color: var(--text); background: var(--surface-2); }
-.main-nav a.active,
+.fb-topnav a.active,
 .nav-group-btn.nav-group-on {
   color: var(--accent-readable);
   background: transparent;
@@ -156,12 +156,12 @@ img { display: block; max-width: 100%; }
   .nav-group:hover .nav-drop, .nav-group:focus-within .nav-drop { display: flex; }
 }
 
-.site-main { padding: 26px 18px 60px; min-height: 60vh; }
+.fb-page { padding: 26px 18px 60px; min-height: 60vh; }
 
 /* ============================================================
    الواجهة البطولية (Hero)
    ============================================================ */
-.hero {
+.fb-hero {
   position: relative; overflow: hidden;
   border-radius: var(--radius);
   margin-bottom: 34px;
@@ -170,20 +170,20 @@ img { display: block; max-width: 100%; }
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
 }
-.hero-bg {
+.fb-hero-bg {
   position: absolute; inset: 0;
   background:
     repeating-linear-gradient(115deg, transparent 0 38px,
       rgba(0,0,51,.025) 38px 76px);
   pointer-events: none;
 }
-.hero-content { position: relative; text-align: center; }
-.hero-kicker {
+.fb-hero-body { position: relative; text-align: center; }
+.fb-hero-eyebrow {
   font-family: var(--font-display);
   letter-spacing: .42em; font-size: .82rem;
   color: var(--accent-2); font-weight: 600;
 }
-.hero-title {
+.fb-hero-heading {
   font-family: var(--font-display);
   font-size: clamp(4rem, 16vw, 9rem);
   font-weight: 700; line-height: .92;
@@ -192,7 +192,7 @@ img { display: block; max-width: 100%; }
   -webkit-text-fill-color: transparent;
   margin: 4px 0;
 }
-.hero-sub { color: var(--text-dim); font-size: 1rem; }
+.fb-hero-lead { color: var(--text-dim); font-size: 1rem; }
 /* ---------- العدّاد التنازلي ---------- */
 .countdown { margin-top: 24px; }
 .cd-label {
@@ -213,27 +213,27 @@ img { display: block; max-width: 100%; }
 .cd-lbl { display: block; font-size: .72rem; color: var(--text-dim); margin-top: 6px; }
 .cd-live-label { color: var(--accent-readable); font-size: 1.2rem; }
 
-.hero-stats {
+.fb-hero-stats {
   display: flex; justify-content: center; gap: 14px;
   margin-top: 26px; flex-wrap: wrap;
 }
-.hero-stats > div {
+.fb-hero-stats > div {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-sm); padding: 14px 26px; min-width: 96px;
 }
-.hero-stats strong {
+.fb-hero-stats strong {
   display: block; font-family: var(--font-display);
   font-size: 2rem; color: var(--accent-readable);
 }
-.hero-stats span { font-size: .76rem; color: var(--text-dim); }
+.fb-hero-stats span { font-size: .76rem; color: var(--text-dim); }
 
 /* الدول المستضيفة + أزرار البطل في الهيرو */
-.hero-hosts { display: flex; justify-content: center; gap: 12px; margin: 14px 0 10px; }
-.hero-hosts img {
+.fb-hero-flags { display: flex; justify-content: center; gap: 12px; margin: 14px 0 10px; }
+.fb-hero-flags img {
   width: 40px; height: 30px; border-radius: 5px; object-fit: cover;
   box-shadow: 0 3px 10px rgba(0,0,51,.08); border: 1px solid var(--border);
 }
-.hero-cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+.fb-hero-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
 .btn-cta {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 12px 26px; border-radius: 30px; font-weight: 800; font-size: .98rem;
@@ -251,93 +251,93 @@ img { display: block; max-width: 100%; }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent-readable); }
 
 /* قسم «تفاعل مع المونديال» — إبراز الميزات على الرئيسية */
-.engage { margin-bottom: 34px; }
+.fb-hub { margin-bottom: 34px; }
 
 /* ── Home intro — Bento Manifest ── */
-.home-intro { margin: 0 0 34px; }
-.hi-shell {
+.fb-about { margin: 0 0 34px; }
+.fb-ab-wrap {
   position: relative; overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-card);
 }
-.hi-shell::before {
+.fb-ab-wrap::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(420px 180px at 100% 0%, rgba(124,245,255,.12), transparent 70%);
 }
-.hi-head {
+.fb-ab-head {
   position: relative; z-index: 1;
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   padding: 14px 18px; border-bottom: 1px solid var(--border);
 }
-.hi-logo { height: 32px; width: auto; object-fit: contain; }
-.hi-tag { font-size: .82rem; color: var(--text-dim); flex: 1; min-width: 120px; }
-.hi-badge {
+.fb-ab-logo { height: 32px; width: auto; object-fit: contain; }
+.fb-ab-tag { font-size: .82rem; color: var(--text-dim); flex: 1; min-width: 120px; }
+.fb-ab-badge {
   font-size: .72rem; font-weight: 800; padding: 4px 12px; border-radius: 20px;
   background: rgba(124,245,255,.35); color: var(--accent-readable); border: 1px solid rgba(0,122,153,.2);
 }
-.hi-grid {
+.fb-ab-grid {
   position: relative; z-index: 1;
   display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; padding: 22px;
 }
-.hi-copy {
+.fb-ab-text {
   border-inline-start: 4px solid var(--accent);
   padding-inline-start: 18px; line-height: 1.85;
 }
-.hi-copy h2 { margin: 0 0 12px; font-size: 1.25rem; }
-.hi-copy p { margin: 0; opacity: .92; }
-.hi-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.hi-tile {
+.fb-ab-text h2 { margin: 0 0 12px; font-size: 1.25rem; }
+.fb-ab-text p { margin: 0; opacity: .92; }
+.fb-ab-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fb-ab-tile {
   display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
   padding: 14px; background: var(--bg-2); border: 1px solid var(--border);
   border-radius: var(--radius-sm); transition: border-color .18s;
 }
-.hi-tile:hover { border-color: var(--accent); }
-.hi-tile-ico { font-size: 1.5rem; line-height: 1; }
-.hi-tile-txt { font-size: .82rem; font-weight: 700; line-height: 1.45; color: var(--text-dim); }
+.fb-ab-tile:hover { border-color: var(--accent); }
+.fb-ab-tile-ico { font-size: 1.5rem; line-height: 1; }
+.fb-ab-tile-txt { font-size: .82rem; font-weight: 700; line-height: 1.45; color: var(--text-dim); }
 @media (max-width: 768px) {
-  .hi-grid { grid-template-columns: 1fr; padding: 16px; gap: 18px; }
+  .fb-ab-grid { grid-template-columns: 1fr; padding: 16px; gap: 18px; }
 }
 
 /* ── Home layout helpers ── */
-.home-split {
+.fb-cols {
   display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 38px;
 }
-.home-split .section { margin-bottom: 0; }
-.hero-stats-inline {
+.fb-cols .fb-block { margin-bottom: 0; }
+.fb-hero-stats {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
   background: var(--border); border: 1px solid var(--border);
   border-radius: var(--radius-sm); overflow: hidden; margin-top: 26px;
 }
-.hero-stats-inline .sb-item {
+.fb-hero-stats .fb-hero-stat {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   padding: 16px 8px; background: var(--surface-2); text-align: center;
 }
-.hero-stats-inline .sb-num {
+.fb-hero-stats .fb-hero-stat-n {
   font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; color: var(--accent-readable);
 }
-.hero-stats-inline .sb-lbl { font-size: .72rem; color: var(--text-dim); }
-.home-util { margin-bottom: 38px; }
-.home-util-head {
+.fb-hero-stats .fb-hero-stat-l { font-size: .72rem; color: var(--text-dim); }
+.fb-pills { margin-bottom: 38px; }
+.fb-pills-head {
   font-size: 1.1rem; font-weight: 800; margin-bottom: 12px;
   padding-bottom: 8px; border-bottom: 2px solid var(--accent);
 }
-.home-util-row {
+.fb-pills-row {
   display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
 }
-.home-util-pill {
+.fb-pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 16px; background: var(--surface); border: 1px solid var(--border);
   border-radius: 999px; font-size: .88rem; font-weight: 700;
   box-shadow: var(--shadow-card);
   transition: border-color .18s, transform .15s, box-shadow .15s;
 }
-.home-util-pill:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-.home-util-pill.official-ext { font-size: .75rem; opacity: .7; }
+.fb-pill:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.fb-pill.official-ext { font-size: .75rem; opacity: .7; }
 @media (max-width: 768px) {
-  .home-split { grid-template-columns: 1fr; gap: 28px; }
-  .hero-stats-inline { grid-template-columns: repeat(2, 1fr); }
+  .fb-cols { grid-template-columns: 1fr; gap: 28px; }
+  .fb-hero-stats { grid-template-columns: repeat(2, 1fr); }
 }
 
 .footer-tagline {
@@ -346,13 +346,13 @@ img { display: block; max-width: 100%; }
   opacity: .75;
   margin-top: 4px;
 }
-.engage-head { text-align: center; margin-bottom: 18px; }
-.engage-head h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 4px; }
-.engage-grid {
+.fb-hub-head { text-align: center; margin-bottom: 18px; }
+.fb-hub-head h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 4px; }
+.fb-hub-grid {
   display: grid; gap: 12px;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 }
-.engage-card {
+.fb-hub-card {
   display: flex; align-items: center; gap: 14px;
   background: linear-gradient(150deg, var(--surface), var(--bg-2));
   border: 1px solid var(--border); border-radius: var(--radius);
@@ -360,21 +360,61 @@ img { display: block; max-width: 100%; }
   padding: 16px 18px; color: inherit; text-decoration: none;
   transition: transform .18s, border-color .18s, box-shadow .18s;
 }
-.engage-card:hover {
+.fb-hub-card:hover {
   transform: translateY(-3px); border-color: var(--accent);
   box-shadow: 0 10px 24px rgba(0,0,51,.1);
 }
-.engage-icon {
+.fb-hub-icon {
   flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
   background: rgba(0,0,51,.04);
 }
-.engage-body { display: flex; flex-direction: column; min-width: 0; }
-.engage-title { font-weight: 800; font-size: 1rem; }
-.engage-desc { font-size: .82rem; color: var(--text-dim); line-height: 1.4; }
+.fb-hub-body { display: flex; flex-direction: column; min-width: 0; }
+.fb-hub-title { font-weight: 800; font-size: 1rem; }
+.fb-hub-desc { font-size: .82rem; color: var(--text-dim); line-height: 1.4; }
+
+/* ── مركز التحليل المتقدم (الصفحة الرئيسية) ── */
+.fb-analytics {
+  margin-bottom: 34px;
+  padding: 22px 20px;
+  background: linear-gradient(160deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+.fb-analytics-head { text-align: center; margin-bottom: 18px; }
+.fb-analytics-head h2 {
+  font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 4px;
+  color: var(--accent-readable);
+}
+.fb-analytics-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+.fb-analytics-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  border-inline-start: 3px solid var(--accent-2);
+  box-shadow: var(--shadow-card);
+  padding: 16px 18px; color: inherit; text-decoration: none;
+  transition: transform .18s, border-color .18s, box-shadow .18s;
+}
+.fb-analytics-card:hover {
+  transform: translateY(-3px); border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.fb-analytics-icon {
+  flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+  background: rgba(0,122,153,.08);
+}
+.fb-analytics-body { display: flex; flex-direction: column; min-width: 0; }
+.fb-analytics-title { font-weight: 800; font-size: 1rem; }
+.fb-analytics-desc { font-size: .82rem; color: var(--text-dim); line-height: 1.4; }
 
 /* زر «المزيد» أسفل شبكات المباريات */
-.more-wrap { text-align: center; margin-top: 18px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.fb-more { text-align: center; margin-top: 18px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 /* ============================================================
    خريطة المدن المستضيفة (map.php)
@@ -406,46 +446,46 @@ img { display: block; max-width: 100%; }
 .hm-city-stadium { font-size: .78rem; color: var(--text-dim); }
 
 /* ---------- بانر البطل ---------- */
-.champion-banner {
+.fb-winner {
   position: relative; overflow: hidden; text-align: center;
   border-radius: var(--radius); margin-bottom: 34px;
   padding: 50px 24px;
   background: linear-gradient(135deg, #2a1d04, #3d2c06);
   border: 1px solid var(--accent-2);
 }
-.champion-glow {
+.fb-winner-glow {
   position: absolute; inset: 0;
   background: radial-gradient(400px 200px at 50% 0%, rgba(255,194,51,.3), transparent);
 }
-.champion-trophy { font-size: 3.4rem; position: relative; }
-.champion-label {
+.fb-winner-trophy { font-size: 3.4rem; position: relative; }
+.fb-winner-label {
   position: relative; font-family: var(--font-display);
   letter-spacing: .3em; color: var(--accent-2); font-size: .9rem;
 }
-.champion-name {
+.fb-winner-name {
   position: relative; display: flex; align-items: center;
   justify-content: center; gap: 16px; margin-top: 8px;
 }
-.champion-name h2 { font-size: 2.2rem; }
-.champion-name .flag { width: 70px; height: auto; border-radius: 6px; }
+.fb-winner-name h2 { font-size: 2.2rem; }
+.fb-winner-name .flag { width: 70px; height: auto; border-radius: 6px; }
 
 /* ============================================================
    الأقسام
    ============================================================ */
-.section { margin-bottom: 38px; }
-.section-head {
+.fb-block { margin-bottom: 38px; }
+.fb-block-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
 }
-.section-head h2 {
+.fb-block-head h2 {
   display: flex; align-items: center; gap: 11px;
   font-size: 1.28rem; font-weight: 800;
   padding-bottom: 8px; border-bottom: 2px solid var(--accent);
   flex: 1; min-width: 0;
 }
-.section-bar { display: none; }
-.section-date { color: var(--text-dim); font-size: .85rem; }
-.section-link { color: var(--accent-readable); font-size: .88rem; font-weight: 700; }
+.fb-block-bar { display: none; }
+.fb-block-date { color: var(--text-dim); font-size: .85rem; }
+.fb-block-link { color: var(--accent-readable); font-size: .88rem; font-weight: 700; }
 
 .page-head { margin-bottom: 24px; }
 .page-head h1 { font-size: 1.7rem; font-weight: 900; }
@@ -453,13 +493,13 @@ img { display: block; max-width: 100%; }
 /* ============================================================
    شبكة وكروت المباريات
    ============================================================ */
-.match-grid {
+.fb-matches {
   display: grid; gap: 14px;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
 .final-grid { grid-template-columns: minmax(290px, 480px); justify-content: center; }
 
-.match-card {
+.fb-match {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -469,23 +509,23 @@ img { display: block; max-width: 100%; }
   transition: .2s;
   display: block;
 }
-.match-card.status-live {
+.fb-match.status-live {
   border-inline-start-color: var(--live);
   background: rgba(239,68,68,.06);
   border-color: rgba(239,68,68,.35);
 }
-.match-card.status-live:hover { border-color: var(--live); }
+.fb-match.status-live:hover { border-color: var(--live); }
 
 /* ===== ودجت التصويت السريع 1X2 أسفل بطاقة المباراة ===== */
-.mc-wrap { display: flex; flex-direction: column; }
-.mc-wrap > .match-card { flex: 1 1 auto; }
-.mc-poll {
+.fb-mc-wrap { display: flex; flex-direction: column; }
+.fb-mc-wrap > .fb-match { flex: 1 1 auto; }
+.fb-mc-poll {
   margin-top: 8px; color: inherit;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 9px 10px;
 }
 /* زر «ذكّرني» المحلي أسفل بطاقة المباراة القادمة. */
-.mc-remind {
+.fb-mc-remind {
   margin-top: 8px; width: 100%;
   display: flex; align-items: center; justify-content: center; gap: 7px;
   padding: 8px 10px; cursor: pointer;
@@ -495,16 +535,16 @@ img { display: block; max-width: 100%; }
   border-radius: var(--radius);
   transition: background .12s ease, color .12s ease, border-color .12s ease;
 }
-.mc-remind:hover { color: var(--text); border-color: var(--accent); }
-.mc-remind.is-on {
+.fb-mc-remind:hover { color: var(--text); border-color: var(--accent); }
+.fb-mc-remind.is-on {
   color: var(--accent-readable); border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
-.mc-remind .mc-remind-ico { font-size: .95rem; }
-.mc-poll-q { font-size: .78rem; color: var(--text-faint); text-align: center; margin-bottom: 7px; }
+.fb-mc-remind .fb-mc-remind-ico { font-size: .95rem; }
+.fb-mc-poll-q { font-size: .78rem; color: var(--text-faint); text-align: center; margin-bottom: 7px; }
 /* عنصر واحد لكل خيار: الاسم نفسه زر، وعند التصويت يمتلئ بشريط النسبة داخله. */
-.mc-poll-list { display: flex; flex-direction: column; gap: 5px; }
-.mc-poll-opt {
+.fb-mc-poll-list { display: flex; flex-direction: column; gap: 5px; }
+.fb-mc-poll-opt {
   position: relative; overflow: hidden;
   display: flex; align-items: center; gap: 8px;
   width: 100%; padding: 8px 10px;
@@ -513,15 +553,15 @@ img { display: block; max-width: 100%; }
   border-radius: 8px; cursor: pointer;
   transition: background .15s ease, border-color .15s ease, transform .1s ease;
 }
-.mc-poll:not(.is-voted) .mc-poll-opt:hover { background: var(--surface); border-color: var(--accent); }
-.mc-poll-opt:active { transform: scale(.985); }
-.mc-poll.is-voted .mc-poll-opt { cursor: default; }
+.fb-mc-poll:not(.is-voted) .fb-mc-poll-opt:hover { background: var(--surface); border-color: var(--accent); }
+.fb-mc-poll-opt:active { transform: scale(.985); }
+.fb-mc-poll.is-voted .fb-mc-poll-opt { cursor: default; }
 .mcp-bar {
   position: absolute; inset-block: 0; inset-inline-start: 0; width: 0;
   background: rgba(0,122,153,.12); z-index: 0; transition: width .55s ease;
 }
-.mc-poll-opt.is-mine { border-color: var(--accent); }
-.mc-poll-opt.is-mine .mcp-bar { background: rgba(124,245,255,.45); }
+.fb-mc-poll-opt.is-mine { border-color: var(--accent); }
+.fb-mc-poll-opt.is-mine .mcp-bar { background: rgba(124,245,255,.45); }
 .mcp-lbl { position: relative; z-index: 1; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mcp-pct { position: relative; z-index: 1; font-weight: 800; font-size: .8rem; }
 
@@ -531,15 +571,15 @@ img { display: block; max-width: 100%; }
   background: var(--border); border: 1px solid var(--border);
   border-radius: var(--radius); overflow: hidden; margin: 22px 0;
 }
-.sb-item {
+.fb-hero-stat {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   padding: 22px 10px; background: var(--surface); text-align: center;
 }
-.sb-num { font-family: 'Oswald', sans-serif; font-size: 2.1rem; font-weight: 700; line-height: 1; color: var(--accent-readable); }
-.sb-lbl { font-size: .82rem; color: var(--text-dim); }
+.fb-hero-stat-n { font-family: 'Oswald', sans-serif; font-size: 2.1rem; font-weight: 700; line-height: 1; color: var(--accent-readable); }
+.fb-hero-stat-l { font-size: .82rem; color: var(--text-dim); }
 @media (max-width: 560px) {
   .stats-band { grid-template-columns: repeat(2, 1fr); }
-  .sb-num { font-size: 1.8rem; }
+  .fb-hero-stat-n { font-size: 1.8rem; }
 }
 
 /* ===== شبكة الروابط الرسمية ===== */
@@ -558,53 +598,53 @@ img { display: block; max-width: 100%; }
 .official-label { flex: 1; font-weight: 600; font-size: .9rem; }
 .official-ext { color: var(--text-faint); font-size: .85rem; }
 
-.mc-top {
+.fb-mc-top {
   display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 12px;
 }
-.mc-round { font-size: .74rem; color: var(--text-faint); font-weight: 700; }
+.fb-mc-round { font-size: .74rem; color: var(--text-faint); font-weight: 700; }
 
-.mc-body {
+.fb-mc-body {
   display: grid; grid-template-columns: 1fr auto 1fr;
   align-items: center; gap: 10px;
 }
-.mc-team { display: flex; flex-direction: column; align-items: center; gap: 7px; }
-.mc-team-name {
+.fb-mc-team { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.fb-mc-team-name {
   font-size: .86rem; font-weight: 700; text-align: center;
   line-height: 1.25;
 }
-.mc-score {
+.fb-mc-score {
   display: flex; align-items: center; gap: 5px;
   font-family: var(--font-display);
   background: var(--surface-2); border-radius: 999px;
   padding: 6px 14px;
 }
-.mc-score-num {
+.fb-mc-score-n {
   font-size: 1.85rem; font-weight: 700;
   min-width: 26px; text-align: center;
 }
-.mc-score-sep { color: var(--text-faint); }
-.mc-time {
+.fb-mc-score-sep { color: var(--text-faint); }
+.fb-mc-time {
   font-size: 1.05rem; font-weight: 700; color: var(--accent-2);
   white-space: nowrap;
 }
-.mc-foot {
+.fb-mc-foot {
   margin-top: 12px; padding-top: 10px;
   border-top: 1px solid var(--border);
   font-size: .74rem; color: var(--text-faint);
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
 }
-.mc-ground { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fb-mc-ground { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* الحكم داخل بطاقة المباراة */
-.mc-ref {
+.fb-mc-ref {
   margin-top: 6px;
   font-size: .74rem; color: var(--text-faint);
   display: flex; align-items: center; gap: 6px;
   overflow: hidden; white-space: nowrap;
 }
-.mc-ref-flag { border-radius: 2px; flex: 0 0 auto; }
-.mc-ref-name { overflow: hidden; text-overflow: ellipsis; }
+.fb-mc-ref-flag { border-radius: 2px; flex: 0 0 auto; }
+.fb-mc-ref-name { overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- العلم ---------- */
 .flag {
@@ -1180,19 +1220,19 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 
 @media (prefers-reduced-motion: no-preference) {
   /* ---- دخول الواجهة (html.intro = أول زيارة فقط) ---- */
-  html.intro .hero-kicker { animation: a-fade .7s .05s both; }
-  html.intro .hero-title  { animation: a-drop 1s .15s both, a-glow 3s 1.2s ease-in-out; }
-  html.intro .hero-sub    { animation: a-up .8s .5s both; }
+  html.intro .fb-hero-eyebrow { animation: a-fade .7s .05s both; }
+  html.intro .fb-hero-heading  { animation: a-drop 1s .15s both, a-glow 3s 1.2s ease-in-out; }
+  html.intro .fb-hero-lead    { animation: a-up .8s .5s both; }
   html.intro .cd-label    { animation: a-fade .6s .6s both; }
   html.intro .cd-box      { animation: a-pop .55s both; }
   html.intro .cd-boxes .cd-box:nth-child(1) { animation-delay: .70s; }
   html.intro .cd-boxes .cd-box:nth-child(2) { animation-delay: .80s; }
   html.intro .cd-boxes .cd-box:nth-child(3) { animation-delay: .90s; }
   html.intro .cd-boxes .cd-box:nth-child(4) { animation-delay: 1.00s; }
-  html.intro .hero-stats > div { animation: a-up .6s both; }
-  html.intro .hero-stats > div:nth-child(1) { animation-delay: 1.05s; }
-  html.intro .hero-stats > div:nth-child(2) { animation-delay: 1.15s; }
-  html.intro .hero-stats > div:nth-child(3) { animation-delay: 1.25s; }
+  html.intro .fb-hero-stats > div { animation: a-up .6s both; }
+  html.intro .fb-hero-stats > div:nth-child(1) { animation-delay: 1.05s; }
+  html.intro .fb-hero-stats > div:nth-child(2) { animation-delay: 1.15s; }
+  html.intro .fb-hero-stats > div:nth-child(3) { animation-delay: 1.25s; }
 
   /* ---- كشف الأقسام عند التمرير (يفعّله JS بإضافة .reveal-on على body) ---- */
   .reveal-on .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
@@ -1209,8 +1249,8 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
   .btn-cta:hover::after { inset-inline-start: 130%; }
 
   /* ---- رفعة لطيفة لبطاقات المباريات عند المرور ---- */
-  .match-card { transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
-  .match-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--border) 50%, var(--accent)); }
+  .fb-match { transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+  .fb-match:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--border) 50%, var(--accent)); }
 }
 
 /* ============================================================
@@ -1618,7 +1658,7 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 }
 .year-tab.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .champion-sm { padding: 24px 18px; }
-.champion-sm .champion-name h2 { font-size: 1.6rem; }
+.champion-sm .fb-winner-name h2 { font-size: 1.6rem; }
 
 .arch-list { display: flex; flex-direction: column; gap: 7px; }
 .arch-row {
@@ -1818,7 +1858,7 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .scorer-team .flag { width:26px; height:19px; margin-inline-end:7px; border-radius:2px; vertical-align:middle; }
 
 /* تصنيف الفيفا */
-.mc-rank {
+.fb-mc-rank {
   display:inline-block; margin-top:4px; font-size:.7rem; font-weight:800;
   color:var(--accent-2); background:rgba(255,194,51,.12);
   border:1px solid var(--border); border-radius:10px; padding:1px 8px;
@@ -1829,7 +1869,7 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 .ref-tbd { color:var(--text-faint); letter-spacing:2px; }
 .ref-flag { width:18px; height:auto; vertical-align:-3px; border-radius:2px; margin-inline-end:3px; box-shadow:0 0 0 1px rgba(255,255,255,.15); }
 .ref-country { color:var(--text-dim); font-weight:400; font-size:.85em; margin-inline-start:2px; }
-.mc-ref { text-align:center; font-size:.74rem; color:var(--text-dim); margin-bottom:8px; }
+.fb-mc-ref { text-align:center; font-size:.74rem; color:var(--text-dim); margin-bottom:8px; }
 .md-countdown-banner {
     background: linear-gradient(135deg, rgba(54,192,143,.12), rgba(54,192,143,.04));
     border-inline-start: 3px solid var(--accent-2);
@@ -1941,16 +1981,236 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
   color: var(--text-faint); font-size: .74rem; margin-top: 6px; margin-bottom: 0;
   border-top: 1px dashed var(--border); padding-top: 10px;
 }
+.ai-content-featured {
+  border-color: rgba(38,206,168,.35);
+  background: linear-gradient(135deg, rgba(38,206,168,.10), var(--surface));
+  box-shadow: 0 4px 24px rgba(38,206,168,.08);
+  margin-top: 0;
+}
+.ai-content-head {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.ai-content-head h3 { margin-bottom: 0; }
+.ai-badge {
+  display: inline-block; font-size: .68rem; font-weight: 800;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  background: rgba(38,206,168,.15); color: var(--accent-readable);
+  border: 1px solid rgba(38,206,168,.25);
+}
+
+/* ── AI spotlight (homepage) ── */
+.fb-ai-spotlight {
+  margin: 28px 0; padding: 22px 20px;
+  background: linear-gradient(135deg, rgba(38,206,168,.06), var(--surface));
+  border: 1px solid rgba(38,206,168,.2); border-radius: var(--radius-lg);
+}
+.fb-ai-spot-head { text-align: center; margin-bottom: 16px; }
+.fb-ai-spot-head h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 6px; }
+.fb-ai-spot-card {
+  max-width: 720px; margin: 0 auto;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+}
+.fb-ai-spot-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+.fb-ai-spot-meta h3 { font-size: 1rem; font-weight: 800; margin: 0; flex: 1 1 200px; }
+.fb-ai-spot-meta h3 a { color: inherit; text-decoration: none; }
+.fb-ai-spot-meta h3 a:hover { color: var(--accent-readable); }
+.fb-ai-spot-text { color: var(--text-dim); line-height: 1.85; margin-bottom: 14px; }
+
+/* ── FAQ page ── */
+.faq-page .faq-item {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 10px; background: var(--surface-2);
+}
+.faq-page .faq-item summary {
+  cursor: pointer; font-weight: 700; padding: 14px 18px;
+  list-style: none;
+}
+.faq-page .faq-item summary::-webkit-details-marker { display: none; }
+.faq-page .faq-item summary::before {
+  content: '+'; display: inline-block; width: 1.2em;
+  color: var(--accent-readable); font-weight: 800;
+}
+.faq-page .faq-item[open] summary::before { content: '−'; }
+.faq-page .faq-item p {
+  padding: 0 18px 14px; margin: 0; color: var(--text-dim); line-height: 1.85;
+}
+
+/* ── insights / مقالات تحليلية ── */
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.insights-grid--sm { grid-template-columns: 1fr; }
+.insight-card {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.insight-card h2, .insight-card h3 { font-size: 1.05rem; font-weight: 800; margin: 0; line-height: 1.45; }
+.insight-card h2 a, .insight-card h3 a { color: inherit; text-decoration: none; }
+.insight-card h2 a:hover, .insight-card h3 a:hover { color: var(--accent-readable); }
+.insight-date { font-size: .75rem; color: var(--text-faint); }
+.insight-excerpt { color: var(--text-dim); font-size: .9rem; line-height: 1.75; margin: 0; flex: 1; }
+.insight-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.insight-tag {
+  font-size: .68rem; font-weight: 700; padding: 3px 9px;
+  border-radius: 999px; background: var(--surface);
+  border: 1px solid var(--border); color: var(--text-dim);
+}
+.insight-view .insight-header {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.insight-lead {
+  font-size: 1.05rem; color: var(--text-dim); line-height: 1.85;
+  margin: 0 0 20px; padding-bottom: 16px;
+  border-bottom: 1px dashed var(--border);
+}
+.insight-body p { line-height: 2; margin-bottom: 14px; }
+.insight-tags-foot { margin-top: 20px; }
+.insight-cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.fb-insights {
+  margin: 28px 0; padding: 22px 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.fb-insights-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.fb-insights-head h2 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+
+/* ── بطولات مميزة ── */
+.fb-featured-cups {
+  margin: 28px 0; padding: 22px 20px;
+  background: linear-gradient(135deg, rgba(255,194,51,.05), var(--surface));
+  border: 1px solid rgba(255,194,51,.18); border-radius: var(--radius-lg);
+}
+.fb-fc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 6px;
+}
+.fb-fc-head h2 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+.fb-fc-sub { margin: 0 0 16px; font-size: .88rem; }
+.fc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.fc-grid--home { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.fc-card {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.fc-card-current {
+  border-color: rgba(255,194,51,.35);
+  background: linear-gradient(135deg, rgba(255,194,51,.08), var(--surface-2));
+}
+.fc-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fc-year {
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 800;
+  color: var(--accent-readable); line-height: 1;
+}
+.fc-tag {
+  font-size: .65rem; font-weight: 800; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.fc-winner {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-weight: 700; font-size: .92rem;
+}
+.fc-winner em { font-style: normal; color: var(--text-dim); font-size: .82rem; font-weight: 600; }
+.fc-winner-text { font-weight: 700; margin: 0; }
+.fc-host { margin: 0; font-size: .8rem; }
+.fc-hook { color: var(--text-dim); font-size: .86rem; line-height: 1.7; margin: 0; flex: 1; }
+
+/* ── رأي foot-boll اليومي ── */
+.fb-opinion {
+  margin: 24px 0; padding: 20px 22px;
+  background: linear-gradient(135deg, rgba(255,194,51,.06), var(--surface));
+  border: 1px solid rgba(255,194,51,.22); border-radius: var(--radius-lg);
+}
+.fb-opinion-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.fb-opinion-head h2 { font-size: 1.1rem; font-weight: 800; margin: 0; }
+.fb-opinion-date { font-size: .78rem; color: var(--text-faint); }
+.fb-opinion-text {
+  margin: 0 0 14px; padding: 0; border: none;
+  font-size: 1rem; line-height: 1.9; color: var(--text);
+  font-style: normal;
+}
+
+/* ── compare.php ── */
+.cmp-picker {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;
+  margin-bottom: 24px; padding: 18px 20px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.cmp-picker label { display: flex; flex-direction: column; gap: 6px; flex: 1 1 180px; }
+.cmp-picker label span { font-size: .78rem; font-weight: 700; color: var(--text-dim); }
+.cmp-picker select {
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg);
+  color: var(--text); font: inherit;
+}
+.cmp-vs-pill {
+  font-weight: 800; color: var(--text-faint);
+  padding-bottom: 10px;
+}
+.cmp-hero {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px;
+  align-items: center; text-align: center; margin-bottom: 22px;
+}
+.cmp-team h2 { font-size: 1.1rem; margin: 8px 0 4px; }
+.cmp-team h2 a { color: inherit; text-decoration: none; }
+.cmp-team h2 a:hover { color: var(--accent-readable); }
+.cmp-meta { display: block; font-size: .78rem; color: var(--text-dim); }
+.cmp-mid { font-size: 1.6rem; opacity: .7; }
+.cmp-block { margin-bottom: 20px; }
+.cmp-stats { display: flex; flex-direction: column; gap: 14px; }
+.cmp-stat-vals {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px;
+  align-items: center; margin-bottom: 6px;
+}
+.cmp-val { font-size: 1.05rem; font-weight: 800; }
+.cmp-val-a { text-align: start; }
+.cmp-val-b { text-align: end; }
+.cmp-win { color: var(--accent-readable); }
+.cmp-lbl { font-size: .82rem; color: var(--text-dim); text-align: center; }
+.cmp-note { margin-top: 12px; font-size: .82rem; }
+.cmp-h2h { list-style: none; padding: 0; margin: 0; }
+.cmp-h2h li { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.cmp-h2h li:last-child { border-bottom: none; }
+.cmp-h2h a {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  color: inherit; text-decoration: none;
+}
+.cmp-h2h a:hover { color: var(--accent-readable); }
+.cmp-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+@media (max-width: 600px) {
+  .cmp-hero { grid-template-columns: 1fr; }
+  .cmp-mid { display: none; }
+}
 
 /* ============================================================
    الأخبار
    ============================================================ */
-.news-list { display: flex; flex-direction: column; gap: 10px; }
-.news-grid {
+.fb-feed { display: flex; flex-direction: column; gap: 10px; }
+.fb-feed-grid {
   display: grid; gap: 16px;
   grid-template-columns: repeat(4, 1fr);
 }
-.news-grid--sm { grid-template-columns: repeat(4, 1fr); }
+.fb-feed-grid--sm { grid-template-columns: repeat(4, 1fr); }
 .news-item {
   display: flex; align-items: center; gap: 14px;
   background: var(--surface); border: 1px solid var(--border);
@@ -2012,10 +2272,10 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
 }
 .news-card .news-teaser { display: none; }
 @media (max-width: 1100px) {
-  .news-grid, .news-grid--sm { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .fb-feed-grid, .fb-feed-grid--sm { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 @media (max-width: 520px) {
-  .news-grid, .news-grid--sm { grid-template-columns: 1fr; }
+  .fb-feed-grid, .fb-feed-grid--sm { grid-template-columns: 1fr; }
   .news-card .news-thumb,
   .news-card .news-thumb-photo,
   .news-card .news-thumb-logo,
@@ -2147,9 +2407,9 @@ a.ref-item:hover { border-color: var(--accent); transform: translateY(-2px); }
   .cd-num { font-size: 1.5rem; }
   .cd-lbl { font-size: .62rem; margin-top: 4px; }
   /* الإحصائيات (مباريات/منتخبات/مدن) على سطر واحد */
-  .hero-stats { flex-wrap: nowrap; gap: 8px; }
-  .hero-stats > div { min-width: 0; flex: 1; padding: 12px 6px; }
-  .hero-stats strong { font-size: 1.5rem; }
+  .fb-hero-stats { flex-wrap: nowrap; gap: 8px; }
+  .fb-hero-stats > div { min-width: 0; flex: 1; padding: 12px 6px; }
+  .fb-hero-stats strong { font-size: 1.5rem; }
 }
 
 /* ============================================================
@@ -2262,7 +2522,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 /* ============================================================
    الفوتر — شريط هوية + 4 أعمدة + شريط حقوق
    ============================================================ */
-.site-footer {
+.fb-foot {
   border-top: 1px solid var(--border);
   background:
     radial-gradient(80% 100% at 50% 0%, rgba(124,245,255,.12) 0%, transparent 60%),
@@ -2271,13 +2531,13 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 }
 
 /* ───── شريط الهوية العلوي ───── */
-.footer-hero {
+.fb-foot-banner {
   border-bottom: 1px solid var(--border);
   background:
     linear-gradient(135deg, rgba(124,245,255,.08) 0%, transparent 55%),
     rgba(0,0,0,.08);
 }
-.footer-hero-inner {
+.fb-foot-banner-in {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2287,7 +2547,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 }
 
 /* الشبكة الرئيسية: 4 أعمدة على الديسكتوب */
-.footer-grid {
+.fb-foot-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 28px 32px;
@@ -2652,7 +2912,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 
 /* ───── استجابة الجوال ───── */
 @media (max-width: 1024px) {
-  .footer-grid {
+  .fb-foot-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     padding: 28px 18px 24px;
@@ -2664,7 +2924,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
   }
 }
 @media (max-width: 700px) {
-  .footer-hero-inner {
+  .fb-foot-banner-in {
     flex-direction: column;
     align-items: flex-start;
     padding: 22px 16px;
@@ -2674,7 +2934,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
   .num-pill { flex: 1; min-width: 0; }
 }
 @media (max-width: 600px) {
-  .footer-grid {
+  .fb-foot-grid {
     grid-template-columns: 1fr;
     gap: 24px;
     padding: 24px 16px 20px;
@@ -2693,11 +2953,11 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
    ============================================================ */
 @media (max-width: 760px) {
   .nav-toggle { display: flex; }
-  .header-nav-row { border: 0; padding: 0; height: 0; overflow: visible; }
-  .header-utils { display: none; }
+  .fb-topbar-subrow { border: 0; padding: 0; height: 0; overflow: visible; }
+  .fb-topbar-tools { display: none; }
   .brand-text { display: none; }
   .brand-logo { height: 36px; max-width: 160px; }
-  .main-nav {
+  .fb-topnav {
     position: fixed; top: var(--header-h); inset-inline: 0;
     max-height: calc(100vh - var(--header-h));
     max-height: calc(100dvh - var(--header-h));
@@ -2709,13 +2969,13 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
     transform: translateY(-130%); transition: transform .28s;
     z-index: 99;
   }
-  .main-nav.open { transform: translateY(0); }
-  .main-nav .nav-utils-mobile {
+  .fb-topnav.open { transform: translateY(0); }
+  .fb-topnav .nav-utils-mobile {
     display: flex; flex-wrap: wrap; gap: 6px;
     margin-top: 8px; padding-top: 12px;
     border-top: 1px solid var(--border);
   }
-  .main-nav a { padding: 12px 14px; font-size: 1rem; }
+  .fb-topnav a { padding: 12px 14px; font-size: 1rem; }
   /* المجموعات تصبح أكورديون على الجوال */
   .nav-group { width: 100%; }
   .nav-group-btn { width: 100%; justify-content: space-between; padding: 12px 14px; font-size: 1rem; }
@@ -2729,17 +2989,17 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
   /* زر اللغة في أعلى القائمة على الجوال */
   .lang-switch { text-align: center; order: -1; margin-bottom: 4px; }
 
-  .hero { padding: 38px 18px; }
+  .fb-hero { padding: 38px 18px; }
   .md-scoreline { gap: 8px; }
   .md-score { font-size: 2.4rem; }
   .md-team .flag { width: 60px; }
   .md-goals-cols { grid-template-columns: 1fr; }
-  .section-head h2 { font-size: 1.1rem; }
+  .fb-block-head h2 { font-size: 1.1rem; }
 }
 
 @media (max-width: 420px) {
-  .match-grid { grid-template-columns: 1fr; }
-  .hero-stats > div { padding: 11px 18px; min-width: 84px; }
+  .fb-matches { grid-template-columns: 1fr; }
+  .fb-hero-stats > div { padding: 11px 18px; min-width: 84px; }
 }
 
 /* ============================================================
@@ -3068,7 +3328,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 
 /* --- match-detail v2: linear narrative additions --- */
 .match-detail.md2 .md-section { margin-top: 22px; }
-.match-detail.md2 .md-section .section-head { font-size: 18px; margin: 0 0 12px; color: var(--text); }
+.match-detail.md2 .md-section .fb-block-head { font-size: 18px; margin: 0 0 12px; color: var(--text); }
 
 .match-detail.md2 .md-demo-banner {
   margin: 14px 0 0; padding: 10px 14px;
@@ -3227,12 +3487,12 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
    شريط التنقّل السفلي (هاتف فقط) — تجربة شبيهة بالتطبيق.
    لا يغيّر قائمة الهامبرغر؛ يظهر فقط عند ظهورها (≤760px).
    ============================================================ */
-.bottom-nav { display: none; }
+.fb-dock { display: none; }
 @media (max-width: 760px) {
   /* مساحة أسفل المحتوى حتى لا يختبئ خلف الشريط (+ منطقة آمنة iPhone) */
   body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
 
-  .bottom-nav {
+  .fb-dock {
     display: flex;
     position: fixed; inset-inline: 0; bottom: 0; z-index: 80;
     background: var(--surface);
@@ -3241,7 +3501,7 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
     box-shadow: 0 -4px 16px rgba(0,0,51,.08);
     transition: transform .28s;
   }
-  .bottom-nav .bn-link {
+  .fb-dock .fb-dock-link {
     flex: 1 1 0; min-width: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 3px; padding: 7px 2px 6px; min-height: 56px;
@@ -3250,13 +3510,13 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
     -webkit-tap-highlight-color: transparent;
     transition: color .15s, box-shadow .15s;
   }
-  .bottom-nav .bn-ico { font-size: 1.32rem; line-height: 1; filter: grayscale(.2) opacity(.85); }
-  .bottom-nav .bn-label { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bottom-nav .bn-link.active { color: var(--accent-readable); box-shadow: inset 0 2px 0 var(--accent); }
-  .bottom-nav .bn-link.active .bn-ico { filter: none; transform: translateY(-1px); }
+  .fb-dock .fb-dock-ico { font-size: 1.32rem; line-height: 1; filter: grayscale(.2) opacity(.85); }
+  .fb-dock .fb-dock-label { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fb-dock .fb-dock-link.active { color: var(--accent-readable); box-shadow: inset 0 2px 0 var(--accent); }
+  .fb-dock .fb-dock-link.active .fb-dock-ico { filter: none; transform: translateY(-1px); }
 
   /* عند فتح قائمة الهامبرغر: أخفِ الشريط (انزلاق لأسفل) كي لا يحجب آخر عناصرها */
-  body:has(.main-nav.open) .bottom-nav { transform: translateY(110%); }
+  body:has(.fb-topnav.open) .fb-dock { transform: translateY(110%); }
 }
 
 /* ============================================================

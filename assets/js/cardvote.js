@@ -29,7 +29,7 @@
   }
 
   function fill(box, counts, choice) {
-    var els = box.querySelectorAll('.mc-poll-opt');
+    var els = box.querySelectorAll('.fb-mc-poll-opt');
     Array.prototype.forEach.call(els, function (el) {
       var i  = parseInt(el.getAttribute('data-opt'), 10);
       var p  = pct(counts, i);
@@ -45,7 +45,7 @@
   }
 
   function setDisabled(box, on) {
-    Array.prototype.forEach.call(box.querySelectorAll('.mc-poll-opt'), function (b) { b.disabled = on; });
+    Array.prototype.forEach.call(box.querySelectorAll('.fb-mc-poll-opt'), function (b) { b.disabled = on; });
   }
 
   function vote(box, option) {
@@ -68,8 +68,8 @@
   }
 
   function init() {
-    Array.prototype.forEach.call(document.querySelectorAll('.mc-poll[data-voted="0"]'), function (box) {
-      Array.prototype.forEach.call(box.querySelectorAll('.mc-poll-opt'), function (btn) {
+    Array.prototype.forEach.call(document.querySelectorAll('.fb-mc-poll[data-voted="0"]'), function (box) {
+      Array.prototype.forEach.call(box.querySelectorAll('.fb-mc-poll-opt'), function (btn) {
         btn.addEventListener('click', function (e) {
           e.preventDefault(); e.stopPropagation();
           vote(box, parseInt(btn.getAttribute('data-opt'), 10));

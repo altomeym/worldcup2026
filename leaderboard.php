@@ -8,8 +8,14 @@ $rows    = Predictions::leaderboard(100);
 $players = Predictions::playerCount();
 $me      = Predictions::user();
 
+$ar = (current_lang() === 'ar');
 $page_title = t('leaderboard');
-$page_desc  = t('comp_intro');
+$page_desc  = $ar
+    ? 'لوحة صدارة توقعات كأس العالم 2026 على foot-boll — أفضل المتنبئين عالمياً ونقاطهم المحدّثة.'
+    : 'World Cup 2026 prediction leaderboard on foot-boll — top predictors worldwide and their live points.';
+$page_keywords = $ar
+    ? 'صدارة التوقعات, foot-boll, كأس العالم 2026, نقاط'
+    : 'prediction leaderboard, foot-boll, World Cup 2026, points';
 // بطاقة مشاركة بأسماء المتصدّرين ونقاطهم (بدل البطاقة الافتراضيّة)
 $page_image = url('card_img.php', ['mode' => 'leaderboard', 'd' => card_rev()]);
 tpl('header');
@@ -19,7 +25,7 @@ tpl('header');
   <h1>🏆 <?= e(t('top_players')) ?></h1>
   <p class="muted">
     <?= (int)$players ?> <?= e(t('players_count')) ?> ·
-    <a class="section-link" href="<?= e(url('predict.php')) ?>"><?= e(t('competition')) ?> ›</a>
+    <a class="fb-block-link" href="<?= e(url('predict.php')) ?>"><?= e(t('competition')) ?> ›</a>
   </p>
 </div>
 

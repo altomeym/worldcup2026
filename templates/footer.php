@@ -9,7 +9,7 @@ $sponsors   = SponsorStore::all();
 $lang       = current_lang();
 $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 ?>
-</main><!-- /.site-main -->
+</main><!-- /.fb-page -->
 
 <!-- ============ الرعاة (يظهر فقط عند وجود رعاة فعليين — لا خانات «شعارك هنا») ============ -->
 <?php if (!empty($sponsors)): ?>
@@ -35,11 +35,11 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 </section>
 <?php endif; ?>
 
-<footer class="site-footer">
+<footer class="fb-foot">
 
   <!-- ──────── شريط الهوية + أرقام البطولة ──────── -->
-  <div class="footer-hero">
-    <div class="wrap footer-hero-inner">
+  <div class="fb-foot-banner">
+    <div class="wrap fb-foot-banner-in">
       <div class="footer-brand">
         <span class="footer-mark" aria-hidden="true">
           <img class="footer-logo" src="<?= e(rtrim(SITE_URL, '/') . '/assets/img/logo.png') ?>" alt="foot-boll.com" width="140" height="36" loading="lazy">
@@ -68,7 +68,7 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
   </div>
 
   <!-- ──────── شبكة المحتوى: 4 أعمدة ──────── -->
-  <div class="wrap footer-grid">
+  <div class="wrap fb-foot-grid">
 
     <div class="footer-col">
       <h4 class="footer-h"><?= e($lang === 'ar' ? 'استكشف' : 'Explore') ?></h4>
@@ -175,10 +175,12 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
       <p class="copyright">
         © <?= date('Y') ?> <?= e($siteHost) ?>
         <span class="dot">·</span>
-        <?= e($lang === 'ar' ? 'صُنع بشغف لكرة القدم' : 'Built with love for football') ?>
+        <?= e($lang === 'ar' ? 'أُعدّ بعناية لعشّاق كرة القدم العرب' : 'Crafted for Arabic football fans') ?>
       </p>
       <nav class="footer-bottom-links" aria-label="<?= e($lang === 'ar' ? 'روابط قانونية' : 'Legal links') ?>">
         <a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a>
+        <a href="<?= e(url('faq.php')) ?>"><?= e($lang === 'ar' ? 'الأسئلة الشائعة' : 'FAQ') ?></a>
+        <a href="<?= e(url('insights.php')) ?>"><?= e($lang === 'ar' ? 'تحليلات' : 'Insights') ?></a>
         <a href="<?= e(url('terms.php')) ?>"><?= e(t('terms_title')) ?></a>
         <a href="<?= e(url('privacy.php')) ?>"><?= e($lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy') ?></a>
       </nav>
@@ -348,11 +350,11 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
     ['stats.php',   ['stats.php','topscorers.php','bookings.php','referees.php','physical.php'], '📊', ($bnL==='ar'?'الإحصائيات':($bnL==='fr'?'Stats':'Stats'))],
   ];
 ?>
-<nav class="bottom-nav" aria-label="<?= e($bnL==='ar'?'تنقّل سريع':'Quick navigation') ?>">
+<nav class="fb-dock" aria-label="<?= e($bnL==='ar'?'تنقّل سريع':'Quick navigation') ?>">
   <?php foreach ($bnItems as [$bnPage, $bnSet, $bnIco, $bnLabel]): ?>
-    <a class="bn-link<?= $bnOn($bnSet) ?>" href="<?= e(url($bnPage)) ?>">
-      <span class="bn-ico" aria-hidden="true"><?= $bnIco ?></span>
-      <span class="bn-label"><?= e($bnLabel) ?></span>
+    <a class="fb-dock-link<?= $bnOn($bnSet) ?>" href="<?= e(url($bnPage)) ?>">
+      <span class="fb-dock-ico" aria-hidden="true"><?= $bnIco ?></span>
+      <span class="fb-dock-label"><?= e($bnLabel) ?></span>
     </a>
   <?php endforeach; ?>
 </nav>

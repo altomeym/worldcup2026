@@ -10,8 +10,12 @@ $host = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
 
 $page_title = t('terms_title');
 $page_desc  = $L(
-    'شروط استخدام foot-boll.com — نتائج، بث مباشر، إحصائيات، وتوقعات.',
-    'Terms of use for foot-boll.com — scores, live streaming, stats, and predictions.'
+    'شروط استخدام foot-boll — نتائج، بث مباشر، إحصائيات، وتوقعات تفاعلية مجانية.',
+    'Terms of use for foot-boll — scores, live streaming, stats, and free interactive predictions.'
+);
+$page_keywords = $L(
+    'شروط الاستخدام, foot-boll, كأس العالم 2026',
+    'terms of use, foot-boll, World Cup 2026'
 );
 
 tpl('header');

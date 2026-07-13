@@ -34,7 +34,12 @@ foreach ($referees as $idx => $r) {
 }
 
 $page_title = $L['title'];
-$page_desc  = $L['intro'];
+$page_desc  = $lang === 'ar'
+    ? 'قائمة حكّام كأس العالم 2026 الرسمية على foot-boll — حكّام، مساعدون، VAR، وعدد المباريات لكل حكم.'
+    : 'Official World Cup 2026 referees on foot-boll — referees, assistants, VAR officials, and matches per official.';
+$page_keywords = $lang === 'ar'
+    ? 'حكّام 2026, VAR, foot-boll, كأس العالم'
+    : 'World Cup 2026 referees, VAR, foot-boll, match officials';
 tpl('header');
 ?>
 
@@ -531,8 +536,8 @@ if ($dTotal > 0):
 <?php endif; ?>
 
 <?php $isAr = (current_lang() === 'ar'); ?>
-<section class="section">
-  <h2 class="section-title">🔭 <?= e($isAr ? 'مصادر تحكيميّة موثوقة' : 'Trusted refereeing sources') ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title">🔭 <?= e($isAr ? 'مصادر تحكيميّة موثوقة' : 'Trusted refereeing sources') ?></h2>
   <div class="ref-sources">
     <a class="ref-item" href="https://x.com/ArbitroInteBlog" target="_blank" rel="noopener">
       <span class="ref-src-ico">𝕏</span>

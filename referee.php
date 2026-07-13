@@ -99,8 +99,8 @@ if ($rs && $rs['matches'] > 0):
     elseif ($avg < 6)  { $sLabel = $lang === 'ar' ? 'صارم'       : 'Strict';      $sColor = '#f59e0b'; }
     else               { $sLabel = $lang === 'ar' ? 'صارم جداً'  : 'Very strict'; $sColor = '#ef4444'; }
 ?>
-<section class="section">
-  <h2 class="section-title">📊 <?= e($lang === 'ar' ? 'إحصائياته في البطولة' : 'Tournament record') ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title">📊 <?= e($lang === 'ar' ? 'إحصائياته في البطولة' : 'Tournament record') ?></h2>
   <div class="ref-stats-grid">
     <div class="ref-stat"><div class="ref-stat-v"><?= (int)$rs['matches'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'مباريات أدارها' : 'Matches') ?></div></div>
     <div class="ref-stat"><div class="ref-stat-v" style="color:#f7e09a">🟨 <?= (int)$rs['yellow'] ?></div><div class="ref-stat-k"><?= e($lang === 'ar' ? 'بطاقات صفراء' : 'Yellow cards') ?></div></div>
@@ -172,8 +172,8 @@ foreach ($matches as $mm) {
 usort($cardLog, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (int)$b['minute']]);
 ?>
 <?php if ($cardLog): ?>
-<section class="section">
-  <h2 class="section-title">🗂️ <?= e($lang === 'ar' ? 'سجلّ البطاقات' : 'Cards log') ?>
+<section class="fb-block">
+  <h2 class="fb-block-title">🗂️ <?= e($lang === 'ar' ? 'سجلّ البطاقات' : 'Cards log') ?>
     <span class="set-count">(<?= count($cardLog) ?>)</span>
   </h2>
   <div class="ref-stats-scroll">
@@ -213,8 +213,8 @@ usort($cardLog, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (in
 </section>
 <?php endif; ?>
 
-<section class="section">
-  <h2 class="section-title"><?= e($L['about']) ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title"><?= e($L['about']) ?></h2>
   <?php if (!empty($profile['bio'])): ?>
     <p class="ref-bio"><?= e($profile['bio']) ?></p>
     <?php if (!empty($profile['url'])): ?>
@@ -230,10 +230,10 @@ usort($cardLog, fn($a, $b) => [$a['idx'], (int)$a['minute']] <=> [$b['idx'], (in
   <?php endif; ?>
 </section>
 
-<section class="section">
-  <h2 class="section-title"><?= e($L['his_matches']) ?></h2>
+<section class="fb-block">
+  <h2 class="fb-block-title"><?= e($L['his_matches']) ?></h2>
   <?php if ($matches): ?>
-    <div class="match-grid">
+    <div class="fb-matches">
       <?php foreach ($matches as $m) render_match_card($m); ?>
     </div>
   <?php else: ?>

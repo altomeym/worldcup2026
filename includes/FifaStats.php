@@ -188,7 +188,7 @@ class FifaStats
         $sub = fn(string $h): string => '<h4 class="fstat-sub">' . e($h) . '</h4>';
 
         $out = '<section class="md-section fifa-stats">'
-            . '<h3 class="section-head">' . e($title) . '</h3>'
+            . '<h3 class="fb-block-head">' . e($title) . '</h3>'
             . '<div class="fstat-head"><span>' . e($t1) . '</span><span class="fstat-form">' . $form . '</span><span>' . e($t2) . '</span></div>';
         if ($statsHtml !== '') $out .= $sub($ar ? 'الإحصائيات' : 'Statistics') . $statsHtml;
         if ($inHtml !== '')    $out .= $sub($ar ? '🎯 مراحل اللعب — بالاستحواذ' : '🎯 Phases of play — in possession') . $inHtml;

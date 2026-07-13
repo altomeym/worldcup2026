@@ -12,8 +12,14 @@ $q    = AiContent::dailyTrivia(current_lang());
 $day  = date('Y-m-d');
 $pointsLive = Predictions::pointsActive();   // النقاط تُحتسب فقط بعد انطلاق البطولة
 
+$ar = (current_lang() === 'ar');
 $page_title = t('daily_trivia');
-$page_desc  = t('trivia_intro');
+$page_desc  = $ar
+    ? 'سؤال معرفة يومي عن كأس العالم على foot-boll — أجب صحيحاً واجمع نقاطاً في مسابقة التوقعات. سؤال جديد كل يوم.'
+    : 'Daily World Cup trivia on foot-boll — answer correctly to earn prediction points. A new question every day.';
+$page_keywords = $ar
+    ? 'أسئلة كرة القدم, trivia, foot-boll, مونديال 2026'
+    : 'football trivia, foot-boll, World Cup 2026, daily quiz';
 tpl('header');
 ?>
 
@@ -30,7 +36,7 @@ tpl('header');
 <?php if (!$info['registered']): ?>
   <p class="muted" style="margin-bottom:14px">
     <?= e(t('trivia_login_hint')) ?> ·
-    <a class="section-link" href="<?= e(url('predict.php')) ?>"><?= e(t('join')) ?> ›</a>
+    <a class="fb-block-link" href="<?= e(url('predict.php')) ?>"><?= e(t('join')) ?> ›</a>
   </p>
 <?php endif; ?>
 

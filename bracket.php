@@ -12,8 +12,11 @@ $lang   = current_lang();
 
 $page_title = $lang === 'ar' ? 'توقّع المشوار' : 'Predict the Bracket';
 $page_desc  = $lang === 'ar'
-    ? 'املأ شجرة الأدوار الإقصائية كاملة من دور الـ32 حتى النهائي، وتوّج بطلك وشاركه.'
-    : 'Fill the entire knockout bracket from the Round of 32 to the final, crown your champion and share it.';
+    ? 'املأ شجرة الأدوار الإقصائية كاملة على foot-boll — من دور الـ32 حتى النهائي، توّج بطلك وشارك توقعك.'
+    : 'Fill the full knockout bracket on foot-boll — from the Round of 32 to the final, crown your champion and share.';
+$page_keywords = $lang === 'ar'
+    ? 'توقّع المشوار, شجرة إقصائية, foot-boll, كأس العالم 2026'
+    : 'bracket predictor, knockout prediction, foot-boll, World Cup 2026';
 
 $roundTitles = [
     'round_of_32'    => t('round_of_32'),

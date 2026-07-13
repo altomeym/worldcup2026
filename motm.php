@@ -29,8 +29,10 @@ if (class_exists('FifaMetrics') && class_exists('DataService')) {
 }
 
 $page_title = $L('رجل المباراة', 'Player of the Match');
-$page_desc  = $L('كل من نالوا لقب رجل المباراة في كأس العالم 2026 — حسب أعلى تقييم في كل مباراة من بيانات FIFA.',
-                 'Every Player of the Match at the FIFA World Cup 2026 — the top-rated player in each match from FIFA data.');
+$page_desc  = $L('كل من نالوا لقب رجل المباراة في كأس العالم 2026 على foot-boll — أعلى تقييم في كل مباراة من بيانات FIFA الرسمية.',
+                 'Every Player of the Match at World Cup 2026 on foot-boll — top FIFA rating in each finished match.');
+$page_keywords = $L('رجل المباراة, MOTM, foot-boll, كأس العالم 2026',
+                    'player of the match, MOTM, foot-boll, World Cup 2026');
 $page_image = url('card_img.php', ['mode' => 'dashboard', 'd' => card_rev()]);
 tpl('header');
 ?>

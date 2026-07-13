@@ -70,7 +70,7 @@
         WCAnalytics.langSwitch(langA.getAttribute('hreflang') || langA.getAttribute('lang') || '');
         return;
       }
-      var bn = ev.target.closest && ev.target.closest('.bottom-nav .bn-link');
+      var bn = ev.target.closest && ev.target.closest('.fb-dock .fb-dock-link');
       if (bn && !bn.classList.contains('active')) {
         WCAnalytics.navBottom(bn.getAttribute('href') || '');
       }

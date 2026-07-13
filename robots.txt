@@ -16,6 +16,8 @@ Disallow: /data/
 Disallow: /admin/
 Disallow: /admin.php
 Disallow: /cron/
+Disallow: /widget.php
+Disallow: /embed.php
 Disallow: /health.php
 
 Sitemap: https://foot-boll.com/sitemap.xml

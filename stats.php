@@ -5,10 +5,16 @@
  */
 require __DIR__ . '/includes/bootstrap.php';
 
+$ar = (current_lang() === 'ar');
 $s = Stats::compute();
 
 $page_title = t('stats');
-$page_desc  = t('stats_intro');
+$page_desc  = $ar
+    ? 'إحصائيات كأس العالم 2026 على foot-boll — أكثر المنتخبات تسجيلاً، أفضل الدفاعات، وأكثر المباريات أهدافاً. أرقام محسوبة لحظياً من النتائج الفعلية.'
+    : 'World Cup 2026 stats on foot-boll — top scorers by team, best defenses, and highest-scoring matches. Numbers computed live from real results.';
+$page_keywords = $ar
+    ? 'إحصائيات مونديال 2026, foot-boll, أهداف, بطاقات, أكثر تسجيلاً'
+    : 'World Cup 2026 stats, foot-boll, goals, cards, top scorers';
 tpl('header');
 
 /** صفّ منتخب داخل جدول (مركز + علم + اسم + قيمة) */
@@ -29,7 +35,7 @@ function stat_match_row(array $m, int $metric): void {
   <tr>
     <td class="lb-rank"><?= (int)$metric ?></td>
     <td class="lb-name">
-      <a class="section-link" href="<?= e($matchUrl) ?>">
+      <a class="fb-block-link" href="<?= e($matchUrl) ?>">
         <?= flag_img($m['t1'], 'w40') ?> <?= e(team_name($m['t1'])) ?>
         <strong><?= (int)$m['g1'] ?> - <?= (int)$m['g2'] ?></strong>
         <?= e(team_name($m['t2'])) ?> <?= flag_img($m['t2'], 'w40') ?>
@@ -64,8 +70,8 @@ function stat_match_row(array $m, int $metric): void {
   <div class="groups-grid">
 
     <?php if ($s['attack']): ?>
-    <section class="section">
-      <h2 class="section-title">⚽ <?= e(t('most_goals_for')) ?></h2>
+    <section class="fb-block">
+      <h2 class="fb-block-title">⚽ <?= e(t('most_goals_for')) ?></h2>
       <div class="lb-wrap">
         <table class="leaderboard">
           <thead><tr><th><?= e(t('pos')) ?></th><th class="lb-name"><?= e(t('team')) ?></th><th><?= e(t('gf')) ?></th></tr></thead>
@@ -78,8 +84,8 @@ function stat_match_row(array $m, int $metric): void {
     <?php endif; ?>
 
     <?php if ($s['defense']): ?>
-    <section class="section">
-      <h2 class="section-title">🛡️ <?= e(t('best_defense')) ?></h2>
+    <section class="fb-block">
+      <h2 class="fb-block-title">🛡️ <?= e(t('best_defense')) ?></h2>
       <div class="lb-wrap">
         <table class="leaderboard">
           <thead><tr><th><?= e(t('pos')) ?></th><th class="lb-name"><?= e(t('team')) ?></th><th><?= e(t('ga')) ?></th></tr></thead>
@@ -92,8 +98,8 @@ function stat_match_row(array $m, int $metric): void {
     <?php endif; ?>
 
     <?php if ($s['high_scoring']): ?>
-    <section class="section">
-      <h2 class="section-title">🔥 <?= e(t('highest_scoring')) ?></h2>
+    <section class="fb-block">
+      <h2 class="fb-block-title">🔥 <?= e(t('highest_scoring')) ?></h2>
       <div class="lb-wrap">
         <table class="leaderboard">
           <thead><tr><th><?= e(t('goals')) ?></th><th class="lb-name"><?= e(t('match')) ?></th></tr></thead>
@@ -106,8 +112,8 @@ function stat_match_row(array $m, int $metric): void {
     <?php endif; ?>
 
     <?php if ($s['big_wins']): ?>
-    <section class="section">
-      <h2 class="section-title">💥 <?= e(t('biggest_wins')) ?></h2>
+    <section class="fb-block">
+      <h2 class="fb-block-title">💥 <?= e(t('biggest_wins')) ?></h2>
       <div class="lb-wrap">
         <table class="leaderboard">
           <thead><tr><th><?= e(t('gd')) ?></th><th class="lb-name"><?= e(t('match')) ?></th></tr></thead>
@@ -122,8 +128,8 @@ function stat_match_row(array $m, int $metric): void {
   </div>
 
   <?php if ($s['by_city']): $maxCity = max($s['by_city']); ?>
-  <section class="section">
-    <h2 class="section-title">🏟️ <?= e(t('goals_by_city')) ?></h2>
+  <section class="fb-block">
+    <h2 class="fb-block-title">🏟️ <?= e(t('goals_by_city')) ?></h2>
     <div class="stat-bars">
       <?php foreach ($s['by_city'] as $ground => $goals):
         $pct = $maxCity > 0 ? round($goals / $maxCity * 100) : 0; ?>

@@ -11,8 +11,12 @@ $ar   = ($lang === 'ar');
 $st   = Stadiums::all();
 
 $page_title = $ar ? 'خريطة المدن المستضيفة' : 'Host Cities Map';
-$page_desc  = $ar ? 'المدن الـ16 المستضيفة لكأس العالم 2026 عبر كندا والمكسيك والولايات المتحدة على خريطة تفاعلية — اضغط مدينة لتفتح ملعبها.'
-                  : 'The 16 host cities of the 2026 World Cup across Canada, Mexico and the USA on an interactive map — tap a city for its stadium.';
+$page_desc  = $ar
+    ? 'خريطة تفاعلية للمدن الـ16 المستضيفة لكأس العالم 2026 على foot-boll — كندا، المكسيك، والولايات المتحدة. اضغط أي مدينة لملعبها.'
+    : 'Interactive map of all 16 World Cup 2026 host cities on foot-boll — Canada, Mexico, and the USA. Tap any city for its stadium.';
+$page_keywords = $ar
+    ? 'خريطة المونديال, مدن مستضيفة, foot-boll, 2026'
+    : 'World Cup map, host cities, foot-boll, 2026';
 
 $countries = [
     'ca' => $ar ? 'كندا' : 'Canada',
@@ -75,7 +79,7 @@ tpl('header');
   <?php endforeach; ?>
 </div>
 
-<div class="more-wrap">
+<div class="fb-more">
   <a class="btn-ghost" href="<?= e(url('fanguide.php')) ?>"><?= e(t('fan_guide')) ?> ›</a>
   <a class="btn-cta" href="<?= e(url('stadiums.php')) ?>"><?= e(t('stadiums')) ?> ›</a>
 </div>

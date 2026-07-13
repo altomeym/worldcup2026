@@ -128,9 +128,9 @@ tpl('header');
     </div>
 
     <p style="text-align:center;margin-top:16px">
-      <a class="section-link" href="<?= e(url('leagues.php')) ?>"><?= e($L('كل دورياتي', 'All my leagues')) ?> ›</a>
+      <a class="fb-block-link" href="<?= e(url('leagues.php')) ?>"><?= e($L('كل دورياتي', 'All my leagues')) ?> ›</a>
       ·
-      <a class="section-link" href="<?= e(url('predict.php')) ?>"><?= e(t('competition')) ?> ›</a>
+      <a class="fb-block-link" href="<?= e(url('predict.php')) ?>"><?= e(t('competition')) ?> ›</a>
     </p>
 
   </div>

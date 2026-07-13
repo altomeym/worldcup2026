@@ -9,8 +9,14 @@ require __DIR__ . '/includes/bootstrap.php';
 $current = Scorers::current();
 $history = Scorers::goldenBootHistory();
 
+$ar = (current_lang() === 'ar');
 $page_title = t('top_scorers');
-$page_desc  = t('top_scorers_intro');
+$page_desc  = $ar
+    ? 'قائمة هدّافي كأس العالم 2026 والحذاء الذهبي التاريخي على foot-boll — بطاقات لاعبين وإحصائيات محدّثة من النتائج الفعلية.'
+    : 'World Cup 2026 top scorers and all-time Golden Boot history on foot-boll — player cards and stats from real match data.';
+$page_keywords = $ar
+    ? 'هدّافو 2026, الحذاء الذهبي, foot-boll, كأس العالم'
+    : 'World Cup 2026 scorers, Golden Boot, foot-boll, top goals';
 tpl('header');
 
 /**

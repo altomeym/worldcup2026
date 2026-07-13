@@ -77,7 +77,7 @@ $renderCardTable = function (array $list): void {
                 <?= e(team_name($c['team_en'])) ?>
               </td>
               <td class="lb-name">
-                <a class="section-link" href="<?= e($matchUrl) ?>">
+                <a class="fb-block-link" href="<?= e($matchUrl) ?>">
                   <?= e(team_name($c['team1'])) ?> <?= e(t('vs')) ?> <?= e(team_name($c['team2'])) ?>
                 </a>
               </td>
@@ -94,7 +94,13 @@ if (!empty($cards)) {
     $page_image = url('card_img.php', ['mode' => 'cards', 'd' => card_rev()]);
 }
 $page_title = t('bookings');
-$page_desc  = t('bookings_intro');
+$ar = (current_lang() === 'ar');
+$page_desc  = $ar
+    ? 'سجل البطاقات الصفراء والحمراء في كأس العالم 2026 على foot-boll — كل إنذار وطرد مع المباراة واللاعب والدقيقة.'
+    : 'Yellow and red card log for World Cup 2026 on foot-boll — every booking with match, player, and minute.';
+$page_keywords = $ar
+    ? 'بطاقات صفراء, طرد, foot-boll, كأس العالم 2026'
+    : 'yellow cards, red cards, foot-boll, World Cup 2026 bookings';
 tpl('header');
 ?>
 
@@ -112,12 +118,12 @@ tpl('header');
   <p class="empty-note"><?= e(t('no_cards')) ?></p>
 <?php else: ?>
   <section class="md-section">
-    <h2 class="section-head">🟥 <?= e(t('red_cards')) ?> (<?= (int)$reds ?>)</h2>
+    <h2 class="fb-block-head">🟥 <?= e(t('red_cards')) ?> (<?= (int)$reds ?>)</h2>
     <?php $renderCardTable($redCards); ?>
   </section>
 
   <section class="md-section">
-    <h2 class="section-head">🟨 <?= e(t('yellow_cards')) ?> (<?= (int)$yellows ?>)</h2>
+    <h2 class="fb-block-head">🟨 <?= e(t('yellow_cards')) ?> (<?= (int)$yellows ?>)</h2>
     <?php $renderCardTable($yellowCards); ?>
   </section>
 

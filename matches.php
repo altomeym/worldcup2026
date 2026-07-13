@@ -8,9 +8,13 @@ require __DIR__ . '/templates/match_card.php';
 $page_title = t('matches');
 // معاينة المشاركة: بطاقة «المباريات القادمة خلال 24 ساعة» (أفقيّة 1200×630 — لا تُقصّ على X)
 $page_image = url('card_img.php', ['mode' => 'upcoming', 'd' => card_rev()]);
-$page_desc  = current_lang() === 'ar'
-    ? 'كل مباريات كأس العالم 2026 ومواعيدها بتوقيتك — والمباريات القادمة خلال 24 ساعة.'
-    : 'All FIFA World Cup 2026 matches and kickoff times in your timezone — plus what is coming in the next 24 hours.';
+$ar = (current_lang() === 'ar');
+$page_desc  = $ar
+    ? 'جدول مباريات كأس العالم 2026 الكامل على foot-boll — مواعيد بتوقيتك، فلترة حسب الجولة والمجموعة والحالة (قادمة/مباشر/منتهية).'
+    : 'Full World Cup 2026 fixture list on foot-boll — kickoffs in your timezone, filter by round, group, and status (upcoming/live/finished).';
+$page_keywords = $ar
+    ? 'جدول مباريات 2026, foot-boll, مواعيد المونديال, نتائج مباشرة'
+    : 'World Cup 2026 fixtures, foot-boll, schedule, live scores';
 
 // قراءة الفلاتر من الرابط
 $fRound  = isset($_GET['round'])  ? trim($_GET['round'])  : '';
@@ -105,7 +109,7 @@ tpl('header');
     $ts = ($day !== '0000') ? strtotime($day) : null; ?>
     <section class="day-block" data-autorefresh="1">
       <h2 class="day-title"><?= local_dt($ts, 'date') ?></h2>
-      <div class="match-grid">
+      <div class="fb-matches">
         <?php foreach ($dayMatches as $m) render_match_card($m); ?>
       </div>
     </section>

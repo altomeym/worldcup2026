@@ -31,13 +31,13 @@
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-6px); }
 }
-.ia-hero-title {
+.ia-fb-hero-heading {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4.5vw, 2.6rem);
   font-weight: 900; margin: 0 0 12px;
   letter-spacing: -.02em;
 }
-.ia-hero-sub {
+.ia-fb-hero-lead {
   font-size: clamp(.95rem, 2.2vw, 1.1rem);
   color: var(--text-dim); margin: 0 0 22px;
 }

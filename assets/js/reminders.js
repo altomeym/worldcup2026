@@ -116,7 +116,7 @@
       var on = !!map[id];
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       btn.classList.toggle('is-on', on);
-      var txt = btn.querySelector('.mc-remind-txt');
+      var txt = btn.querySelector('.fb-mc-remind-txt');
       if (txt) txt.textContent = on ? TXT.on : (btn.getAttribute('data-label') || txt.textContent);
     });
   }
@@ -160,7 +160,7 @@
 
   function init() {
     document.querySelectorAll('[data-remind]').forEach(function (btn) {
-      var txt = btn.querySelector('.mc-remind-txt');
+      var txt = btn.querySelector('.fb-mc-remind-txt');
       if (txt && !btn.getAttribute('data-label')) btn.setAttribute('data-label', txt.textContent);
       btn.addEventListener('click', function (e) {
         e.preventDefault();

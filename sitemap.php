@@ -17,6 +17,8 @@ $pages = [
     ['index.php',     '1.0', 'hourly'],
     ['matches.php',   '0.9', 'hourly'],
     ['news.php',      '0.8', 'hourly'],
+    ['insights.php',  '0.7', 'weekly'],
+    ['featured.php',  '0.6', 'monthly'],
     ['groups.php',    '0.8', 'daily'],
     ['knockout.php',  '0.8', 'daily'],
     ['topscorers.php','0.7', 'daily'],
@@ -35,9 +37,22 @@ $pages = [
     ['archive.php',   '0.6', 'monthly'],
     ['api.php',       '0.5', 'monthly'],
     ['about.php',     '0.4', 'monthly'],
+    ['faq.php',       '0.4', 'monthly'],
+    ['compare.php',   '0.5', 'weekly'],
     ['terms.php',     '0.3', 'yearly'],
     ['privacy.php',   '0.3', 'yearly'],
 ];
+
+// صفحات المقالات التحليلية
+$insightUrls = [];
+if (class_exists('Insights')) {
+    foreach (Insights::all() as $it) {
+        $slug = (string)($it['slug'] ?? '');
+        if ($slug !== '') {
+            $insightUrls[] = ['insight.php?slug=' . rawurlencode($slug), '0.6', 'monthly'];
+        }
+    }
+}
 
 // صفحات المباريات
 $matchUrls = [];
@@ -66,7 +81,7 @@ foreach (array_keys(DataService::allTeams()) as $teamEn) {
     $teamUrls[] = ['team.php?team=' . rawurlencode($teamEn), '0.6', 'weekly'];
 }
 
-$all = array_merge($pages, $archiveUrls, $matchUrls, $refUrls, $teamUrls);
+$all = array_merge($pages, $archiveUrls, $insightUrls, $matchUrls, $refUrls, $teamUrls);
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '

@@ -353,7 +353,13 @@ if ($finalM && isset($finalM['score']['ft'])) {
     <h2><?= e(t('opinion_title')) ?></h2>
     <span class="fb-opinion-date"><?= local_dt(time(), 'date') ?></span>
   </div>
-  <blockquote class="fb-opinion-text"><?= e($opinion['text']) ?></blockquote>
+  <blockquote class="fb-opinion-text"><?php
+    $opinionHtml = e($opinion['text']);
+    if (!empty($opinion['kickoff_ts']) && str_contains($opinionHtml, '{{KICKOFF}}')) {
+        $opinionHtml = str_replace('{{KICKOFF}}', local_dt((int)$opinion['kickoff_ts'], 'time'), $opinionHtml);
+    }
+    echo $opinionHtml;
+  ?></blockquote>
   <a class="btn btn-sm" href="<?= e($opinion['url']) ?>"><?= e($ar ? 'صفحة المباراة ←' : 'Match page →') ?></a>
 </section>
 <?php endif; ?>

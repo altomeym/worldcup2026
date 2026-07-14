@@ -47,7 +47,8 @@ class DailyOpinion
         $r2 = Rankings::of($t2);
         $id = (int)($m['_index'] ?? 0);
         $ts = DataService::matchTimestamp($m);
-        $timeStr = $ts ? local_dt($ts, 'time') : '';
+        // نص عادي + علامة — لا نُدخل HTML هنا لأن العرض يمرّ عبر e().
+        $timeMark = $ts ? '{{KICKOFF}}' : '';
 
         $rankPhrase = '';
         if ($r1 && $r2) {
@@ -84,15 +85,15 @@ class DailyOpinion
         }
 
         $templatesAr = [
-            "رأي foot-boll: مباراة اليوم الأهم هي {$tn1} و{$tn2} في {$round}" . ($timeStr ? " الساعة {$timeStr}" : '') . ". {$rankPhrase} جرّب التوقعات واقرأ معاينة الذكاء الاصطناعي قبل الصافرة.",
+            "رأي foot-boll: مباراة اليوم الأهم هي {$tn1} و{$tn2} في {$round}" . ($timeMark ? " الساعة {$timeMark}" : '') . ". {$rankPhrase} جرّب التوقعات واقرأ معاينة الذكاء الاصطناعي قبل الصافرة.",
             "رأي foot-boll: نرصد اليوم لقاء {$tn1} × {$tn2} — {$round}. {$rankPhrase} قارن المنتخبين على صفحة المقارنة ثم شارك توقعك.",
-            "رأي foot-boll: {$tn1} يواجه {$tn2} في {$round}" . ($timeStr ? " · {$timeStr}" : '') . ". {$rankPhrase} هذا اللقاء يستحق متابعة التحليل والإحصائيات على foot-boll.",
+            "رأي foot-boll: {$tn1} يواجه {$tn2} في {$round}" . ($timeMark ? " · {$timeMark}" : '') . ". {$rankPhrase} هذا اللقاء يستحق متابعة التحليل والإحصائيات على foot-boll.",
             "رأي foot-boll: تركيزنا اليوم على {$tn1} ضد {$tn2} ({$round}). {$rankPhrase} لا تفوّت التوقعات التفاعلية وتحليل ما قبل المباراة.",
         ];
         $templatesEn = [
-            "foot-boll pick: today's headline fixture is {$tn1} vs {$tn2} in {$round}" . ($timeStr ? " at {$timeStr}" : '') . ". {$rankPhrase} Try predictions and read the AI preview before kickoff.",
+            "foot-boll pick: today's headline fixture is {$tn1} vs {$tn2} in {$round}" . ($timeMark ? " at {$timeMark}" : '') . ". {$rankPhrase} Try predictions and read the AI preview before kickoff.",
             "foot-boll pick: we're watching {$tn1} × {$tn2} — {$round}. {$rankPhrase} Compare the teams on our compare page, then share your prediction.",
-            "foot-boll pick: {$tn1} meet {$tn2} in {$round}" . ($timeStr ? " · {$timeStr}" : '') . ". {$rankPhrase} Worth following the analysis and stats on foot-boll.",
+            "foot-boll pick: {$tn1} meet {$tn2} in {$round}" . ($timeMark ? " · {$timeMark}" : '') . ". {$rankPhrase} Worth following the analysis and stats on foot-boll.",
             "foot-boll pick: focus today on {$tn1} vs {$tn2} ({$round}). {$rankPhrase} Don't miss interactive predictions and the pre-match analysis.",
         ];
 
@@ -100,16 +101,17 @@ class DailyOpinion
         return trim(preg_replace('/\s{2,}/', ' ', str_replace('  ', ' ', $tpl)));
     }
 
-    /** بيانات العرض: نص + مباراة + رابط. */
+    /** بيانات العرض: نص + مباراة + رابط + وقت الصافرة (HTML عبر local_dt بعد e). */
     public static function block(bool $ar): ?array
     {
         $m = self::featured();
         $text = self::text($m, $ar);
         if ($text === null || $m === null) return null;
         return [
-            'text'  => $text,
-            'match' => $m,
-            'url'   => url('match.php', ['id' => (int)($m['_index'] ?? 0)]),
+            'text'       => $text,
+            'match'      => $m,
+            'kickoff_ts' => DataService::matchTimestamp($m),
+            'url'        => url('match.php', ['id' => (int)($m['_index'] ?? 0)]),
         ];
     }
 }

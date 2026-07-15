@@ -56,3 +56,4 @@ Thumbs.db
 # Raw screenshots dropped in docs/ (use docs/screenshots/ for curated, cropped images)
 docs/Screenshot*
 *.zip
+/assets/fifa/*

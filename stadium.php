@@ -10,7 +10,8 @@ $s  = Stadiums::get($id);
 
 if (!$s) {
     http_response_code(404);
-    $page_title = t('stadium');
+    $page_title  = t('stadium');
+    $page_robots = 'noindex,follow';
     tpl('header');
     echo '<p class="empty-note">' . e(t('not_found')) . '</p>';
     echo '<p style="text-align:center"><a class="back-link" href="' . e(url('stadiums.php')) . '">← ' . e(t('all_stadiums')) . '</a></p>';

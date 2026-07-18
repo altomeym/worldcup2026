@@ -15,7 +15,9 @@ $id = isset($_GET['id']) ? (int)$_GET['id'] : -1;
 $m  = DataService::matchByIndex($id);
 
 if ($m === null) {
-    $page_title = t('matches');
+    http_response_code(404);
+    $page_title  = t('matches');
+    $page_robots = 'noindex,follow';
     tpl('header');
     echo '<div class="alert">' . e(t('no_data')) . '</div>';
     echo '<p><a class="btn" href="' . e(url('matches.php')) . '">‹ ' . e(t('matches')) . '</a></p>';

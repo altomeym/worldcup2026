@@ -23,13 +23,52 @@ function base_url(): string {
     return $scheme . '://' . $host;
 }
 
-/** رابط الصفحة الحالية بلغة محددة مع الحفاظ على باقي المعطيات */
+/**
+ * مفاتيح الاستعلام المسموح بها في الروابط القانونية (canonical / hreflang).
+ * أي شيء آخر (utm_*, fbclid, …) يُستبعد لتفادي نسخ مكرّرة.
+ */
+function seo_allowed_query_keys(): array {
+    return [
+        'id', 'team', 'slug', 'year', 'i', 'g', 'a', 'b',
+        'u', 'code', 'name', 'round', 'group', 'status',
+    ];
+}
+
+/** يجمع معاملات الصفحة المهمة فقط (بلا lang) */
+function seo_content_query_params(): array {
+    $params = [];
+    foreach (seo_allowed_query_keys() as $key) {
+        if (!isset($_GET[$key])) {
+            continue;
+        }
+        $val = $_GET[$key];
+        if (is_array($val) || $val === '') {
+            continue;
+        }
+        $params[$key] = $val;
+    }
+    return $params;
+}
+
+/**
+ * رابط الصفحة الحالية بلغة محددة.
+ * الرئيسية العربية → /  |  الإنجليزية → /?lang=en
+ */
 function page_url_lang(string $lang): string {
-    $script = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
-    $params = $_GET;
-    $params['lang'] = $lang;
-    $qs = http_build_query($params);
-    return base_url() . $script . ($qs ? '?' . $qs : '');
+    $baseName = basename((string)($_SERVER['SCRIPT_NAME'] ?? 'index.php'));
+    $params   = seo_content_query_params();
+
+    if ($baseName === 'index.php') {
+        if ($lang !== 'ar') {
+            $params = array_merge(['lang' => $lang], $params);
+        }
+        $qs = http_build_query($params);
+        return base_url() . '/' . ($qs ? '?' . $qs : '');
+    }
+
+    $ordered = array_merge(['lang' => $lang], $params);
+    $qs = http_build_query($ordered);
+    return base_url() . '/' . $baseName . ($qs ? '?' . $qs : '');
 }
 
 /** الرابط القانوني للصفحة الحالية (باللغة الحالية) */
@@ -56,12 +95,11 @@ function seo_head(array $opts = []): void {
     echo '<link rel="canonical" href="' . e($canon) . '">' . "\n";
     echo '<link rel="alternate" hreflang="ar" href="' . e(page_url_lang('ar')) . '">' . "\n";
     echo '<link rel="alternate" hreflang="en" href="' . e(page_url_lang('en')) . '">' . "\n";
-    echo '<link rel="alternate" hreflang="fr" href="' . e(page_url_lang('fr')) . '">' . "\n";
     echo '<link rel="alternate" hreflang="x-default" href="' . e(page_url_lang('ar')) . '">' . "\n";
 
     // Open Graph
     echo '<meta property="og:site_name" content="' . e($siteName) . '">' . "\n";
-    $ogLocale = ($lang === 'ar') ? 'ar_AR' : (($lang === 'fr') ? 'fr_FR' : 'en_US');
+    $ogLocale = ($lang === 'ar') ? 'ar_AR' : 'en_US';
     echo '<meta property="og:locale" content="' . e($ogLocale) . '">' . "\n";
     echo '<meta property="og:type" content="' . e($type) . '">' . "\n";
     echo '<meta property="og:title" content="' . e($title) . '">' . "\n";

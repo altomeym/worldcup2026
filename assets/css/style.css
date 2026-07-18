@@ -3630,3 +3630,30 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 .lineup-fold[open] > summary::after { transform: rotate(180deg); }
 .lineup-fold > summary .fold-hint { font-size: .82rem; color: var(--text-dim); font-weight: 400; margin-inline-start: 8px; }
 .lineup-fold[open] > summary .fold-hint { display: none; }
+
+/* ============================================================
+   شريط موافقة الكوكيز (AdSense / تحليلات)
+   ============================================================ */
+.fb-consent {
+  position: fixed; inset-inline: 0; bottom: 0; z-index: 1200;
+  background: rgba(12, 28, 54, .96);
+  color: #eef4fb;
+  border-top: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 -8px 28px rgba(0,0,0,.28);
+  padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px));
+}
+.fb-consent-in {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px;
+  justify-content: space-between;
+}
+.fb-consent-text {
+  margin: 0; flex: 1 1 260px; font-size: .92rem; line-height: 1.65; color: #d7e4f4;
+}
+.fb-consent-text a { color: #9fd0ff; text-decoration: underline; }
+.fb-consent-actions { display: flex; flex-wrap: wrap; gap: 8px; flex: 0 0 auto; }
+.fb-consent-more { background: transparent; color: #eef4fb; border: 1px solid rgba(255,255,255,.28); }
+@media (max-width: 720px) {
+  .fb-consent { bottom: 58px; } /* فوق شريط التنقّل السفلي */
+  .fb-consent-actions { width: 100%; }
+  .fb-consent-actions .btn { flex: 1 1 auto; text-align: center; }
+}

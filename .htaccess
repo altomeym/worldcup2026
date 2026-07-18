@@ -56,14 +56,27 @@ Options -Indexes
   </FilesMatch>
 </IfModule>
 
-# ---------- روابط لطيفة لخريطة الموقع ----------
+# ---------- إعادة توجيه SEO + روابط لطيفة ----------
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # www → apex (تجنب نسختين مفهرستين)
+  RewriteCond %{HTTP_HOST} ^www\.foot-boll\.com$ [NC]
+  RewriteRule ^(.*)$ https://foot-boll.com/$1 [R=301,L,QSA]
+
+  # /index.php و /index.php?lang=ar → / (توحيد الصفحة الرئيسية)
+  RewriteCond %{HTTP_HOST} ^(www\.)?foot-boll\.com$ [NC]
+  RewriteCond %{THE_REQUEST} \s/+index\.php[\s?] [NC]
+  RewriteCond %{QUERY_STRING} ^$ [OR]
+  RewriteCond %{QUERY_STRING} ^lang=ar$
+  RewriteRule ^index\.php$ /? [R=301,L]
+
+  # خريطة الموقع
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
 </IfModule>
 
 # ---------- صفحة الخطأ ----------
-ErrorDocument 404 /index.php
+ErrorDocument 404 /404.php
 
 # ---------- الترميز الافتراضي ----------
 AddDefaultCharset UTF-8

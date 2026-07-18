@@ -22,6 +22,7 @@ require __DIR__ . '/i18n.php';
 require __DIR__ . '/teams_ar.php';
 require __DIR__ . '/countries.php';
 require __DIR__ . '/helpers.php';
+require __DIR__ . '/consent.php';
 require __DIR__ . '/analytics.php';
 require __DIR__ . '/seo.php';
 require __DIR__ . '/DataService.php';

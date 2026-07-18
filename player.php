@@ -18,7 +18,9 @@ if ($pid === '' && isset($_GET['name'])) {
 $pl = $pid !== '' ? FifaMetrics::player($pid) : null;
 
 if (!$pl) {
-    $page_title = $L('اللاعب غير موجود', 'Player not found');
+    http_response_code(404);
+    $page_title  = $L('اللاعب غير موجود', 'Player not found');
+    $page_robots = 'noindex,follow';
     tpl('header');
     echo '<div class="page-head"><h1>' . e($L('لا توجد بيانات لهذا اللاعب', 'No data for this player')) . '</h1>'
        . '<p class="muted"><a href="' . e(url('physical.php')) . '">' . e($L('عُد إلى مستكشف اللاعبين', 'Back to the players explorer')) . '</a></p></div>';

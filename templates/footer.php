@@ -209,6 +209,7 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
       </p>
       <nav class="footer-bottom-links" aria-label="<?= e($lang === 'ar' ? 'روابط قانونية' : 'Legal links') ?>">
         <a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a>
+        <a href="<?= e(url('contact.php')) ?>"><?= e($lang === 'ar' ? 'تواصل معنا' : 'Contact') ?></a>
         <a href="<?= e(url('faq.php')) ?>"><?= e($lang === 'ar' ? 'الأسئلة الشائعة' : 'FAQ') ?></a>
         <a href="<?= e(url('insights.php')) ?>"><?= e($lang === 'ar' ? 'تحليلات' : 'Insights') ?></a>
         <a href="<?= e(url('terms.php')) ?>"><?= e(t('terms_title')) ?></a>
@@ -391,5 +392,6 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
     </a>
   <?php endforeach; ?>
 </nav>
+<?php require __DIR__ . '/consent-banner.php'; ?>
 </body>
 </html>

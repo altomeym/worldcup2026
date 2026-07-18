@@ -12,9 +12,9 @@ header('Content-Type: application/xml; charset=utf-8');
 
 $base = base_url();
 
-/** صفحات ثابتة: [المسار, الأولوية, معدل التغيّر] */
+/** صفحات ثابتة: [المسار, الأولوية, معدل التغيّر] — المسار '' = الرئيسية / */
 $pages = [
-    ['index.php',     '1.0', 'hourly'],
+    ['',              '1.0', 'hourly'],
     ['matches.php',   '0.9', 'hourly'],
     ['news.php',      '0.8', 'hourly'],
     ['insights.php',  '0.7', 'weekly'],
@@ -35,8 +35,8 @@ $pages = [
     ['stickers.php',  '0.7', 'weekly'],
     ['trivia.php',    '0.7', 'daily'],
     ['archive.php',   '0.6', 'monthly'],
-    ['api.php',       '0.5', 'monthly'],
     ['about.php',     '0.4', 'monthly'],
+    ['contact.php',   '0.4', 'monthly'],
     ['faq.php',       '0.4', 'monthly'],
     ['compare.php',   '0.5', 'weekly'],
     ['terms.php',     '0.3', 'yearly'],
@@ -88,9 +88,15 @@ echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
    . 'xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
 foreach ($all as [$path, $priority, $freq]) {
-    $sep = (strpos($path, '?') !== false) ? '&' : '?';
-    $arUrl = $base . '/' . $path . $sep . 'lang=ar';
-    $enUrl = $base . '/' . $path . $sep . 'lang=en';
+    if ($path === '') {
+        // الرئيسية: العربية = / ، الإنجليزية = /?lang=en
+        $arUrl = $base . '/';
+        $enUrl = $base . '/?lang=en';
+    } else {
+        $sep   = (strpos($path, '?') !== false) ? '&' : '?';
+        $arUrl = $base . '/' . $path . $sep . 'lang=ar';
+        $enUrl = $base . '/' . $path . $sep . 'lang=en';
+    }
     echo "  <url>\n";
     echo "    <loc>" . e($arUrl) . "</loc>\n";
     echo '    <xhtml:link rel="alternate" hreflang="ar" href="' . e($arUrl) . '"/>' . "\n";

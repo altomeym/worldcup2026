@@ -61,11 +61,11 @@ define('GA4_MEASUREMENT_ID', (string)cfg_secret('GA4_MEASUREMENT_ID', 'G-F7D1889
 define('ADSENSE_CLIENT', (string)cfg_secret('ADSENSE_CLIENT', 'ca-pub-4205749747374725', $__local));
 
 // ---------- شبكة الإعلانات ----------
-// 'adsense'         = Google AdSense فقط
+// 'adsense'         = Google AdSense فقط (الافتراضي — مطلوب للموافقة على AdSense)
 // 'progressmagnify' = كل وحدات Progress Magnify (بما فيها Popunder) — بدون AdSense
-// 'both_safe'       = AdSense + بانر + Smartlink فقط (موصى به عند الجمع — بدون Popunder/SocialBar)
+// 'both_safe'       = AdSense + بانر + Smartlink فقط (بدون Popunder/SocialBar) — بعد الموافقة فقط
 // 'both'            = AdSense + كل وحدات PM (مخاطرة عالية: Popunder غالباً يرفض AdSense)
-define('AD_NETWORK', (string)cfg_secret('AD_NETWORK', 'both_safe', $__local));
+define('AD_NETWORK', (string)cfg_secret('AD_NETWORK', 'adsense', $__local));
 define('USE_ADSENSE', in_array(AD_NETWORK, ['adsense', 'both', 'both_safe'], true) && ADSENSE_CLIENT !== '');
 define('USE_PM_ADS', in_array(AD_NETWORK, ['progressmagnify', 'both', 'both_safe'], true));
 // الوحدات العدوانية: لا تُفعَّل مع AdSense إلا في وضع 'both' الصريح

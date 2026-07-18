@@ -63,9 +63,9 @@ return [
     'MAIL_SECRET' => '',                  // random string for signing unsubscribe links (optional)
 
     // ---------- Ads network / شبكة الإعلانات ----------
-    // 'adsense' | 'progressmagnify' | 'both_safe' | 'both'
-    // both_safe = AdSense + بانر + Smartlink (موصى به — بدون Popunder)
-    'AD_NETWORK'               => 'both_safe',
+    // 'adsense' (موصى به للموافقة) | 'progressmagnify' | 'both_safe' | 'both'
+    // أثناء مراجعة AdSense استخدم adsense فقط — لا تخلط شبكات أخرى.
+    'AD_NETWORK'               => 'adsense',
 
     // ---------- Contact / التواصل ----------
     'CONTACT_EMAIL' => 'info@example.com',

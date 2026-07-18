@@ -64,8 +64,8 @@ tpl('header');
 
   <h2><?= e($L('تواصل معنا', 'Contact us')) ?></h2>
   <p><?= $ar
-    ? 'للاستفسارات، الرعاية، والشراكات: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — أو استخدم نموذج «تواصل معنا» في أسفل أي صفحة.'
-    : 'For inquiries, sponsorship, and partnerships: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — or use the contact form in the site footer.' ?></p>
+    ? 'للاستفسارات، الرعاية، والشراكات: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — أو عبر صفحة <a href="' . e(url('contact.php')) . '">تواصل معنا</a>.'
+    : 'For inquiries, sponsorship, and partnerships: <a href="mailto:' . e(CONTACT_EMAIL) . '">' . e(CONTACT_EMAIL) . '</a> — or via our <a href="' . e(url('contact.php')) . '">Contact</a> page.' ?></p>
 
   <p class="muted"><?= e($host) ?> · <?= e($L('أُعدّ بعناية لعشّاق كرة القدم العرب', 'Crafted for Arabic football fans')) ?></p>
 

@@ -1,4 +1,8 @@
 <?php if (!defined('WC2026') || !gtm_enabled()) { return; } ?>
+<?php
+// التحليلات غير ضرورية — تُحمَّل بعد موافقة الكوكيز (أو لزواحف جوجل).
+if (!function_exists('consent_given') || !consent_given()) { return; }
+?>
 <?php require __DIR__ . '/gtm-data.php'; ?>
 <?php
 $gtmJsV = @filemtime(__DIR__ . '/../assets/js/analytics.js') ?: 1;

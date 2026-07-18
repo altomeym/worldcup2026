@@ -97,7 +97,7 @@ class PageCache
             'login.php', 'register.php', 'logout.php', 'forgot.php', 'reset.php', 'promote.php',
             'admin.php', 'health.php', 'install.php', 'db_selftest.php',
             'card.php', 'card_img.php', 'calendar.php', 'manifest.php', 'sitemap.php', 'print.php',
-            'widget.php', 'embed.php', 'stickers.php', 'unsubscribe.php',
+            'widget.php', 'embed.php', 'stickers.php', 'unsubscribe.php', '404.php',
             // ميزات جديدة شخصية/ديناميكية — لا تُخزَّن كصفحة كاملة
             'leagues.php', 'league.php', 'today.php',
             // physical.php / dashboard.php يقرآن ملفّات assets/fifa — لا نخزّن نسخة فارغة عرضيّة
@@ -109,7 +109,9 @@ class PageCache
     private static function file(): string
     {
         $lang = function_exists('current_lang') ? current_lang() : 'ar';
-        $key  = ($_SERVER['REQUEST_URI'] ?? '/') . '|' . $lang;
+        // فصل كاش من وافق على التحليلات عمّن لم يوافق (محتوى GTM يختلف).
+        $consent = (function_exists('consent_given') && consent_given()) ? '1' : '0';
+        $key  = ($_SERVER['REQUEST_URI'] ?? '/') . '|' . $lang . '|c' . $consent;
         return rtrim(CACHE_DIR, '/') . '/page/' . sha1($key) . '.html';
     }
 }

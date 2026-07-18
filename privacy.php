@@ -74,12 +74,16 @@ tpl('header');
       'Session cookie: created only when you sign in — visitors without an account receive no session cookie.'
     )) ?></li>
     <li><?= e($L(
-      'كوكي اللغة: يحفظ لغتك المفضلة (عربي/إنجليزي/فرنسي).',
-      'Language cookie: remembers your preferred language (Arabic/English/French).'
+      'كوكي اللغة: يحفظ لغتك المفضلة (عربي/إنجليزي).',
+      'Language cookie: remembers your preferred language (Arabic/English).'
     )) ?></li>
     <li><?= e($L(
       'كوكي حماية النماذج (CSRF): يمنع إرسال النماذج المزوّرة.',
       'Form-protection (CSRF) cookie: prevents forged form submissions.'
+    )) ?></li>
+    <li><?= e($L(
+      'كوكي الموافقة (wc_consent): يتذكّر قبولك لكوكيز التحليلات غير الضرورية.',
+      'Consent cookie (wc_consent): remembers that you accepted optional analytics cookies.'
     )) ?></li>
     <li><?= e($L(
       'التخزين المحلي في متصفحك: تفضيلات تذكير المباريات وتثبيت التطبيق — تبقى على جهازك ولا تُرسل إلينا.',
@@ -89,8 +93,8 @@ tpl('header');
 
   <h2><?= e($L('٤. الإعلانات (Google AdSense)', '4. Advertising (Google AdSense)')) ?></h2>
   <p><?= e($L(
-    'نعرض إعلانات عبر Google AdSense. تستخدم جوجل وشركاؤها (كطرف ثالث) كوكيز لعرض إعلانات قد تناسب اهتماماتك بناءً على زياراتك لهذا الموقع ومواقع أخرى.',
-    'We display ads via Google AdSense. Google and its partners (as third parties) use cookies to serve ads that may match your interests based on visits to this and other websites.'
+    'نعرض إعلانات عبر Google AdSense فقط. تستخدم جوجل وشركاؤها (كطرف ثالث) كوكيز وتقنيات مشابهة لعرض إعلانات قد تناسب اهتماماتك بناءً على زياراتك لهذا الموقع ومواقع أخرى، ولقياس الأداء ومنع الاحتيال.',
+    'We display ads via Google AdSense only. Google and its partners (as third parties) use cookies and similar technologies to serve ads that may match your interests based on visits to this and other websites, and to measure performance and prevent fraud.'
   )) ?></p>
   <ul>
     <li><?= $ar
@@ -99,12 +103,19 @@ tpl('header');
     <li><?= $ar
       ? 'أو عبر <a href="https://www.aboutads.info" target="_blank" rel="noopener">aboutads.info</a> لإلغاء كوكيز شبكات إعلانية أخرى.'
       : 'Or via <a href="https://www.aboutads.info" target="_blank" rel="noopener">aboutads.info</a> to opt out of other ad networks’ cookies.' ?></li>
+    <li><?= $ar
+      ? 'اطّلع أيضاً على <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">كيفية استخدام جوجل للبيانات في الإعلانات</a>.'
+      : 'See also <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">how Google uses data in advertising</a>.' ?></li>
   </ul>
 
-  <h2><?= e($L('٥. خدمات الطرف الثالث', '5. Third-party services')) ?></h2>
+  <h2><?= e($L('٥. التحليلات وخدمات الطرف الثالث', '5. Analytics & third-party services')) ?></h2>
   <p><?= e($L(
-    'تُحمَّل بعض الموارد من خدمات خارجية: خطوط جوجل (Google Fonts)، صور الأعلام (flagcdn.com)، بيانات المباريات من مصادر عامة مفتوحة، وروابط بث/فيديو رسمية. قد تسجّل هذه الخدمات عنوان IP الخاص بك وفق سياساتها الخاصة.',
-    'Some resources load from external services: Google Fonts, flag images (flagcdn.com), match data from open public sources, and official streaming/video links. These services may log your IP address per their own policies.'
+    'بعد موافقتك على الكوكيز غير الضرورية قد نستخدم Google Tag Manager وGoogle Analytics (GA4) لفهم استخدام الموقع وتحسينه (صفحات شائعة، أجهزة، مصادر زيارة مجمّعة). هذه أدوات من جوجل وقد تضع كوكيز خاصة بها.',
+    'After you accept optional cookies we may use Google Tag Manager and Google Analytics (GA4) to understand and improve site usage (popular pages, devices, aggregated traffic sources). These are Google tools and may set their own cookies.'
+  )) ?></p>
+  <p><?= e($L(
+    'تُحمَّل أيضاً موارد من خدمات خارجية: خطوط جوجل (Google Fonts)، صور الأعلام، بيانات المباريات من مصادر عامة مفتوحة، وروابط بث/فيديو رسمية. قد تسجّل هذه الخدمات عنوان IP وفق سياساتها.',
+    'We also load resources from external services: Google Fonts, flag images, match data from open public sources, and official streaming/video links. These services may log your IP per their own policies.'
   )) ?></p>
 
   <h2><?= e($L('٦. النشرة البريدية', '6. Email digest')) ?></h2>
@@ -119,8 +130,8 @@ tpl('header');
                  'Passwords are stored hashed with bcrypt and can never be read back as text.')) ?></li>
     <li><?= e($L('الموقع يُقدَّم عبر HTTPS المشفّر في الإنتاج.',
                  'The site is served over encrypted HTTPS in production.')) ?></li>
-    <li><?= e($L('لا نبيع بياناتك ولا نشاركها مع أي جهة لأغراض تسويقية.',
-                 'We never sell your data nor share it with anyone for marketing purposes.')) ?></li>
+    <li><?= e($L('لا نبيع بياناتك لمعلنين. قد تُعالَج بيانات تقنية محدودة عبر جوجل (AdSense / Analytics) لعرض الإعلانات وقياس الاستخدام وفق سياسات جوجل وموافقتك على الكوكيز.',
+                 'We do not sell your data to advertisers. Limited technical data may be processed via Google (AdSense / Analytics) to show ads and measure usage under Google’s policies and your cookie consent.')) ?></li>
   </ul>
 
   <h2><?= e($L('٨. حقوقك', '8. Your rights')) ?></h2>

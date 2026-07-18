@@ -10,7 +10,9 @@ $slug = isset($_GET['slug']) ? trim((string)$_GET['slug']) : '';
 $item = Insights::find($slug);
 
 if ($item === null) {
-    $page_title = $L('تحليلات foot-boll', 'foot-boll Insights');
+    http_response_code(404);
+    $page_title  = $L('تحليلات foot-boll', 'foot-boll Insights');
+    $page_robots = 'noindex,follow';
     tpl('header');
     echo '<div class="alert">' . e($L('المقال غير موجود.', 'Article not found.')) . '</div>';
     echo '<p><a class="btn" href="' . e(url('insights.php')) . '">‹ ' . e($L('كل المقالات', 'All articles')) . '</a></p>';

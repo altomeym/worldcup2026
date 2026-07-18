@@ -24,7 +24,7 @@ tpl('header');
 
 <div class="page-head">
   <h1><?= e($page_title) ?></h1>
-  <p class="muted"><?= e($L('آخر تحديث: يوليو 2026', 'Last updated: July 2026')) ?></p>
+  <p class="muted"><?= e($L('آخر تحديث: 19 يوليو 2026', 'Last updated: 19 July 2026')) ?></p>
 </div>
 
 <div class="prose" style="max-width:780px;margin:0 auto;line-height:2">

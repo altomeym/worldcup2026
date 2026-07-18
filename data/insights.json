@@ -1,106 +1,330 @@
 [
-  {
-    "slug": "2026-format-48-teams",
-    "published": "2026-07-06",
-    "title_ar": "كأس العالم 2026: لماذا يغيّر توسّع البطولة إلى 48 منتخباً قواعد اللعبة؟",
-    "title_en": "World Cup 2026: How expanding to 48 teams changes the tournament",
-    "excerpt_ar": "من 32 إلى 48 منتخباً — أكبر نسخة في التاريخ. نشرح الفروقات الجوهرية في المجموعات، التأهل، والإيقاع الزمني للبطولة، وما يعنيه ذلك للمشجّع العربي على foot-boll.",
-    "excerpt_en": "From 32 to 48 teams — the biggest edition ever. We explain groups, qualification paths, pacing, and what it means for Arabic-speaking fans on foot-boll.",
-    "body_ar": [
-      "لأول مرة في تاريخ كأس العالم، ستشارك 48 منتخباً في نسخة واحدة. هذا ليس رقماً شكلياً:هو تغيير جذري في هندسة البطولة من اليوم الأول. بدلاً من ثماني مجموعات بأربعة فرق، ننتقل إلى اثنتي عشرة مجموعة بأربعة منتخبات في كل منها. يتأهل أول فريقين من كل مجموعة مباشرة، ثم يُختار ثمانية من أفضل المراكز الثالثة لإكمال دور الـ32. هذا التصميم يمنح فرصاً أكبر للمنتخبات المتوسطة، لكنه يزيد أيضاً عدد المباريات ويُطيل مدة البطولة.",
-      "على foot-boll نتابع هذا التأثير رقماً: كل نتيجة في المجموعات تغيّر حسابات «أفضل ثالث»، وهي معادلة لا يفهمها كثير من المشجّعين دون جدول واضح. لذلك نعرض ترتيب المجموعات مع ترتيب المراكز الثالثة جنباً إلى جنب — حتى ترى فوراً من يقترب من التأهل ومن يحتاج فوزاً بفارق أهداف. في نسخة 2022 كان التأهل أبسط نسبياً؛ في 2026 السيناريوهات المتشعبة جزء من متعة المتابعة.",
-      "التوسّع الجغرافي مهم أيضاً: استضافة ثلاث دول (كندا، المكسيك، الولايات المتحدة) تعني فروق توقيت كبيرة للمشجّع العربي. مباراة في الساحل الغربي الأمريكي قد تبدأ فجراً بتوقيت الخليج، وأخرى في المكسيك قد تكون مساءً مريحة. foot-boll يعرض كل المواعيد بتوقيتك المحلي تلقائياً — ميزة بسيطة لكنها حاسمة عند 104 مباراة محتملة.",
-      "من زاوية التحليل، البطولة الأوسع تعني تنوّعاً أكبر في أساليب اللعب: منتخبات تعتمد الضغط العالي مقابل أخرى تبني من الخلف، وأطراف آسيوية وأفريقية وأمريكية لاتينية بملفات بدنية مختلفة. تقارير FIFA على foot-boll — الاستحواذ، xG، مسافة الركض — تساعدك على مقارنة هذا التنوّع بعينٍ تقنية، لا بانطباع المشجّع فقط.",
-      "إذا كنت تبني توقعاتك على foot-boll، فكّر في أن دور المجموعات أطول وأكثر حساسية: التعادل قد يكون كافياً لمنتخب في مجموعة ضعيفة، بينما منتخب آخر يحتاج فوزين متتاليين. استخدم صفحة المقارنة بين منتخبين ولوحة الإحصائيات قبل أن تُقفل توقعك — البيانات المتاحة بعد أول جولتين غالباً أوضح من التخمين المسبق.",
-      "خلاصة foot-boll: 2026 ليست مجرد مونديال أكبر، بل بنية مختلفة تستحق أدوات مختلفة. نحن نبني هذه الأدوات — جداول، تحليل، مقارنات، وتوقعات — بلغة عربية وبتجربة مصمّمة لجمهورنا، لا منسوخة من مواقع نتائج عامة."
-    ],
-    "body_en": [
-      "For the first time, 48 national teams will take part in a single World Cup. That is not a cosmetic change: it reshapes the tournament from day one. Instead of eight groups of four, there are twelve groups of four. The top two from each group advance directly, then the eight best third-place teams complete the Round of 32. More nations get a realistic shot, but the schedule grows and the group stage becomes a puzzle.",
-      "On foot-boll we track that puzzle in numbers. Every group result shifts the best-third-place table — a calculation many fans miss without a clear standings view. We show group tables alongside third-place ranking so you can see who is safe and who needs a big win. In 2022 qualification paths were simpler; in 2026 branching scenarios are part of the drama.",
-      "Geography matters too: hosting across Canada, Mexico, and the USA creates large time gaps for Arabic-speaking fans. A west-coast kickoff may land at dawn in the Gulf; a Mexico City match might be a comfortable evening. foot-boll converts every fixture to your local time automatically — a small feature that matters when there can be 104 matches.",
-      "Analytically, a wider field means more tactical diversity: high press vs low block, different physical profiles from Asia, Africa, and the Americas. FIFA reports on foot-boll — possession, xG, sprint distance — let you compare that diversity with data, not gut feeling alone.",
-      "If you play predictions on foot-boll, remember the group stage is longer and more sensitive: a draw can suit one team while another needs consecutive wins. Use team comparison and the stats dashboard before locking picks — after two rounds, the numbers usually beat pre-tournament guesses.",
-      "Bottom line: 2026 is not just a bigger World Cup but a different structure that deserves different tools. foot-boll builds those tools — schedules, analysis, comparisons, and predictions — in Arabic for our audience, not copied from generic score sites."
-    ],
-    "tags_ar": ["تحليل", "قوانين", "48 منتخباً"],
-    "tags_en": ["analysis", "format", "48 teams"]
-  },
-  {
-    "slug": "how-to-read-fifa-stats",
-    "published": "2026-07-08",
-    "title_ar": "دليل foot-boll: كيف تقرأ إحصائيات FIFA دون أن تُضلّلك الأرقام؟",
-    "title_en": "foot-boll guide: How to read FIFA stats without being misled",
-    "excerpt_ar": "الاستحواذ ليس دائماً فوزاً، وxG لا يضمن الأهداف. شرح عملي لأهم المؤشرات في تقارير FIFA على foot-boll وكيف تربطها بنتيجة المباراة.",
-    "excerpt_en": "Possession is not always victory, and xG does not guarantee goals. A practical guide to FIFA metrics on foot-boll and how they link to the scoreline.",
-    "body_ar": [
-      "عندما تفتح صفحة مباراة على foot-boll بعد صافرة النهاية، قد تجد تقرير FIFA التفصيلي: استحواذ، تسديدات، أهداف متوقعة (xG)، تمريرات، اختراق خطوط، ومسافة مقطوعة. هذه ليست أرقاماً للزينة — لكنها تحتاج قراءة سياقية. الخطأ الشائع: الاعتقاد أن الاستحواذ 62% يعني أن الفريق «استحق» الفوز. في كثير من المباريات الكبرى، الفريق المنتصر يترك الكرة ويضرب على المرتدات.",
-      "xG (الأهداف المتوقعة) أقرب إلى «جودة الفرص» منها إلى التنبؤ بالنتيجة. منتخب سجّل هدفين من فرصتين كبيرتين قد يظهر xG منخفضاً مقارنة بمن أضاع خمس تسديدات من داخل المنطقة. على foot-boll قارن xG مع التسديدات على المرمى — الفجوة بينهما تخبرك هل الهزيمة كانت حظاً أم إهداراً.",
-      "مؤشرات الحركة — المسافة الكلية، الركض السريع، أعلى سرعة — تفسّر لماذا يبدو فريق متعباً في الدقيقة 80 رغم أن النتيجة متقاربة. صفحة البيانات البدنية على foot-boll ترتّب اللاعبين وتربط كل رقم بملف تقني. إذا رأيت مدافعاً قطع 11 كم في مباراة واحدة، فتوقّع أن مركزه في الملعب يؤثر على خطورة المرمى في الشوط الثاني.",
-      "اختراق الخطوط والتمريرات في الثلث الأخير يكشفان أسلوب الهجوم: بناء بطيء أم اختراق مباشر؟ منتخب يعتمد العرضيات سترتفع عنده أرقام العرض والاستلامات في الثلث الأخير. استخدم صفحة المقارنة بين منتخبين لرؤية المتوسطات عبر عدة مباريات — مباراة واحدة قد تكون شاذة.",
-      "نصيحة foot-boll العملية: ابدأ بالنتيجة والأحداث (أهداف، بطاقات، تبديلات)، ثم ارجع للإحصائيات لتأكيد أو نفي انطباعك. إن توفّر تحليل الذكاء الاصطناعي للمباراة، اقرأه كملخّص تحريري — لكن ارجع دائماً للأرقام الرسمية عند الجدل. هذا المنهج يجعلك مشجّعاً أذكى، لا مجرد متابع للنتيجة.",
-      "هدفنا في foot-boll ليس إغراقك بجداول، بل ترجمة تقارير FIFA إلى تجربة عربية قابلة للفهم: أشرطة مقارنة، ملفات لاعبين، ولوحة إحصائيات تفاعلية. المحتوى التحليلي هنا مكتوب بأيدينا — لا يُنسَخ من مواقع أخرى — لأن طريقة القراءة جزء من القيمة التي نضيفها فوق البيانات الخام."
-    ],
-    "body_en": [
-      "After full time on foot-boll you may see a detailed FIFA report: possession, shots, expected goals (xG), passes, line breaks, and distance covered. These are not vanity numbers — but they need context. A common mistake is assuming 62% possession means a team deserved to win. In many big games the winner sits deep and attacks on the break.",
-      "xG measures chance quality more than final score. A side scoring twice from two big chances can show lower xG than a side missing five shots inside the box. On foot-boll compare xG with shots on target — the gap tells you whether defeat was bad luck or wasteful finishing.",
-      "Movement metrics — total distance, sprints, top speed — explain why a team fades after minute 80 despite a close scoreline. The physical data explorer ranks players and links each number to a technical profile. If a centre-back covers 11 km in one match, expect positional risk late on.",
-      "Line breaks and final-third receptions reveal attacking style: slow build or direct penetration? A cross-heavy team will spike crossing and reception numbers. Use team comparison for multi-match averages — one game can be an outlier.",
-      "Practical foot-boll workflow: start with the scoreline and events (goals, cards, subs), then use stats to confirm or challenge your impression. If AI analysis is available, treat it as an editorial summary — but lean on official numbers for arguments. That habit makes you a smarter fan, not just a score checker.",
-      "Our goal is not to drown you in tables but to translate FIFA reports into an understandable Arabic experience: comparison bars, player profiles, and an interactive dashboard. This analytical content is written in-house — not copied — because how you read the game is part of foot-boll's added value."
-    ],
-    "tags_ar": ["FIFA", "xG", "تحليل تقني"],
-    "tags_en": ["FIFA", "xG", "technical analysis"]
-  },
-  {
-    "slug": "arab-fan-hub-2026",
-    "published": "2026-07-10",
-    "title_ar": "لماذا يحتاج المشجّع العربي مركزاً رقمياً خاصاً بمونديال 2026؟",
-    "title_en": "Why Arabic fans need a dedicated digital hub for World Cup 2026",
-    "excerpt_ar": "التوقيت، اللغة، قنوات البث، والسياق الثقافي — أربعة تحديات تجعل متابعة المونديال من المنطقة العربية مختلفة. كيف يعالجها foot-boll.",
-    "excerpt_en": "Time zones, language, broadcast rights, and cultural context — four challenges for following the tournament from the Arab world. How foot-boll addresses them.",
-    "body_ar": [
-      "مونديال 2026 هو أول كأس عالم بـ48 منتخباً يُقام عبر قارتين أمريكيتين بفارق زمني ضخم عن الشرق الأوسط. المشجّع في الرياض أو القاهرة أو الدار البيضاء لا يبحث فقط عن «النتيجة» — يبحث عن: متى أنام؟ أين أشاهد قانونياً؟ ومن يشرح لي ما حدث بالعربية دون ترجمة آلية باردة؟",
-      "مواقع النتائج العالمية تنجح في الجدول والوقت، لكنها نادراً ما تقدّم طبقة عربية أصيلة: سياق للأخبار يربط الخبر بمنتخب عربي أو مباراة محددة، أو تحليلاً يفهم أن جماهيرنا تهتم بمنتخبات محددة بعمق (المغرب، السعودية، تونس، مصر...) إلى جانب الكبار العالميين.",
-      "foot-boll بُني من هذا الفهم. الصفحة الرئيسية لا تكرّر ترتيباً افتراضياً لمواقع أخرى: نضع أدوات التحليل والتوقعات قبل الجداول التقليدية، ونولّد «رأي foot-boll اليوم» من مباراة اليوم الفعلية، ونربط كل خبر RSS بسياق تحريري قصير لا يُعيد نشر المقال الأصلي — احتراماً لحقوق الناشرين وقيمة لزائرنا.",
-      "البث المباشر قضية حساسة في MENA. foot-boll لا يستضيف بثاً غير مرخّص — نعرض روابط رسمية (beIN، TOD، FIFA+) مع توضيح ما هو مجاني وما يتطلّب اشتراكاً. الشفافية هنا جزء من ثقة المستخدم، خاصة عند تقديم طلب AdSense لاحقاً.",
-      "من ناحية SEO والمحتوى المكرر: جوجل لا يكافئ نسخة ثانية من نفس الجدول. القيمة في المحتوى الأصلي المرئي — مقالات مثل التي تقرأها الآن، مقارنة منتخبين، ملفات لاعبين FIFA، وتحليل ذكاء اصطناعي لكل مباراة. هذا ما نستثمر فيه على foot-boll بينما يقتصر المنافسون على النتائج فقط.",
-      "إن كنت تتابعنا أسبوعياً عبر قسم «تحليلات foot-boll»، ستجد موضوعات تجمع بين التعليم والترفيه الرياضي: قوانين البطولة، قراءة الأرقام، استراتيجيات التوقع. شاركنا رأيك عبر نموذج التواصل — نبني المنصّة مع جمهورنا، لا لمجرد نسخ موقع آخر."
-    ],
-    "body_en": [
-      "World Cup 2026 is the first 48-team edition across North America with huge time gaps from the Middle East. A fan in Riyadh, Cairo, or Casablanca needs more than a scoreline: When should I sleep? Where can I watch legally? Who explains what happened in proper Arabic, not cold machine translation?",
-      "Global score sites excel at tables and kickoff times but rarely offer an authentic Arabic layer: news context tied to Arab teams or specific fixtures, analysis that knows our audiences care deeply about Morocco, Saudi Arabia, Tunisia, Egypt, as well as the global giants.",
-      "foot-boll was built from that insight. The homepage does not mirror other sites' section order: we surface analytics and predictions before generic tables, generate a daily foot-boll pick from today's real fixture, and attach short editorial context to RSS headlines without republishing full articles — respecting publishers and adding value for visitors.",
-      "Broadcasting in MENA is sensitive. foot-boll does not host unlicensed streams — we list official links (beIN, TOD, FIFA+) and label what is free vs subscription. Transparency builds trust, especially when applying for AdSense.",
-      "For SEO and duplicate content: Google does not reward a second copy of the same fixture table. Value lies in visible original content — essays like this one, team comparison, FIFA player profiles, and AI match analysis. That is where foot-boll invests while competitors stop at scores.",
-      "Follow our weekly foot-boll insights for topics that blend education and sports entertainment: tournament rules, reading metrics, prediction strategy. Send feedback via the contact form — we build the platform with our audience, not as a clone of another site."
-    ],
-    "tags_ar": ["مشجّع عربي", "بث", "محتوى أصلي"],
-    "tags_en": ["Arabic fans", "broadcast", "original content"]
-  },
-  {
-    "slug": "predictions-strategy-foot-boll",
-    "published": "2026-07-12",
-    "title_ar": "استراتيجية التوقعات على foot-boll: كيف تجمع نقاطاً دون مراهنة بمال حقيقي",
-    "title_en": "Prediction strategy on foot-boll: earning points without real-money betting",
-    "excerpt_ar": "مسابقة التوقعات على foot-boll ترفيه رياضي مجاني — ليست مراهنة. نصائح عملية لاستخدام البيانات والصدارة والدوريات الخاصة بذكاء.",
-    "excerpt_en": "foot-boll predictions are free sports entertainment — not gambling. Practical tips for using data, the leaderboard, and private leagues wisely.",
-    "body_ar": [
-      "قبل أن تكتب توقعك على foot-boll، تذكّر القاعدة الأساسية: النقاط افتراضية ولا تُصرف كمال حقيقي. المسابقة مصمّمة للمتعة والمنافسة الرياضية بين الأصدقاء والمجتمع العربي — وليست بديلاً عن مواقع المراهنات، وهذا واضح في شروط الاستخدام وسياسة الخصوصية.",
-      "أفضل المتنبئين لا يخمّنون كل مباراة عشوائياً. راقب مرحلة المجموعات: الفرق التي تأهلت مبكراً قد تُدوّر تشكيلتها في الجولة الأخيرة. استخدم صفحة المنتخب على foot-boll لمعرفة مبارياته القادمة وترتيبه — توقّع التعادل في مباراة «لا شيء عليها» للفريق المتأهل غالباً أذكى من توقّع فوز كبير.",
-      "بعد أول ثلاث جولات، افتح لوحة الإحصائيات ومقارنة المنتخبين. منتخب بمتوسط xG مرتفع لكنه يستقبل أهدافاً قد يفوز 2-1 لا 3-0 — التوقع الدقيق للنتيجة يمنح نقاطاً إضافية في نظام foot-boll. لا تنسَ سؤال المعرفة اليومي في trivia: ثلاث نقاط مجانية قد تغيّر مركزك في الصدارة.",
-      "أنشئ «مجلساً» خاصاً عبر leagues.php لعائلتك أو زملائك. الصدارة العالمية ممتعة، لكن المنافسة المحلية تبقيك مشاركاً حتى لو لم تتصدر العالم. شارك رابط الدوري — backlink حقيقي يفيد الموقع ويجمع مجتمعك في مكان واحد.",
-      "عندما يتوفر تحليل الذكاء الاصطناعي قبل المباراة، اقرأه كزاوية لا كحكم نهائي. التحليل يُولَّد من معطيات عامة ولا يعرف إصابات اللحظة الأخيرة. دمج AI + ترتيب FIFA + سجل البطولة على foot-boll يعطيك توقعاً متماسكاً أكثر من أي مصدر واحد.",
-      "خلاصة: foot-boll يكافئ المتابع المنتظم — يزور المباريات، يقرأ التحليلات، يلعب trivia، ويحسّن توقعاته أسبوعاً بعد أسبوع. هذا بالضبط نوع التفاعل الأصلي الذي يميّز المنصّة عن موقع نتائج ساكن، ويجعل تجربتك تستحق الوقت حتى بعد صافرة النهائي."
-    ],
-    "body_en": [
-      "Before you submit a pick on foot-boll, remember the core rule: points are virtual and cannot be cashed out. The game is sports entertainment and community competition — not a betting substitute, as stated in our terms and privacy policy.",
-      "Strong predictors do not random-guess every fixture. Watch the group stage: teams already qualified may rotate in the final round. Use each national team page on foot-boll for fixtures and standings — predicting a draw when a qualified side has nothing to play for is often smarter than a big win scoreline.",
-      "After three rounds, open the stats dashboard and team comparison. A team with high xG but leaky defense may win 2-1 not 3-0 — exact scorelines earn bonus points in foot-boll's system. Do not skip daily trivia: three free points can move your leaderboard rank.",
-      "Create a private league via leagues.php for family or coworkers. The global board is fun, but local rivalry keeps you engaged even if you never top the world. Share your league link — a real backlink that builds community in one place.",
-      "When AI pre-match analysis is available, treat it as one angle, not a final verdict. It is generated from public facts and cannot know last-minute injuries. Combining AI + FIFA rank + tournament record on foot-boll beats any single source.",
-      "Bottom line: foot-boll rewards consistent fans — visiting matches, reading analysis, playing trivia, and improving picks week by week. That original engagement is what sets the platform apart from a static score site and keeps the experience worth your time after the final whistle."
-    ],
-    "tags_ar": ["توقعات", "صدارة", "استراتيجية"],
-    "tags_en": ["predictions", "leaderboard", "strategy"]
-  }
+    {
+        "slug": "2026-format-48-teams",
+        "published": "2026-07-06",
+        "title_ar": "كأس العالم 2026: لماذا يغيّر توسّع البطولة إلى 48 منتخباً قواعد اللعبة؟",
+        "title_en": "World Cup 2026: How expanding to 48 teams changes the tournament",
+        "excerpt_ar": "من 32 إلى 48 منتخباً — أكبر نسخة في التاريخ. نشرح الفروقات الجوهرية في المجموعات، التأهل، والإيقاع الزمني للبطولة، وما يعنيه ذلك للمشجّع العربي على foot-boll.",
+        "excerpt_en": "From 32 to 48 teams — the biggest edition ever. We explain groups, qualification paths, pacing, and what it means for Arabic-speaking fans on foot-boll.",
+        "body_ar": [
+            "لأول مرة في تاريخ كأس العالم، ستشارك 48 منتخباً في نسخة واحدة. هذا ليس رقماً شكلياً:هو تغيير جذري في هندسة البطولة من اليوم الأول. بدلاً من ثماني مجموعات بأربعة فرق، ننتقل إلى اثنتي عشرة مجموعة بأربعة منتخبات في كل منها. يتأهل أول فريقين من كل مجموعة مباشرة، ثم يُختار ثمانية من أفضل المراكز الثالثة لإكمال دور الـ32. هذا التصميم يمنح فرصاً أكبر للمنتخبات المتوسطة، لكنه يزيد أيضاً عدد المباريات ويُطيل مدة البطولة.",
+            "على foot-boll نتابع هذا التأثير رقماً: كل نتيجة في المجموعات تغيّر حسابات «أفضل ثالث»، وهي معادلة لا يفهمها كثير من المشجّعين دون جدول واضح. لذلك نعرض ترتيب المجموعات مع ترتيب المراكز الثالثة جنباً إلى جنب — حتى ترى فوراً من يقترب من التأهل ومن يحتاج فوزاً بفارق أهداف. في نسخة 2022 كان التأهل أبسط نسبياً؛ في 2026 السيناريوهات المتشعبة جزء من متعة المتابعة.",
+            "التوسّع الجغرافي مهم أيضاً: استضافة ثلاث دول (كندا، المكسيك، الولايات المتحدة) تعني فروق توقيت كبيرة للمشجّع العربي. مباراة في الساحل الغربي الأمريكي قد تبدأ فجراً بتوقيت الخليج، وأخرى في المكسيك قد تكون مساءً مريحة. foot-boll يعرض كل المواعيد بتوقيتك المحلي تلقائياً — ميزة بسيطة لكنها حاسمة عند 104 مباراة محتملة.",
+            "من زاوية التحليل، البطولة الأوسع تعني تنوّعاً أكبر في أساليب اللعب: منتخبات تعتمد الضغط العالي مقابل أخرى تبني من الخلف، وأطراف آسيوية وأفريقية وأمريكية لاتينية بملفات بدنية مختلفة. تقارير FIFA على foot-boll — الاستحواذ، xG، مسافة الركض — تساعدك على مقارنة هذا التنوّع بعينٍ تقنية، لا بانطباع المشجّع فقط.",
+            "إذا كنت تبني توقعاتك على foot-boll، فكّر في أن دور المجموعات أطول وأكثر حساسية: التعادل قد يكون كافياً لمنتخب في مجموعة ضعيفة، بينما منتخب آخر يحتاج فوزين متتاليين. استخدم صفحة المقارنة بين منتخبين ولوحة الإحصائيات قبل أن تُقفل توقعك — البيانات المتاحة بعد أول جولتين غالباً أوضح من التخمين المسبق.",
+            "خلاصة foot-boll: 2026 ليست مجرد مونديال أكبر، بل بنية مختلفة تستحق أدوات مختلفة. نحن نبني هذه الأدوات — جداول، تحليل، مقارنات، وتوقعات — بلغة عربية وبتجربة مصمّمة لجمهورنا، لا منسوخة من مواقع نتائج عامة."
+        ],
+        "body_en": [
+            "For the first time, 48 national teams will take part in a single World Cup. That is not a cosmetic change: it reshapes the tournament from day one. Instead of eight groups of four, there are twelve groups of four. The top two from each group advance directly, then the eight best third-place teams complete the Round of 32. More nations get a realistic shot, but the schedule grows and the group stage becomes a puzzle.",
+            "On foot-boll we track that puzzle in numbers. Every group result shifts the best-third-place table — a calculation many fans miss without a clear standings view. We show group tables alongside third-place ranking so you can see who is safe and who needs a big win. In 2022 qualification paths were simpler; in 2026 branching scenarios are part of the drama.",
+            "Geography matters too: hosting across Canada, Mexico, and the USA creates large time gaps for Arabic-speaking fans. A west-coast kickoff may land at dawn in the Gulf; a Mexico City match might be a comfortable evening. foot-boll converts every fixture to your local time automatically — a small feature that matters when there can be 104 matches.",
+            "Analytically, a wider field means more tactical diversity: high press vs low block, different physical profiles from Asia, Africa, and the Americas. FIFA reports on foot-boll — possession, xG, sprint distance — let you compare that diversity with data, not gut feeling alone.",
+            "If you play predictions on foot-boll, remember the group stage is longer and more sensitive: a draw can suit one team while another needs consecutive wins. Use team comparison and the stats dashboard before locking picks — after two rounds, the numbers usually beat pre-tournament guesses.",
+            "Bottom line: 2026 is not just a bigger World Cup but a different structure that deserves different tools. foot-boll builds those tools — schedules, analysis, comparisons, and predictions — in Arabic for our audience, not copied from generic score sites."
+        ],
+        "tags_ar": [
+            "تحليل",
+            "قوانين",
+            "48 منتخباً"
+        ],
+        "tags_en": [
+            "analysis",
+            "format",
+            "48 teams"
+        ]
+    },
+    {
+        "slug": "how-to-read-fifa-stats",
+        "published": "2026-07-08",
+        "title_ar": "دليل foot-boll: كيف تقرأ إحصائيات FIFA دون أن تُضلّلك الأرقام؟",
+        "title_en": "foot-boll guide: How to read FIFA stats without being misled",
+        "excerpt_ar": "الاستحواذ ليس دائماً فوزاً، وxG لا يضمن الأهداف. شرح عملي لأهم المؤشرات في تقارير FIFA على foot-boll وكيف تربطها بنتيجة المباراة.",
+        "excerpt_en": "Possession is not always victory, and xG does not guarantee goals. A practical guide to FIFA metrics on foot-boll and how they link to the scoreline.",
+        "body_ar": [
+            "عندما تفتح صفحة مباراة على foot-boll بعد صافرة النهاية، قد تجد تقرير FIFA التفصيلي: استحواذ، تسديدات، أهداف متوقعة (xG)، تمريرات، اختراق خطوط، ومسافة مقطوعة. هذه ليست أرقاماً للزينة — لكنها تحتاج قراءة سياقية. الخطأ الشائع: الاعتقاد أن الاستحواذ 62% يعني أن الفريق «استحق» الفوز. في كثير من المباريات الكبرى، الفريق المنتصر يترك الكرة ويضرب على المرتدات.",
+            "xG (الأهداف المتوقعة) أقرب إلى «جودة الفرص» منها إلى التنبؤ بالنتيجة. منتخب سجّل هدفين من فرصتين كبيرتين قد يظهر xG منخفضاً مقارنة بمن أضاع خمس تسديدات من داخل المنطقة. على foot-boll قارن xG مع التسديدات على المرمى — الفجوة بينهما تخبرك هل الهزيمة كانت حظاً أم إهداراً.",
+            "مؤشرات الحركة — المسافة الكلية، الركض السريع، أعلى سرعة — تفسّر لماذا يبدو فريق متعباً في الدقيقة 80 رغم أن النتيجة متقاربة. صفحة البيانات البدنية على foot-boll ترتّب اللاعبين وتربط كل رقم بملف تقني. إذا رأيت مدافعاً قطع 11 كم في مباراة واحدة، فتوقّع أن مركزه في الملعب يؤثر على خطورة المرمى في الشوط الثاني.",
+            "اختراق الخطوط والتمريرات في الثلث الأخير يكشفان أسلوب الهجوم: بناء بطيء أم اختراق مباشر؟ منتخب يعتمد العرضيات سترتفع عنده أرقام العرض والاستلامات في الثلث الأخير. استخدم صفحة المقارنة بين منتخبين لرؤية المتوسطات عبر عدة مباريات — مباراة واحدة قد تكون شاذة.",
+            "نصيحة foot-boll العملية: ابدأ بالنتيجة والأحداث (أهداف، بطاقات، تبديلات)، ثم ارجع للإحصائيات لتأكيد أو نفي انطباعك. إن توفّر تحليل الذكاء الاصطناعي للمباراة، اقرأه كملخّص تحريري — لكن ارجع دائماً للأرقام الرسمية عند الجدل. هذا المنهج يجعلك مشجّعاً أذكى، لا مجرد متابع للنتيجة.",
+            "هدفنا في foot-boll ليس إغراقك بجداول، بل ترجمة تقارير FIFA إلى تجربة عربية قابلة للفهم: أشرطة مقارنة، ملفات لاعبين، ولوحة إحصائيات تفاعلية. المحتوى التحليلي هنا مكتوب بأيدينا — لا يُنسَخ من مواقع أخرى — لأن طريقة القراءة جزء من القيمة التي نضيفها فوق البيانات الخام."
+        ],
+        "body_en": [
+            "After full time on foot-boll you may see a detailed FIFA report: possession, shots, expected goals (xG), passes, line breaks, and distance covered. These are not vanity numbers — but they need context. A common mistake is assuming 62% possession means a team deserved to win. In many big games the winner sits deep and attacks on the break.",
+            "xG measures chance quality more than final score. A side scoring twice from two big chances can show lower xG than a side missing five shots inside the box. On foot-boll compare xG with shots on target — the gap tells you whether defeat was bad luck or wasteful finishing.",
+            "Movement metrics — total distance, sprints, top speed — explain why a team fades after minute 80 despite a close scoreline. The physical data explorer ranks players and links each number to a technical profile. If a centre-back covers 11 km in one match, expect positional risk late on.",
+            "Line breaks and final-third receptions reveal attacking style: slow build or direct penetration? A cross-heavy team will spike crossing and reception numbers. Use team comparison for multi-match averages — one game can be an outlier.",
+            "Practical foot-boll workflow: start with the scoreline and events (goals, cards, subs), then use stats to confirm or challenge your impression. If AI analysis is available, treat it as an editorial summary — but lean on official numbers for arguments. That habit makes you a smarter fan, not just a score checker.",
+            "Our goal is not to drown you in tables but to translate FIFA reports into an understandable Arabic experience: comparison bars, player profiles, and an interactive dashboard. This analytical content is written in-house — not copied — because how you read the game is part of foot-boll's added value."
+        ],
+        "tags_ar": [
+            "FIFA",
+            "xG",
+            "تحليل تقني"
+        ],
+        "tags_en": [
+            "FIFA",
+            "xG",
+            "technical analysis"
+        ]
+    },
+    {
+        "slug": "arab-fan-hub-2026",
+        "published": "2026-07-10",
+        "title_ar": "لماذا يحتاج المشجّع العربي مركزاً رقمياً خاصاً بمونديال 2026؟",
+        "title_en": "Why Arabic fans need a dedicated digital hub for World Cup 2026",
+        "excerpt_ar": "التوقيت، اللغة، قنوات البث، والسياق الثقافي — أربعة تحديات تجعل متابعة المونديال من المنطقة العربية مختلفة. كيف يعالجها foot-boll.",
+        "excerpt_en": "Time zones, language, broadcast rights, and cultural context — four challenges for following the tournament from the Arab world. How foot-boll addresses them.",
+        "body_ar": [
+            "مونديال 2026 هو أول كأس عالم بـ48 منتخباً يُقام عبر قارتين أمريكيتين بفارق زمني ضخم عن الشرق الأوسط. المشجّع في الرياض أو القاهرة أو الدار البيضاء لا يبحث فقط عن «النتيجة» — يبحث عن: متى أنام؟ أين أشاهد قانونياً؟ ومن يشرح لي ما حدث بالعربية دون ترجمة آلية باردة؟",
+            "مواقع النتائج العالمية تنجح في الجدول والوقت، لكنها نادراً ما تقدّم طبقة عربية أصيلة: سياق للأخبار يربط الخبر بمنتخب عربي أو مباراة محددة، أو تحليلاً يفهم أن جماهيرنا تهتم بمنتخبات محددة بعمق (المغرب، السعودية، تونس، مصر...) إلى جانب الكبار العالميين.",
+            "foot-boll بُني من هذا الفهم. الصفحة الرئيسية لا تكرّر ترتيباً افتراضياً لمواقع أخرى: نضع أدوات التحليل والتوقعات قبل الجداول التقليدية، ونولّد «رأي foot-boll اليوم» من مباراة اليوم الفعلية، ونربط كل خبر RSS بسياق تحريري قصير لا يُعيد نشر المقال الأصلي — احتراماً لحقوق الناشرين وقيمة لزائرنا.",
+            "البث المباشر قضية حساسة في MENA. foot-boll لا يستضيف بثاً غير مرخّص — نعرض روابط رسمية (beIN، TOD، FIFA+) مع توضيح ما هو مجاني وما يتطلّب اشتراكاً. الشفافية هنا جزء من ثقة المستخدم، خاصة عند تقديم طلب AdSense لاحقاً.",
+            "من ناحية SEO والمحتوى المكرر: جوجل لا يكافئ نسخة ثانية من نفس الجدول. القيمة في المحتوى الأصلي المرئي — مقالات مثل التي تقرأها الآن، مقارنة منتخبين، ملفات لاعبين FIFA، وتحليل ذكاء اصطناعي لكل مباراة. هذا ما نستثمر فيه على foot-boll بينما يقتصر المنافسون على النتائج فقط.",
+            "إن كنت تتابعنا أسبوعياً عبر قسم «تحليلات foot-boll»، ستجد موضوعات تجمع بين التعليم والترفيه الرياضي: قوانين البطولة، قراءة الأرقام، استراتيجيات التوقع. شاركنا رأيك عبر نموذج التواصل — نبني المنصّة مع جمهورنا، لا لمجرد نسخ موقع آخر."
+        ],
+        "body_en": [
+            "World Cup 2026 is the first 48-team edition across North America with huge time gaps from the Middle East. A fan in Riyadh, Cairo, or Casablanca needs more than a scoreline: When should I sleep? Where can I watch legally? Who explains what happened in proper Arabic, not cold machine translation?",
+            "Global score sites excel at tables and kickoff times but rarely offer an authentic Arabic layer: news context tied to Arab teams or specific fixtures, analysis that knows our audiences care deeply about Morocco, Saudi Arabia, Tunisia, Egypt, as well as the global giants.",
+            "foot-boll was built from that insight. The homepage does not mirror other sites' section order: we surface analytics and predictions before generic tables, generate a daily foot-boll pick from today's real fixture, and attach short editorial context to RSS headlines without republishing full articles — respecting publishers and adding value for visitors.",
+            "Broadcasting in MENA is sensitive. foot-boll does not host unlicensed streams — we list official links (beIN, TOD, FIFA+) and label what is free vs subscription. Transparency builds trust, especially when applying for AdSense.",
+            "For SEO and duplicate content: Google does not reward a second copy of the same fixture table. Value lies in visible original content — essays like this one, team comparison, FIFA player profiles, and AI match analysis. That is where foot-boll invests while competitors stop at scores.",
+            "Follow our weekly foot-boll insights for topics that blend education and sports entertainment: tournament rules, reading metrics, prediction strategy. Send feedback via the contact form — we build the platform with our audience, not as a clone of another site."
+        ],
+        "tags_ar": [
+            "مشجّع عربي",
+            "بث",
+            "محتوى أصلي"
+        ],
+        "tags_en": [
+            "Arabic fans",
+            "broadcast",
+            "original content"
+        ]
+    },
+    {
+        "slug": "predictions-strategy-foot-boll",
+        "published": "2026-07-12",
+        "title_ar": "استراتيجية التوقعات على foot-boll: كيف تجمع نقاطاً دون مراهنة بمال حقيقي",
+        "title_en": "Prediction strategy on foot-boll: earning points without real-money betting",
+        "excerpt_ar": "مسابقة التوقعات على foot-boll ترفيه رياضي مجاني — ليست مراهنة. نصائح عملية لاستخدام البيانات والصدارة والدوريات الخاصة بذكاء.",
+        "excerpt_en": "foot-boll predictions are free sports entertainment — not gambling. Practical tips for using data, the leaderboard, and private leagues wisely.",
+        "body_ar": [
+            "قبل أن تكتب توقعك على foot-boll، تذكّر القاعدة الأساسية: النقاط افتراضية ولا تُصرف كمال حقيقي. المسابقة مصمّمة للمتعة والمنافسة الرياضية بين الأصدقاء والمجتمع العربي — وليست بديلاً عن مواقع المراهنات، وهذا واضح في شروط الاستخدام وسياسة الخصوصية.",
+            "أفضل المتنبئين لا يخمّنون كل مباراة عشوائياً. راقب مرحلة المجموعات: الفرق التي تأهلت مبكراً قد تُدوّر تشكيلتها في الجولة الأخيرة. استخدم صفحة المنتخب على foot-boll لمعرفة مبارياته القادمة وترتيبه — توقّع التعادل في مباراة «لا شيء عليها» للفريق المتأهل غالباً أذكى من توقّع فوز كبير.",
+            "بعد أول ثلاث جولات، افتح لوحة الإحصائيات ومقارنة المنتخبين. منتخب بمتوسط xG مرتفع لكنه يستقبل أهدافاً قد يفوز 2-1 لا 3-0 — التوقع الدقيق للنتيجة يمنح نقاطاً إضافية في نظام foot-boll. لا تنسَ سؤال المعرفة اليومي في trivia: ثلاث نقاط مجانية قد تغيّر مركزك في الصدارة.",
+            "أنشئ «مجلساً» خاصاً عبر leagues.php لعائلتك أو زملائك. الصدارة العالمية ممتعة، لكن المنافسة المحلية تبقيك مشاركاً حتى لو لم تتصدر العالم. شارك رابط الدوري — backlink حقيقي يفيد الموقع ويجمع مجتمعك في مكان واحد.",
+            "عندما يتوفر تحليل الذكاء الاصطناعي قبل المباراة، اقرأه كزاوية لا كحكم نهائي. التحليل يُولَّد من معطيات عامة ولا يعرف إصابات اللحظة الأخيرة. دمج AI + ترتيب FIFA + سجل البطولة على foot-boll يعطيك توقعاً متماسكاً أكثر من أي مصدر واحد.",
+            "خلاصة: foot-boll يكافئ المتابع المنتظم — يزور المباريات، يقرأ التحليلات، يلعب trivia، ويحسّن توقعاته أسبوعاً بعد أسبوع. هذا بالضبط نوع التفاعل الأصلي الذي يميّز المنصّة عن موقع نتائج ساكن، ويجعل تجربتك تستحق الوقت حتى بعد صافرة النهائي."
+        ],
+        "body_en": [
+            "Before you submit a pick on foot-boll, remember the core rule: points are virtual and cannot be cashed out. The game is sports entertainment and community competition — not a betting substitute, as stated in our terms and privacy policy.",
+            "Strong predictors do not random-guess every fixture. Watch the group stage: teams already qualified may rotate in the final round. Use each national team page on foot-boll for fixtures and standings — predicting a draw when a qualified side has nothing to play for is often smarter than a big win scoreline.",
+            "After three rounds, open the stats dashboard and team comparison. A team with high xG but leaky defense may win 2-1 not 3-0 — exact scorelines earn bonus points in foot-boll's system. Do not skip daily trivia: three free points can move your leaderboard rank.",
+            "Create a private league via leagues.php for family or coworkers. The global board is fun, but local rivalry keeps you engaged even if you never top the world. Share your league link — a real backlink that builds community in one place.",
+            "When AI pre-match analysis is available, treat it as one angle, not a final verdict. It is generated from public facts and cannot know last-minute injuries. Combining AI + FIFA rank + tournament record on foot-boll beats any single source.",
+            "Bottom line: foot-boll rewards consistent fans — visiting matches, reading analysis, playing trivia, and improving picks week by week. That original engagement is what sets the platform apart from a static score site and keeps the experience worth your time after the final whistle."
+        ],
+        "tags_ar": [
+            "توقعات",
+            "صدارة",
+            "استراتيجية"
+        ],
+        "tags_en": [
+            "predictions",
+            "leaderboard",
+            "strategy"
+        ]
+    },
+    {
+        "slug": "arab-kickoff-times-2026",
+        "published": "2026-07-14",
+        "title_ar": "دليل foot-boll لتوقيت مباريات 2026: كيف تتابع المونديال من الخليج والمغرب العربي؟",
+        "title_en": "foot-boll kickoff guide 2026: following the World Cup from the Gulf and Maghreb",
+        "excerpt_ar": "فروق التوقيت بين أمريكا الشمالية والمنطقة العربية قد تصل إلى عشر ساعات. كيف يحوّل foot-boll كل موعد إلى توقيتك المحلي، ومتى تنام ومتى تبقى مستيقظاً.",
+        "excerpt_en": "Time gaps between North America and the Arab world can reach ten hours. How foot-boll converts every kickoff to your local time — and when to sleep or stay up.",
+        "body_ar": [
+            "مونديال 2026 يُلعب عبر كندا والمكسيك والولايات المتحدة — ثلاث مناطق زمنية واسعة. المشجّع في الرياض أو عمّان أو الدار البيضاء لا ينظر إلى «8 مساءً بتوقيت نيويورك»؛ ينظر إلى ساعة هاتفه. فرق التوقيت الشرقي الأمريكي عن الخليج قد يتجاوز سبع ساعات، والساحل الغربي يزيد الفجوة أكثر.",
+            "على foot-boll كل بطاقة مباراة وكل جدول يُعرض بتوقيتك المحلي تلقائياً عبر متصفحك. لا حاجة لتحويل يدوي بين EDT وPDT وCST. هذه ميزة بسيطة تقنياً، لكنها حاسمة عندما يكون لديك أكثر من مئة مباراة محتملة في البطولة.",
+            "نصيحة عملية: صنّف المباريات إلى ثلاث فئات — مريحة مساءً، متأخرة بعد منتصف الليل، وفجرية. استخدم زر التذكير في صفحة المباراة للمباريات المهمة حتى لا تفوّت صافرة البداية وأنت نائم.",
+            "إن كنت تلعب التوقعات على foot-boll، راقب أيضاً إرهاق المنتخبات بعد سفر عابر للقارات داخل أمريكا الشمالية. مباراة ظهيرة بتوقيتك قد تكون مساءً للفريق المضيف — السياق الزمني جزء من قراءة اللقاء لا مجرد رقم في الجدول.",
+            "خلاصة foot-boll: المتابعة الذكية تبدأ بمعرفة متى تلعب، لا فقط من يلعب. نبني التجربة حول المشجّع العربي أولاً — التوقيت المحلي جزء من هويتنا التحليلية، لا إضافة شكلية."
+        ],
+        "body_en": [
+            "World Cup 2026 spans Canada, Mexico, and the USA — three wide time zones. A fan in Riyadh, Amman, or Casablanca does not think in “8 p.m. New York time”; they look at their phone clock. The gap from US Eastern to the Gulf can exceed seven hours; the West Coast widens it further.",
+            "On foot-boll every match card and schedule shows your local time automatically via the browser. No manual EDT/PDT/CST conversion. Technically simple — practically essential across 100+ possible fixtures.",
+            "Practical tip: sort matches into three buckets — comfortable evenings, late after midnight, and dawn kickoffs. Use the remind button on match pages for must-watch games so you do not miss kickoff while asleep.",
+            "If you play predictions on foot-boll, also watch travel fatigue after cross-continent trips inside North America. A midday kickoff for you may be evening for the home side — timing context is part of reading the fixture, not just a table number.",
+            "foot-boll bottom line: smart viewing starts with knowing when the game is, not only who plays. We build for Arabic fans first — local time is part of our analytics identity, not a cosmetic extra."
+        ],
+        "tags_ar": [
+            "توقيت",
+            "مشجّع عربي",
+            "تنبيهات"
+        ],
+        "tags_en": [
+            "kickoff",
+            "Arabic fans",
+            "reminders"
+        ]
+    },
+    {
+        "slug": "best-third-place-2026",
+        "published": "2026-07-15",
+        "title_ar": "كيف تقرأ «أفضل ثالث» في مجموعات كأس العالم 2026 على foot-boll؟",
+        "title_en": "How to read best third-place teams in World Cup 2026 groups on foot-boll",
+        "excerpt_ar": "نظام 48 منتخباً يجعل المراكز الثالثة حاسمة. شرح عملي لمعادلة التأهل وكيف يعرضها foot-boll بجانب ترتيب المجموعات.",
+        "excerpt_en": "The 48-team format makes third place decisive. A practical guide to the qualification puzzle and how foot-boll shows it beside group tables.",
+        "body_ar": [
+            "في نسخة 32 فريقاً كان التأهل أبسط نسبياً: أول وثاني كل مجموعة. في 2026 يتأهل أول وثاني اثنتي عشرة مجموعة، ثم تُختار ثمانية من أفضل المراكز الثالثة لدور الـ32. هذا يعني أن نتيجة في مجموعة «بعيدة» قد تغيّر حظوظ منتخبك دون أن تلعب.",
+            "المعايير المعتادة لترتيب أفضل ثالث تشمل النقاط ثم فارق الأهداف ثم الأهداف المسجّلة — وقد تُحسم بعض الحالات بقرعة أو لوائح FIFA الرسمية. المهم للمشجّع: لا تكتفِ بجدول مجموعتك.",
+            "على foot-boll نعرض ترتيب المجموعات مع متابعة المراكز الثالثة حتى ترى من يقترب من «منطقة الأمان» بين الثوالث. افتح صفحة المجموعات بعد كل جولة — السيناريوهات تتبدّل بسرعة في الجولتين الأخيرتين.",
+            "لتوقعاتك: منتخب يحتاج فوزاً كبيراً لرفع فارق الأهداف يختلف عن منتخب يكفيه التعادل لدخول قائمة أفضل ثالث. استخدم صفحة المنتخب ومقارنة الفريقين قبل قفل التوقع.",
+            "foot-boll لا يخترع القانون؛ نحن نترجمه إلى واجهة عربية مقروءة. فهم أفضل ثالث جزء من متعة 2026 — وبدون أدوات واضحة يتحوّل إلى لغز محبط."
+        ],
+        "body_en": [
+            "In the 32-team era qualification was simpler: top two in each group. In 2026 the top two from twelve groups advance, then eight of the best third-place teams complete the Round of 32. A result in a “distant” group can change your team’s odds without them playing.",
+            "Typical ranking criteria for best thirds include points, goal difference, then goals scored — some edge cases follow official FIFA regulations or drawing of lots. Fan takeaway: do not only watch your own group table.",
+            "On foot-boll we show group standings alongside third-place tracking so you see who is entering the safe zone among thirds. Open the groups page after every matchday — scenarios swing fast in the final two rounds.",
+            "For predictions: a side that needs a blowout to lift goal difference is different from one that only needs a draw to enter the best-third pool. Use the team page and comparison tools before locking a pick.",
+            "foot-boll does not invent the rulebook; we translate it into a readable Arabic interface. Understanding best thirds is part of the 2026 fun — without clear tools it becomes a frustrating puzzle."
+        ],
+        "tags_ar": [
+            "مجموعات",
+            "تأهل",
+            "قوانين"
+        ],
+        "tags_en": [
+            "groups",
+            "qualification",
+            "rules"
+        ]
+    },
+    {
+        "slug": "when-to-predict-draw",
+        "published": "2026-07-16",
+        "title_ar": "متى تختار التعادل في توقعات foot-boll؟ دليل ترفيهي بلا مراهنة",
+        "title_en": "When to pick a draw on foot-boll predictions — entertainment, not betting",
+        "excerpt_ar": "التعادل ليس تهرباً من القرار. حالات عملية في دور المجموعات والأدوار الإقصائية تساعدك على توقّع أذكى — مع التذكير أن النقاط افتراضية فقط.",
+        "excerpt_en": "A draw is not ducking the call. Practical group-stage and knockout cases for smarter picks — remembering points are virtual only.",
+        "body_ar": [
+            "قبل أي نصيحة: توقعات foot-boll ترفيه رياضي مجاني. النقاط لا تُصرف مالاً، والموقع ليس للمراهنة. نكتب هذا الدليل لمن يريد منافسة أصدقائه بذكاء، لا لمن يبحث عن «مضمون».",
+            "في دور المجموعات، التعادل خيار قوي عندما يتأهل منتخب مبكراً ويلعب الجولة الأخيرة بلا حافز هجومي، أو عندما يتقابل منتخبان يحتاج كلاهما نقطة واحدة فقط. راجع ترتيب المجموعة على foot-boll قبل القفل.",
+            "في الأدوار الإقصائية يقلّ التعادل في الوقت الأصلي إن كان النظام يذهب للأشواط — لكن إن كان توقعك على نتيجة 90 دقيقة فقط، فالكثير من المباريات الكبرى تبقى 1-1 أو 0-0 حتى وقت متأخر. راقب أسلوب الفريقين في صفحة المقارنة.",
+            "علامات تحذيرية ضد التعادل: منتخب يحتاج فوزاً بفارق أهداف كبير، أو لقاء بين هجوم قوي ودفاع مهتز حسب xG الأخير على foot-boll. لا تُعامل التعادل كخيار افتراضي لكل المباريات المتقاربة.",
+            "اجمع التعادل الانتقائي مع سؤال اليوم والدوريات الخاصة — الصدارة تكافئ الانتظام لا الحظ مرة واحدة. هذا بالضبط نوع الاستخدام الذي صُممت له مسابقة foot-boll."
+        ],
+        "body_en": [
+            "First: foot-boll predictions are free sports entertainment. Points are not cash, and the site is not for betting. This guide is for smarter friend leagues — not “sure things”.",
+            "In the group stage, a draw is strong when a side is already qualified and rotates in the final round, or when two teams each need only one point. Check the group table on foot-boll before locking.",
+            "In knockouts, draws in regulation may be rarer if extra time follows — but if your pick is for 90 minutes only, many big games sit at 1-1 or 0-0 late. Study styles on the comparison page.",
+            "Warning signs against a draw: a team that needs a big win on goal difference, or a clash between strong attack and shaky defense per recent xG on foot-boll. Do not treat draw as the default for every tight match.",
+            "Combine selective draws with daily trivia and private leagues — leaderboards reward consistency, not one lucky night. That is exactly the usage foot-boll’s game was built for."
+        ],
+        "tags_ar": [
+            "توقعات",
+            "تعادل",
+            "ترفيه"
+        ],
+        "tags_en": [
+            "predictions",
+            "draw",
+            "entertainment"
+        ]
+    },
+    {
+        "slug": "arab-teams-digital-watch",
+        "published": "2026-07-17",
+        "title_ar": "المنتخبات العربية في مونديال 2026: ماذا تتابع رقمياً على foot-boll؟",
+        "title_en": "Arab national teams at World Cup 2026: what to track digitally on foot-boll",
+        "excerpt_ar": "من صفحة المنتخب إلى الملفات البدنية وتقارير FIFA — قائمة متابعة عملية للجماهير العربية أثناء البطولة.",
+        "excerpt_en": "From team pages to physical profiles and FIFA reports — a practical watchlist for Arabic fans during the tournament.",
+        "body_ar": [
+            "جماهير المنطقة تتابع منتخباتها بشغف مختلف عن متابعة «الكبار» فقط. على foot-boll ابدأ بصفحة المنتخب: المباريات القادمة، الترتيب في المجموعة، وروابط سريعة للإحصائيات عند توفرها.",
+            "بعد كل مباراة، إن ظهر تقرير FIFA، انظر إلى الاستحواذ وxG والضغط لا إلى النتيجة وحدها. فوز بـxG منخفض قد يكون كفاءة إنهاء؛ خسارة بـxG مرتفع قد تكون إهداراً — وهذا يغيّر نقاش المشجّعين بعد الصافرة.",
+            "صفحة البيانات البدنية وملفات اللاعبين تساعدك على فهم من يركض أكثر ومن يظهر في الثلث الأخير. هذه الطبقة التقنية نادرة في مواقع النتائج العربية التقليدية، وهي جزء من تمييز foot-boll.",
+            "استخدم المقارنة بين منتخبك ومنافسه قبل لقاء حاسم، واربط ذلك بتوقعك في المسابقة الترفيهية. شارك رابط المباراة مع أصدقائك — المتابعة الجماعية أبسط عندما تكون الروابط عربية وواضحة.",
+            "هدفنا: أن يجد المشجّع العربي أداة رقمية تحترم لغته واهتمامه، لا ترجمة باردة لجدول إنجليزي. هذه قائمة المتابعة التي نوصي بها طوال 2026 على foot-boll."
+        ],
+        "body_en": [
+            "Regional fans follow their national teams with a different intensity than only watching the global giants. On foot-boll start with the team page: upcoming fixtures, group position, and quick links to stats when available.",
+            "After each match, if a FIFA report appears, look at possession, xG, and pressing — not only the scoreline. A win with low xG may be clinical finishing; a loss with high xG may be waste — that changes the post-match debate.",
+            "Physical data and player profiles help you see who covers ground and who appears in the final third. That technical layer is rare on traditional Arabic score sites and is part of foot-boll’s edge.",
+            "Use team comparison before a decisive fixture and tie it to your entertainment prediction. Share the match link with friends — group watching is easier when links are clear and Arabic-first.",
+            "Our goal: Arabic fans deserve a digital tool that respects their language and focus, not a cold translation of an English table. This is the watchlist we recommend throughout 2026 on foot-boll."
+        ],
+        "tags_ar": [
+            "منتخبات عربية",
+            "FIFA",
+            "متابعة"
+        ],
+        "tags_en": [
+            "Arab teams",
+            "FIFA",
+            "watchlist"
+        ]
+    },
+    {
+        "slug": "news-context-not-republication",
+        "published": "2026-07-18",
+        "title_ar": "لماذا لا يعيد foot-boll نشر الأخبار كاملة؟ حقوق الناشرين وقيمة الزائر",
+        "title_en": "Why foot-boll does not republish full news articles — publisher rights and visitor value",
+        "excerpt_ar": "عنوان + سياق تحريري + رابط للمصدر. منهجنا يحترم حقوق النشر ويعطي المشجّع خريطة عربية للخبر داخل البطولة.",
+        "excerpt_en": "Headline + editorial context + link to source. Our approach respects copyright and maps each story to the tournament for fans.",
+        "body_ar": [
+            "كثير من المواقع تنسخ مقالات الوكالات بالكامل لجذب الزيارات. هذا يضرّ الناشر الأصلي ويعرّض الموقع لمشاكل سياسات الإعلانات وحقوق النشر. foot-boll يرفض هذا المسار عمداً.",
+            "ما نفعله: نسحب عناوين من مصادر RSS عامة، ثم نضيف سياقاً قصيراً يربط الخبر بمنتخب أو مباراة أو مرحلة في كأس العالم 2026 على منصتنا، ونوجّه القارئ للمصدر للقراءة الكاملة.",
+            "الفائدة للزائر العربي: يعرف بسرعة لماذا يهمّه الخبر الآن، وأين يتابعه داخل foot-boll (صفحة مباراة، منتخب، أو مجموعة)، دون أن نسرق عمل غرف الأخبار.",
+            "الفائدة للمنصّة: محتوى أصلي قابل للدفاع عنه أمام المراجعين، وتجربة أوضح من «مزرعة مقالات». راجع أيضاً صفحة المنهجية وسياسة الخصوصية لفهم إطارنا القانوني والأخلاقي.",
+            "إن كنت ناشراً وتريد تصحيحاً أو إزالة سياق مرتبط بمادتك، راسلنا عبر صفحة التواصل — نتعامل بجدية مع حقوق المحتوى."
+        ],
+        "body_en": [
+            "Many sites scrape full agency articles for traffic. That harms original publishers and creates advertising-policy and copyright risk. foot-boll deliberately rejects that path.",
+            "What we do: pull headlines from public RSS sources, add a short context linking the story to a team, match, or World Cup 2026 stage on our platform, and send readers to the source for the full article.",
+            "Value for Arabic visitors: they quickly see why the story matters now and where to follow it inside foot-boll (match, team, or group page) — without stealing newsroom work.",
+            "Value for the platform: defensible original framing for reviewers, and a clearer experience than a content farm. See also our methodology and privacy pages for the legal and ethical frame.",
+            "If you are a publisher and need a correction or removal of context tied to your piece, contact us via the contact page — we take content rights seriously."
+        ],
+        "tags_ar": [
+            "أخبار",
+            "حقوق نشر",
+            "منهجية"
+        ],
+        "tags_en": [
+            "news",
+            "copyright",
+            "methodology"
+        ]
+    },
+    {
+        "slug": "fan-guide-short-2026",
+        "published": "2026-07-19",
+        "title_ar": "دليل المشجّع المختصر لمونديال 2026 على foot-boll: مدن، تنقّل، وروابط رسمية",
+        "title_en": "Short fan guide to World Cup 2026 on foot-boll: cities, travel, official links",
+        "excerpt_ar": "لست بحاجة لدليل سفر من مئة صفحة لتبدأ. هذه خريطة سريعة داخل foot-boll مع رابط الدليل الكامل والمدن المستضيفة.",
+        "excerpt_en": "You do not need a hundred-page travel manual to start. A quick map inside foot-boll with the full fan guide and host cities.",
+        "body_ar": [
+            "إن كنت تخطط للسفر أو حتى للمتابعة عن بُعد بذكاء، ابدأ من ثلاث صفحات على foot-boll: خريطة المدن، الملاعب، ودليل المشجّع. معاً تعطيك صورة عن أين تُلعب المباريات وكيف تتباعد الجغرافيا بين كندا والمكسيك وأمريكا.",
+            "دليل المشجّع يجمع روابط رسمية للتأشيرات والتنقّل العام وإرشادات المضيفين — نحن لا نستبدل مواقع الحكومات، بل نوجّهك إليها بترتيب عربي واضح.",
+            "للمشجّع من المنطقة العربية: تحقّق مبكراً من متطلبات الدخول لكل دولة مضيفة قد تزورها، وفروق العملة، ومسافات التنقّل بين المدن إن حجزت مباريات متتالية في ولايات مختلفة.",
+            "اربط خطتك بجدول foot-boll بتوقيتك المحلي حتى تعرف إن كانت مباراة «سهلة المتابعة من البيت» أو تستحق ترتيب إجازة. التذكيرات على صفحة المباراة تساعد إن تغيّر موعد البث المحلي.",
+            "ابدأ من دليل المشجّع الكامل على الموقع، ثم ارجع للتحليلات والتوقعات — المتعة الرياضية تكتمل عندما تعرف أين تذهب وكيف تتابع."
+        ],
+        "body_en": [
+            "Whether you plan to travel or follow smarter from home, start with three foot-boll pages: host-city map, stadiums, and the fan guide. Together they show where games are played and how far Canada, Mexico, and the USA sit apart.",
+            "The fan guide collects official links for visas, public transport, and host guidance — we do not replace government sites; we point you to them in a clear Arabic-first order.",
+            "For fans from the Arab region: check entry rules early for each host country you might visit, currency differences, and travel distance between cities if you booked back-to-back matches in different states.",
+            "Tie your plan to the foot-boll schedule in local time so you know which games are easy from the couch and which deserve time off. Match-page reminders help when local broadcast times shift.",
+            "Start from the full fan guide on the site, then return to insights and predictions — the sporting fun is complete when you know where to go and how to follow."
+        ],
+        "tags_ar": [
+            "دليل مشجّع",
+            "سفر",
+            "مدن"
+        ],
+        "tags_en": [
+            "fan guide",
+            "travel",
+            "cities"
+        ]
+    }
 ]

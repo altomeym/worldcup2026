@@ -32,10 +32,10 @@ if (!function_exists('cfg_secret')) {
 }
 
 // ---------- معلومات الموقع ----------
-define('SITE_NAME_AR', 'كأس العالم 2026');
-define('SITE_NAME_EN', 'World Cup 2026');
-define('SITE_TAGLINE_AR', 'كندا · المكسيك · الولايات المتحدة');
-define('SITE_TAGLINE_EN', 'Canada · Mexico · USA');
+define('SITE_NAME_AR', 'foot-boll');
+define('SITE_NAME_EN', 'foot-boll');
+define('SITE_TAGLINE_AR', 'مركز عربي تحليلي لكأس العالم 2026');
+define('SITE_TAGLINE_EN', 'Arabic analytics hub for World Cup 2026');
 // من config.local.php / البيئة. فارغ = روابط نسبية. للإنتاج: https:// foot-boll.com
 define('SITE_URL', (string)cfg_secret('SITE_URL', '', $__local));
 

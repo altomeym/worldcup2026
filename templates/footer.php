@@ -66,6 +66,7 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
           <img class="footer-logo" src="<?= e(rtrim(SITE_URL, '/') . '/assets/img/logo.png') ?>" alt="foot-boll.com" width="140" height="36" loading="lazy">
         </span>
         <div class="footer-brand-text">
+          <strong class="footer-brand-name">foot-boll</strong>
           <span class="footer-brand-event"><?= e($lang === 'ar' ? 'كأس العالم 2026 · كندا · المكسيك · أمريكا' : 'FIFA World Cup 2026 · Canada · Mexico · USA') ?></span>
           <span class="footer-tagline"><?= e(t('footer_tagline')) ?></span>
           <span class="footer-brand-dates">📅 <?= e($lang === 'ar' ? '11 يونيو – 19 يوليو 2026' : 'June 11 – July 19, 2026') ?></span>
@@ -205,11 +206,12 @@ $siteHost   = parse_url(SITE_URL, PHP_URL_HOST) ?: 'foot-boll.com';
       <p class="copyright">
         © <?= date('Y') ?> <?= e($siteHost) ?>
         <span class="dot">·</span>
-        <?= e($lang === 'ar' ? 'أُعدّ بعناية لعشّاق كرة القدم العرب' : 'Crafted for Arabic football fans') ?>
+        <?= e($lang === 'ar' ? 'منصّة foot-boll المستقلة لعشّاق كرة القدم العرب' : 'The independent foot-boll platform for Arabic football fans') ?>
       </p>
       <nav class="footer-bottom-links" aria-label="<?= e($lang === 'ar' ? 'روابط قانونية' : 'Legal links') ?>">
         <a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a>
         <a href="<?= e(url('contact.php')) ?>"><?= e($lang === 'ar' ? 'تواصل معنا' : 'Contact') ?></a>
+        <a href="<?= e(url('methodology.php')) ?>"><?= e($lang === 'ar' ? 'منهجيتنا' : 'Methodology') ?></a>
         <a href="<?= e(url('faq.php')) ?>"><?= e($lang === 'ar' ? 'الأسئلة الشائعة' : 'FAQ') ?></a>
         <a href="<?= e(url('insights.php')) ?>"><?= e($lang === 'ar' ? 'تحليلات' : 'Insights') ?></a>
         <a href="<?= e(url('terms.php')) ?>"><?= e(t('terms_title')) ?></a>

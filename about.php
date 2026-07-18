@@ -23,7 +23,7 @@ tpl('header');
 
 <div class="page-head">
   <h1><?= e($page_title) ?></h1>
-  <p class="muted"><?= e($L('آخر تحديث: يوليو 2026', 'Last updated: July 2026')) ?></p>
+  <p class="muted"><?= e($L('آخر تحديث: 19 يوليو 2026', 'Last updated: 19 July 2026')) ?></p>
 </div>
 
 <div class="prose" style="max-width:780px;margin:0 auto;line-height:2">
@@ -32,6 +32,19 @@ tpl('header');
     'foot-boll ليس موقع نتائج تقليدياً. نحن منصّة عربية مستقلة بُنيت خصيصاً لكأس العالم 2026 في كندا والمكسيك والولايات المتحدة، تجمع بين دقة البيانات الرياضية وطبقة تحليلية أصلية لا تقتصر على عرض النتيجة والوقت.',
     'foot-boll is not a traditional scores site. We are an independent Arabic platform built specifically for the 2026 World Cup in Canada, Mexico, and the USA — combining accurate sports data with an original analytics layer that goes far beyond showing the score and kick-off time.'
   )) ?></p>
+
+  <h2><?= e($L('ما الذي نبنيه فوق البيانات العامة', 'What we build above public data')) ?></h2>
+  <p><?= e($L(
+    'جداول المباريات حقائق عامة قد تظهر في أي موقع. قيمة foot-boll تبدأ بعدها: مقالات Insights، قراءة أرقام FIFA، ملفات لاعبين، توقعات ترفيهية، سياق تحريري للأخبار، وتوقيت محلي للمشجّع العربي. شرحنا الفصل بين العام والأصلي في صفحة المنهجية.',
+    'Match tables are public facts any site can show. foot-boll’s value starts after that: Insights essays, FIFA metric literacy, player profiles, entertainment predictions, editorial news context, and local kickoff times for Arabic fans. We explain the public-vs-original split on our methodology page.'
+  )) ?></p>
+  <p>
+    <a href="<?= e(url('methodology.php')) ?>"><?= e($L('اقرأ منهجيتنا', 'Read our methodology')) ?></a>
+    ·
+    <a href="<?= e(url('insights.php')) ?>"><?= e($L('تحليلات foot-boll', 'foot-boll Insights')) ?></a>
+    ·
+    <a href="<?= e(url('contact.php')) ?>"><?= e($L('تواصل معنا', 'Contact us')) ?></a>
+  </p>
 
   <h2><?= e($L('رسالتنا', 'Our mission')) ?></h2>
   <p><?= e($L(

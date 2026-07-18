@@ -37,6 +37,7 @@ $pages = [
     ['archive.php',   '0.6', 'monthly'],
     ['about.php',     '0.4', 'monthly'],
     ['contact.php',   '0.4', 'monthly'],
+    ['methodology.php','0.5','monthly'],
     ['faq.php',       '0.4', 'monthly'],
     ['compare.php',   '0.5', 'weekly'],
     ['terms.php',     '0.3', 'yearly'],

@@ -3631,6 +3631,15 @@ button.sponsor-empty:hover { border-color: var(--accent-2); color: var(--text); 
 .lineup-fold > summary .fold-hint { font-size: .82rem; color: var(--text-dim); font-weight: 400; margin-inline-start: 8px; }
 .lineup-fold[open] > summary .fold-hint { display: none; }
 
+.footer-brand-name {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: inherit;
+  margin-bottom: 2px;
+}
+
 /* ============================================================
    شريط موافقة الكوكيز (AdSense / تحليلات)
    ============================================================ */

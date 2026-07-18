@@ -117,9 +117,9 @@ if ($finalM && isset($finalM['score']['ft'])) {
 
   <div class="fb-hero-body">
 
-    <p class="fb-hero-eyebrow">FIFA WORLD CUP</p>
+    <p class="fb-hero-eyebrow"><?= e($ar ? 'كأس العالم 2026' : 'World Cup 2026') ?></p>
 
-    <h1 class="fb-hero-heading">2026</h1>
+    <h1 class="fb-hero-heading">foot-boll</h1>
 
     <div class="fb-hero-flags" aria-hidden="true">
 

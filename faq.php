@@ -23,7 +23,7 @@ tpl('header');
 
 <div class="page-head">
   <h1><?= e($page_title) ?></h1>
-  <p class="muted"><?= e($L('آخر تحديث: يوليو 2026', 'Last updated: July 2026')) ?></p>
+  <p class="muted"><?= e($L('آخر تحديث: 19 يوليو 2026', 'Last updated: 19 July 2026')) ?></p>
 </div>
 
 <div class="prose faq-page" style="max-width:780px;margin:0 auto;line-height:2">
@@ -41,6 +41,15 @@ tpl('header');
       'منصّة عربية تحليلية مستقلة لكأس العالم 2026. نجمع النتائج والجداول مع طبقة أصلية: تحليلات FIFA، ملفات لاعبين، توقعات تفاعلية، ونصوص ذكاء اصطناعي لكل مباراة — وليس مجرد جدول نتائج.',
       'An independent Arabic analytics platform for World Cup 2026. We combine schedules and scores with an original layer: FIFA analytics, player profiles, interactive predictions, and AI text for each match — not just a results table.'
     )) ?></p>
+  </details>
+
+  <details class="faq-item">
+    <summary><?= e($L('هل foot-boll نسخة من مواقع أخرى؟', 'Is foot-boll a copy of other sites?')) ?></summary>
+    <p><?= e($L(
+      'لا. foot-boll منصّة مستقلة بهوية ومحتوى تحريري خاص (تحليلات، منهجية، FAQ، وتجربة عربية). جداول البطولة العامة قد تتشابه بين المواقع لأنها حقائق مشتركة — أما الطبقة التحليلية والسياق التحريري على foot-boll فمُنتَجان لدينا. راجع صفحة المنهجية للتفاصيل.',
+      'No. foot-boll is an independent platform with its own identity and editorial layer (insights, methodology, FAQ, and an Arabic experience). Public tournament tables may look similar across sites because they are shared facts — the analytics and editorial context on foot-boll are produced here. See our methodology page for details.'
+    )) ?>
+    <a href="<?= e(url('methodology.php')) ?>"><?= e($L('منهجية foot-boll', 'foot-boll methodology')) ?></a>.</p>
   </details>
 
   <details class="faq-item">
@@ -124,8 +133,8 @@ tpl('header');
   <details class="faq-item">
     <summary><?= e($L('هل تبيعون بياناتي؟', 'Do you sell my data?')) ?></summary>
     <p><?= e($L(
-      'لا. لا نبيع بياناتك ولا نشاركها لأغراض تسويقية. التفاصيل الكاملة في ',
-      'No. We never sell your data or share it for marketing. Full details in '
+      'لا نبيع بياناتك. قد تُعالَج بيانات تقنية عبر Google AdSense/Analytics لعرض الإعلانات وقياس الاستخدام بعد موافقة الكوكيز. التفاصيل في ',
+      'We do not sell your data. Limited technical data may be processed via Google AdSense/Analytics for ads and measurement after cookie consent. Details in '
     )) ?><a href="<?= e(url('privacy.php')) ?>"><?= e($L('سياسة الخصوصية', 'Privacy Policy')) ?></a><?= e($L('.', '.')) ?></p>
   </details>
 
@@ -137,7 +146,7 @@ tpl('header');
     )) ?></p>
   </details>
 
-  <p><?= e($L('لم تجد إجابتك؟ راجع ', 'Didn’t find your answer? See ')) ?><a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a><?= e($L(' أو راسلنا على ', ' or email us at ')) ?><a href="mailto:<?= e(CONTACT_EMAIL) ?>"><?= e(CONTACT_EMAIL) ?></a>.</p>
+  <p><?= e($L('لم تجد إجابتك؟ راجع ', 'Didn’t find your answer? See ')) ?><a href="<?= e(url('about.php')) ?>"><?= e(t('about_title')) ?></a><?= e($L(' أو ', ' or ')) ?><a href="<?= e(url('methodology.php')) ?>"><?= e($L('منهجيتنا', 'our methodology')) ?></a><?= e($L(' أو راسلنا عبر ', ' or reach us via ')) ?><a href="<?= e(url('contact.php')) ?>"><?= e($L('صفحة التواصل', 'the contact page')) ?></a>.</p>
 
 </div>
 

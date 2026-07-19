@@ -74,12 +74,12 @@ function fm_radar(array $axes, int $size = 300): string {
     foreach ([0.25, 0.5, 0.75, 1.0] as $ring) {
         $pts = [];
         for ($i = 0; $i < $n; $i++) { [$x, $y] = $pt($ang($i), $R * $ring); $pts[] = round($x, 1) . ',' . round($y, 1); }
-        $svg .= '<polygon points="' . implode(' ', $pts) . '" fill="none" stroke="rgba(255,255,255,.10)" stroke-width="1"/>';
+        $svg .= '<polygon points="' . implode(' ', $pts) . '" fill="none" class="fm-grid" stroke-width="1"/>';
     }
     // الأشعّة + التسميات
     for ($i = 0; $i < $n; $i++) {
         [$x, $y] = $pt($ang($i), $R);
-        $svg .= '<line x1="' . round($cx, 1) . '" y1="' . round($cy, 1) . '" x2="' . round($x, 1) . '" y2="' . round($y, 1) . '" stroke="rgba(255,255,255,.10)"/>';
+        $svg .= '<line x1="' . round($cx, 1) . '" y1="' . round($cy, 1) . '" x2="' . round($x, 1) . '" y2="' . round($y, 1) . '" class="fm-grid"/>';
         [$lx, $ly] = $pt($ang($i), $R + 26);
         $anchor = abs($lx - $cx) < 6 ? 'middle' : ($lx > $cx ? 'start' : 'end');
         $svg .= '<text x="' . round($lx, 1) . '" y="' . round($ly, 1) . '" text-anchor="' . $anchor . '" class="fm-axislbl">'
@@ -90,8 +90,8 @@ function fm_radar(array $axes, int $size = 300): string {
     // مضلّع البيانات
     $dp = [];
     for ($i = 0; $i < $n; $i++) { [$x, $y] = $pt($ang($i), $R * max(2, (int)$axes[$i]['pct']) / 100); $dp[] = round($x, 1) . ',' . round($y, 1); }
-    $svg .= '<polygon points="' . implode(' ', $dp) . '" fill="rgba(38,206,168,.22)" stroke="#26cea8" stroke-width="2"/>';
-    for ($i = 0; $i < $n; $i++) { [$x, $y] = $pt($ang($i), $R * max(2, (int)$axes[$i]['pct']) / 100); $svg .= '<circle cx="' . round($x, 1) . '" cy="' . round($y, 1) . '" r="2.6" fill="#26cea8"/>'; }
+    $svg .= '<polygon points="' . implode(' ', $dp) . '" class="fm-data" stroke-width="2"/>';
+    for ($i = 0; $i < $n; $i++) { [$x, $y] = $pt($ang($i), $R * max(2, (int)$axes[$i]['pct']) / 100); $svg .= '<circle cx="' . round($x, 1) . '" cy="' . round($y, 1) . '" r="2.6" class="fm-dot"/>'; }
     return $svg . '</svg>';
 }
 /** لون الشريط حسب المئويّة. */
@@ -163,44 +163,47 @@ function fm_barclass(int $p): string { return $p >= 66 ? 'hi' : ($p >= 33 ? 'mid
 </article>
 
 <style>
-.fm-wrap{max-width:760px;margin:0 auto}
-.fm-head{display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,#1b2a52,#12203f);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px 20px;margin-bottom:14px}
-.fm-photo{width:104px;height:104px;border-radius:50%;object-fit:cover;object-position:top center;background:#0e1b34;border:3px solid rgba(255,255,255,.20);flex:0 0 auto}
+.fm-wrap{max-width:760px;margin:0 auto;color:var(--text)}
+.fm-head{display:flex;align-items:center;gap:18px;background:linear-gradient(145deg,var(--surface),var(--bg-2));border:1px solid var(--border);border-radius:18px;padding:18px 20px;margin-bottom:14px;color:var(--text);box-shadow:var(--shadow-sm,none)}
+.fm-photo{width:104px;height:104px;border-radius:50%;object-fit:cover;object-position:top center;background:var(--bg-2);border:3px solid color-mix(in srgb,var(--accent) 55%,transparent);flex:0 0 auto}
 .fm-photo.off{display:none}
 .fm-id{min-width:0}
-.fm-name{font-size:1.5rem;margin:0 0 4px;line-height:1.1}
-.fm-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;opacity:.92}
+.fm-name{font-size:1.5rem;margin:0 0 4px;line-height:1.1;color:var(--text)}
+.fm-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;color:var(--text-dim)}
 .fm-team .flag{width:26px;height:auto;border-radius:3px}
-.fm-pos{font-size:.74rem;background:rgba(255,255,255,.10);padding:2px 9px;border-radius:20px;font-weight:700}
+.fm-pos{font-size:.74rem;background:color-mix(in srgb,var(--accent) 28%,transparent);color:var(--accent-readable);padding:2px 9px;border-radius:20px;font-weight:700}
 .fm-badges{display:flex;gap:7px;flex-wrap:wrap}
-.fm-rating{background:#ffc846;color:#0a1626;font-weight:800;padding:3px 11px;border-radius:20px}
-.fm-badge{background:rgba(255,255,255,.07);padding:3px 11px;border-radius:20px;font-size:.82rem;font-weight:600}
-.fm-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+.fm-rating{background:#e6a800;color:#1a1200;font-weight:800;padding:3px 11px;border-radius:20px}
+.fm-badge{background:var(--bg-2);border:1px solid var(--border);color:var(--text-dim);padding:3px 11px;border-radius:20px;font-size:.82rem;font-weight:600}
+.fm-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:14px;color:var(--text);box-shadow:var(--shadow-sm,none)}
 .fm-overall{text-align:center}
 .fm-radarbox{display:flex;justify-content:center}
 .fm-radar{width:300px;max-width:100%;height:auto}
 .fm-radarbox.sm .fm-radar{width:280px}
-.fm-axislbl{fill:rgba(255,255,255,.85);font-size:11px;font-weight:700}
-.fm-axispct{fill:#26cea8;font-size:10px;font-weight:800}
+.fm-grid{stroke:color-mix(in srgb,var(--text) 16%,transparent);fill:none}
+.fm-data{fill:color-mix(in srgb,var(--accent-readable) 18%,transparent);stroke:var(--accent-readable)}
+.fm-dot{fill:var(--accent-readable)}
+.fm-axislbl{fill:var(--text);font-size:11px;font-weight:700}
+.fm-axispct{fill:var(--accent-readable);font-size:10px;font-weight:800}
 .fm-macro-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
-.fm-chip{font-size:.84rem;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(255,255,255,.06)}
+.fm-chip{font-size:.84rem;font-weight:700;padding:5px 12px;border-radius:20px;background:var(--bg-2);border:1px solid var(--border);color:var(--text-dim)}
 .fm-chip b{font-variant-numeric:tabular-nums}
-.fm-chip.hi b{color:#26cea8}.fm-chip.mid b{color:#ffc846}.fm-chip.lo b{color:#ff7a45}
-.fm-note,.fm-source{font-size:.76rem;opacity:.6;text-align:center;margin:8px 0 0}
-.fm-cat-h{display:flex;align-items:center;gap:9px;font-size:1.12rem;margin:0 0 10px;color:var(--accent,#fff)}
+.fm-chip.hi b{color:#0d8a72}.fm-chip.mid b{color:#9a6b00}.fm-chip.lo b{color:#c2410c}
+.fm-note,.fm-source{font-size:.76rem;color:var(--text-faint);text-align:center;margin:8px 0 0}
+.fm-cat-h{display:flex;align-items:center;gap:9px;font-size:1.12rem;margin:0 0 10px;color:var(--accent-readable)}
 .fm-cat-ico{font-size:1.2rem}
 .fm-cat-body{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .fm-bars{flex:1 1 300px;min-width:260px;display:flex;flex-direction:column;gap:9px}
 .fm-bar{display:grid;grid-template-columns:1fr 90px auto;align-items:center;gap:10px}
-.fm-bar-lbl{font-size:.86rem;font-weight:600}
-.fm-bar-track{height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.fm-bar-lbl{font-size:.86rem;font-weight:600;color:var(--text)}
+.fm-bar-track{height:8px;border-radius:6px;background:color-mix(in srgb,var(--text) 10%,transparent);overflow:hidden}
 .fm-bar-fill{display:block;height:100%;border-radius:6px}
-.fm-bar-fill.hi{background:linear-gradient(90deg,#1f9c8a,#26cea8)}
-.fm-bar-fill.mid{background:linear-gradient(90deg,#c79324,#ffc846)}
-.fm-bar-fill.lo{background:linear-gradient(90deg,#c1502a,#ff7a45)}
-.fm-bar-val{display:flex;flex-direction:column;align-items:flex-end;line-height:1.05;min-width:46px}
+.fm-bar-fill.hi{background:linear-gradient(90deg,#0d8a72,#14b8a6)}
+.fm-bar-fill.mid{background:linear-gradient(90deg,#b8860b,#e6a800)}
+.fm-bar-fill.lo{background:linear-gradient(90deg,#c2410c,#ea580c)}
+.fm-bar-val{display:flex;flex-direction:column;align-items:flex-end;line-height:1.05;min-width:46px;color:var(--text)}
 .fm-bar-val b{font-variant-numeric:tabular-nums;font-size:.95rem}
-.fm-bar-val small{font-size:.68rem;opacity:.6}
+.fm-bar-val small{font-size:.68rem;color:var(--text-faint)}
 @media(max-width:560px){.fm-head{flex-direction:column;text-align:center}.fm-team{justify-content:center}.fm-badges{justify-content:center}.fm-bar{grid-template-columns:1fr 70px auto}}
 </style>
 

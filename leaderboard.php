@@ -71,7 +71,11 @@ tpl('header');
 <p class="muted" style="text-align:center;font-size:.85rem;margin:10px 0 0">
   <?= e(current_lang()==='ar' ? 'اضغط على اسم أيّ لاعب لرؤية توقّعاته' : (current_lang()==='fr' ? "Cliquez sur un nom pour voir ses pronostics" : "Tap any player's name to see their predictions")) ?>
 </p>
-<style>.lb-link{color:inherit;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35)}.lb-link:hover{border-bottom-style:solid}</style>
+<style>
+.lb-link{color:var(--accent-readable);text-decoration:none;border-bottom:1px dotted color-mix(in srgb,var(--accent-readable) 45%,transparent)}
+.lb-link:hover{border-bottom-style:solid;color:var(--accent-2)}
+.lb-ai .lb-name{color:#4c3dcf}
+</style>
 
 <?php render_share(canonical_url(), t('leaderboard') . ' — ' . SITE_NAME_AR); ?>
 
